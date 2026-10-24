@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent, type InputHTMLAttributes } from 'react'
 import dynamic from 'next/dynamic'
-import type { BusinessInput } from '@/lib/business-input'
+import { validateBusiness, type BusinessInput } from '@/lib/business-input'
 
 const Scene = dynamic(() => import('./business/App'), {
   ssr: false,
@@ -23,6 +23,16 @@ const fieldClass =
   'w-full rounded-lg border border-line bg-white/40 px-4 py-3 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/10'
 const primary =
   'flex w-full items-center justify-center gap-3 rounded-lg bg-ink px-5 py-4 text-sm text-paper transition hover:bg-accent disabled:cursor-wait disabled:opacity-50'
+type WorkspaceView = 'account' | 'demo'
+const demoBusiness: BusinessInput = {
+  company: 'Northstar Goods',
+  website: 'https://northstargoods.example',
+  offering: 'Everyday home goods and accessories',
+  channels: 'Online and retail stores',
+  demo: true,
+  products: [{ name: 'Canvas tote', price: 48, units: 2400 }],
+  parts: [],
+}
 
 function Field({ label, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
@@ -50,6 +60,7 @@ async function request(body?: unknown) {
 
 export default function Workspace() {
   const [loading, setLoading] = useState(true)
+  const [view, setView] = useState<WorkspaceView>('account')
   const [signedIn, setSignedIn] = useState(false)
   const [complete, setComplete] = useState(false)
   const [mode, setMode] = useState<'signup' | 'login'>('signup')
@@ -60,25 +71,57 @@ export default function Workspace() {
   const [fileName, setFileName] = useState('')
   const [editing, setEditing] = useState(false)
   const [parsing, setParsing] = useState(false)
+  const hasWorkspaceAccess = signedIn || view === 'demo'
   useEffect(() => {
+    if (view === 'demo') return
+    let active = true
     request()
       .then((data) => {
+        if (!active) return
         setSignedIn(!!data.user)
         if (data.business?.company) {
           setBusiness(data.business)
           setComplete(true)
         }
       })
-      .catch(() => setError('We couldn’t connect to your workspace. Please try again.'))
-      .finally(() => setLoading(false))
-  }, [])
+      .catch(() => {
+        if (active) setError('We couldn’t connect to your workspace. Please try again.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [view])
   const update = (key: keyof BusinessInput, value: unknown) =>
     setBusiness((b) => ({ ...b, [key]: value }))
+  function exitDemo() {
+    setBusiness(empty)
+    setStep(0)
+    setComplete(false)
+    setEditing(false)
+    setError('')
+    setFileName('')
+    setLoading(true)
+    setView('account')
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (loading && view === 'account') return
     setError('')
-    if (signedIn && step < 2) {
+    if (hasWorkspaceAccess && step < 2) {
       setStep(step + 1)
+      return
+    }
+    if (view === 'demo') {
+      try {
+        setBusiness(validateBusiness(business))
+        setComplete(true)
+        setEditing(false)
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Please check your business details.')
+      }
       return
     }
     setBusy(true)
@@ -178,17 +221,12 @@ export default function Workspace() {
       setBusy(false)
     }
   }
-  if (loading)
-    return (
-      <div className="grid min-h-dvh place-items-center bg-paper font-display text-2xl text-ink">
-        A little closer to your business…
-      </div>
-    )
   if (complete && !editing)
     return (
       <>
         <Scene company={business.company} />
-        <div className="fixed right-6 top-20 z-50 flex gap-4 text-xs text-muted">
+        <div className="fixed right-4 top-16 z-50 flex max-w-[calc(100vw-2rem)] flex-wrap items-center justify-end gap-2 rounded-lg border border-line bg-paper/95 px-2 py-1 text-xs text-ink shadow-sm sm:right-6 sm:top-20 sm:gap-4 sm:p-2">
+          {view === 'demo' && <span className="text-accent">Demo · Sample data</span>}
           <button
             onClick={() => {
               setEditing(true)
@@ -198,9 +236,20 @@ export default function Workspace() {
           >
             Business settings
           </button>
-          <button disabled={busy} onClick={logout} className="hover:text-ink">
-            Sign out
-          </button>
+          {view === 'demo' ? (
+            <button
+              type="button"
+              disabled={busy || parsing}
+              onClick={exitDemo}
+              className="rounded px-2 py-0.5 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:py-1"
+            >
+              Exit demo
+            </button>
+          ) : (
+            <button disabled={busy} onClick={logout} className="hover:text-ink">
+              Sign out
+            </button>
+          )}
         </div>
         {error && (
           <p
@@ -228,7 +277,11 @@ export default function Workspace() {
           </div>
         </div>
         <span className="hidden text-xs text-muted sm:block">
-          {signedIn ? 'Your next chapter starts here.' : 'A new perspective on your business.'}
+          {hasWorkspaceAccess
+            ? view === 'demo'
+              ? 'Explore a sample business.'
+              : 'Your next chapter starts here.'
+            : 'A new perspective on your business.'}
         </span>
       </header>
       <div className="mx-auto grid max-w-6xl gap-12 px-6 pb-16 pt-8 md:grid-cols-2 md:gap-24 md:px-12 md:pt-12">
@@ -278,7 +331,7 @@ export default function Workspace() {
           className="self-center rounded-2xl border border-white/70 bg-white/30 p-6 shadow-sm md:p-9"
           aria-labelledby="setup-title"
         >
-          {signedIn && (
+          {hasWorkspaceAccess && (
             <ol className="mb-9 flex items-center gap-2" aria-label="Setup progress">
               {['Your business', 'Your products', 'Your suppliers'].map((name, i) => (
                 <li
@@ -297,17 +350,17 @@ export default function Workspace() {
             </ol>
           )}
           <p className="mb-3 text-[9px] tracking-[0.2em] text-muted">
-            {signedIn ? `STEP 0${step + 1} OF 03 · ABOUT TWO MINUTES` : 'YOUR OWN LITTLE WORLD'}
+            {hasWorkspaceAccess ? `STEP 0${step + 1} OF 03 · ABOUT TWO MINUTES` : 'YOUR OWN LITTLE WORLD'}
           </p>
           <h2 id="setup-title" className="font-display text-3xl leading-tight">
-            {signedIn
+            {hasWorkspaceAccess
               ? titles[step]
               : mode === 'signup'
                 ? 'Make yourself at home.'
                 : 'Welcome home.'}
           </h2>
           <p className="mb-7 mt-3 text-xs leading-6 text-muted">
-            {!signedIn
+            {!hasWorkspaceAccess
               ? 'One account. A whole new way to see your business.'
               : step === 0
                 ? 'Start with the basics. We’ll take it from here.'
@@ -315,8 +368,8 @@ export default function Workspace() {
                   ? 'Add your products. A rough annual estimate is just fine. Prices are in USD.'
                   : 'Bring your suppliers and parts together, or start exploring with demo data.'}
           </p>
-        <form key={signedIn ? `setup-${step}` : mode} onSubmit={submit} className="grid gap-5">
-            {!signedIn ? (
+          <form key={hasWorkspaceAccess ? `setup-${step}` : mode} onSubmit={submit} className="grid gap-5">
+            {!hasWorkspaceAccess ? (
               <>
                 <Field
                   label="Work email"
@@ -491,7 +544,10 @@ export default function Workspace() {
                 </label>
                 <p className="text-xs leading-6 text-muted">
                   Use columns <strong className="font-medium text-ink">supplier, part, cost</strong>{' '}
-                  (USD). Your rows are saved privately to your workspace.
+                  (USD).{' '}
+                  {view === 'demo'
+                    ? 'This preview does not save changes.'
+                    : 'Your rows are saved privately to your workspace.'}
                 </p>
                 {!business.demo && business.parts.length > 0 && (
                   <div className="overflow-hidden rounded-lg border border-line text-xs">
@@ -538,23 +594,48 @@ export default function Workspace() {
               className={primary}
               disabled={
                 busy ||
+                (loading && view === 'account' && !signedIn) ||
                 parsing ||
-                (signedIn && step === 2 && !business.demo && !business.parts.length)
+                (hasWorkspaceAccess && step === 2 && !business.demo && !business.parts.length)
               }
             >
               {busy
                 ? 'Just a moment…'
-                : !signedIn
-                  ? mode === 'signup'
-                    ? 'Create your account'
-                    : 'Sign in'
-                  : step === 2
-                    ? 'Step into your business'
-                    : 'Continue'}
+                : loading && view === 'account' && !signedIn
+                  ? 'Checking your session…'
+                  : !hasWorkspaceAccess
+                    ? mode === 'signup'
+                      ? 'Create your account'
+                      : 'Sign in'
+                    : step === 2
+                      ? 'Step into your business'
+                      : 'Continue'}
               <span aria-hidden="true">→</span>
             </button>
-            {signedIn && (
-              <div className="flex justify-between text-xs text-muted">
+            {!hasWorkspaceAccess && (
+              <div className="grid gap-2">
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setView('demo')
+                    setLoading(false)
+                    setBusiness(demoBusiness)
+                    setStep(0)
+                    setComplete(false)
+                    setEditing(false)
+                    setError('')
+                    setFileName('')
+                  }}
+                  className="w-full rounded-lg border border-line bg-white/40 px-5 py-3 text-sm text-ink transition hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                >
+                  Try demo account
+                </button>
+                <p className="text-center text-xs text-muted">Skip signup. Start with a sample company.</p>
+              </div>
+            )}
+            {hasWorkspaceAccess && (
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-xs text-muted">
                 {step > 0 ? (
                   <button
                     type="button"
@@ -565,9 +646,12 @@ export default function Workspace() {
                   >
                     ← Back
                   </button>
-                ) : (
-                  <button type="button" onClick={logout}>
-                    Sign out
+                ) : view !== 'demo' ? (
+                  <button type="button" onClick={logout}>Sign out</button>
+                ) : null}
+                {view === 'demo' && (
+                  <button type="button" disabled={busy || parsing} onClick={exitDemo}>
+                    Exit demo
                   </button>
                 )}
                 {editing && (
@@ -575,11 +659,11 @@ export default function Workspace() {
                     Cancel
                   </button>
                 )}
-                <span>Saved securely to your account</span>
+                <span>{view === 'demo' ? 'Preview only · Changes are not saved' : 'Saved securely to your account'}</span>
               </div>
             )}
           </form>
-          {!signedIn && (
+          {!hasWorkspaceAccess && (
             <p className="mt-6 text-center text-xs text-muted">
               {mode === 'signup' ? 'Already have a home here?' : 'New to Northstar?'}{' '}
               <button
@@ -596,7 +680,9 @@ export default function Workspace() {
         </section>
       </div>
       <footer className="px-6 pb-6 text-center text-[9px] tracking-wider text-muted">
-        A LITTLE CLOSER TO EVERYTHING.
+        {view === 'demo'
+          ? 'SAMPLE BUSINESS PREVIEW · CHANGES ARE NOT SAVED.'
+          : 'A LITTLE CLOSER TO EVERYTHING.'}
       </footer>
     </main>
   )
