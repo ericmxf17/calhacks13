@@ -66,6 +66,25 @@ Bean Mode's **Model the Domain** principle put navigation and selection in the U
 System Segoe UI and Georgia fonts keep this offline preview independent of font
 downloads. No frontend framework, live agent connection, or production API was added.
 
+## Browser verification
+
+Checked in the Codex in-app Browser on 2026-10-24.
+
+| Component | Code exercised | Behavior | Result |
+| --- | --- | --- | --- |
+| Overview layouts | `app.js`, `styles.css` | Switch information order without changing content. | Both orders inspected at desktop and narrow widths. |
+| Scenario explorer | `app.js` | Select every strategy and scenario. | All 25 combinations displayed. All 75 rounded financial readouts matched the saved results. |
+| Navigation | `app.js` | Reload, browser Back and Forward, and overview link. | The selected route and scenario restored. |
+| Keyboard | `index.html`, `app.js` | Skip link, scenario select, table region, and finding-source disclosure. | Focus and the selected layout remained correct. |
+| Responsive layout | `styles.css` | Fit 1280px, 390px, and 320px viewports. | No page-wide overflow. Narrow tables scroll inside their regions. |
+
+Body copy is 15px, finding headings are 19px, and supporting labels are at least
+12px after the requested type-size increase. Browser viewport overrides were reset
+after the responsive checks. Sampled text colors meet a 4.5:1 contrast ratio.
+Source data, external source claims, and live CREAO calls were not independently
+verified by these UI checks. Browser observations and screenshots are local artifacts
+under `.preview/`, which Git ignores.
+
 ## Review before a production build
 
 Decide whether the recommendation belongs before or after the findings.

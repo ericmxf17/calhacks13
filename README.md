@@ -17,6 +17,13 @@ bill number
 
 Rule: **AI reads and writes, code calculates.** Agents never invent probabilities or dollar figures, and `verify_brief.py` checks that they didn't.
 
+## Frontend design prototype
+
+Run `python prototypes/bill-impact/preview.py` and open the printed local URL.
+Compare two overview layouts, then inspect the five strategies and their scenario
+outcomes. This is a throwaway design study with saved fictional data.
+See [the prototype guide](prototypes/bill-impact/README.md) for the data sources and scope.
+
 ## Run the whole pipeline on the sample files
 
 ```bash

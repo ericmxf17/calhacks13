@@ -115,7 +115,7 @@ function findingColumn(kind, title, symbol) {
   const findings = snapshot.findings[kind];
   return `<section class="finding-column ${kind === "risks" ? "risk" : "opportunity"}" aria-labelledby="${kind}-heading">
     <div class="section-label"><span class="section-icon" aria-hidden="true">${symbol}</span><h2 id="${kind}-heading">${title}</h2></div>
-    ${findings.length ? findings.map((finding) => `<article class="finding" title="${escape(finding.source)}">
+    ${findings.length ? findings.map((finding) => `<article class="finding">
       <h3>${escape(finding.title)}</h3><p>${escape(finding.detail)}</p>
       <div class="finding-value">${finding.value === null ? "" : `<strong>${escape(finding.value)}</strong>`}${escape(finding.label)}</div>
       <span class="qualifier">${escape(finding.qualifier)}</span>
@@ -149,6 +149,7 @@ function overview(route) {
     </div>
     ${route.layout === "decision" ? verdict(route) + findings : findings + verdict(route)}
     <p class="overview-note">USD · Fictional VoltRide sample · Financial impacts use saved scenario calculations. Assumptions and conditional exposure are not expected returns.</p>
+    <details class="finding-sources"><summary>Where these findings come from</summary><ul class="compact-list">${[...snapshot.findings.opportunities, ...snapshot.findings.risks].map((finding) => `<li><strong>${escape(finding.title)}.</strong> ${escape(finding.source)}</li>`).join("")}</ul></details>
   </div>`;
 }
 
@@ -193,8 +194,8 @@ function scenarioDetails(route) {
 function strategies(route) {
   const recommendation = snapshot.brief.recommendation;
   return `<nav class="breadcrumb" aria-label="Breadcrumb"><a class="back-link" href="${href({ ...route, page: "overview" })}">← Back to overview</a><span aria-hidden="true">/</span><span class="current">H.R. 973 strategies</span></nav>
-    <div class="page-heading"><div><div class="eyebrow muted">VoltRide · H.R. 973</div><h1 tabindex="-1">Make the tradeoff explicit.</h1><p>${escape(recommendation.summary)}</p></div><div class="strategy-context"><strong>${escape(percentage.format(snapshot.forecast.probability))}</strong>chance of passage<br>Saved sample · ${escape(snapshot.results.as_of)}</div></div>
-    <div class="recommendation-note"><strong>Why wait?</strong> ${escape(recommendation.why)}<br><strong>The tradeoff.</strong> ${escape(recommendation.tradeoff)}</div>
+    <div class="page-heading"><div><div class="eyebrow muted">VoltRide · H.R. 973</div><h1 tabindex="-1">Compare your strategies.</h1><p>${escape(recommendation.summary)}</p></div><div class="strategy-context"><strong>${escape(percentage.format(snapshot.forecast.probability))}</strong>chance of passage<br>Saved sample · ${escape(snapshot.results.as_of)}</div></div>
+    <div class="recommendation-note"><strong>Why this strategy.</strong> ${escape(recommendation.why)}<br><strong>The tradeoff.</strong> ${escape(recommendation.tradeoff)}</div>
     ${strategyComparison(route)}${scenarioDetails(route)}
     <div class="detail-columns support-section"><section><h3>Reconsider the recommendation if…</h3>${list(recommendation.switch_if)}</section><section><h3>Assumptions that can change the answer</h3>${list(snapshot.brief.assumptions_to_verify)}</section></div>
     <section class="support-section"><h2>Next steps from the saved recommendation</h2><ol class="steps">${snapshot.brief.next_steps.map((step, index) => `<li><span class="step-number">${String(index + 1).padStart(2, "0")}</span><span>${escape(step.step)}</span><span class="step-owner">${escape(step.who)}<span>${escape(step.by_when)}</span></span></li>`).join("")}</ol></section>

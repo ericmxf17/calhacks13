@@ -42,7 +42,7 @@ button, select { color: var(--ink); }
 .prototype-bar { border-block: 1px solid var(--line); padding: 10px max(24px, calc((100vw - 1160px) / 2)); display: flex; justify-content: space-between; align-items: center; gap: 18px; font-size: 14px; color: var(--secondary); }
 .prototype-bar > span { white-space: nowrap; }
 .prototype-dot { display: inline-block; width: 6px; height: 6px; margin-right: 6px; background: #6a8451; border-radius: 50%; }
-.prototype-caption { color: #7b8174; margin-left: 8px; }
+.prototype-caption { color: var(--secondary); margin-left: 8px; }
 .layout-switch { display: inline-flex; padding: 3px; background: #eeeeE7; border-radius: 6px; gap: 3px; }
 .layout-switch button { border: 0; background: transparent; border-radius: 4px; padding: 7px 10px; font-size: 12px; color: var(--secondary); white-space: nowrap; }
 .layout-switch button span { margin-left: 5px; font-weight: 600; }
@@ -99,6 +99,8 @@ h1 { font: 500 clamp(44px, 5vw, 66px)/1.06 Georgia, "Times New Roman", serif; le
 .primary-link:hover { background: #e6f4cc; }
 .decision-first .verdict { margin: 0 0 34px; }
 .overview-note { margin: 20px 0 0; color: var(--secondary); font-size: 12px; line-height: 1.6; }
+.finding-sources { border: 0; padding-bottom: 0; }
+.finding-sources summary { color: var(--secondary); font-size: 12px; font-weight: 400; }
 .site-footer { max-width: 1328px; padding: 24px 0; margin: 0 56px; border-top: 1px solid var(--line); color: var(--secondary); font-size: 12px; display: flex; justify-content: space-between; gap: 20px; }
 .loading, .error-state { padding: 80px 0; color: var(--secondary); }
 .error-state h1 { font-size: 38px; color: var(--ink); }
@@ -121,7 +123,7 @@ h1 { font: 500 clamp(44px, 5vw, 66px)/1.06 Georgia, "Times New Roman", serif; le
 .comparison tbody tr.selected { background: #edf2e5; }
 .strategy-choice { text-decoration: none; display: block; line-height: 1.6; }
 .strategy-choice:hover { color: var(--green); text-decoration: underline; }
-.recommended-tag { display: inline-block; font-size: 11px; color: var(--green); margin-left: 7px; font-weight: 500; }
+.recommended-tag { display: inline-block; font-size: 12px; color: var(--green); margin-left: 7px; font-weight: 500; }
 .readiness { font-size: 12px; display: inline-flex; align-items: center; gap: 5px; }
 .readiness::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 .ready { color: var(--green); }
@@ -158,7 +160,7 @@ h1 { font: 500 clamp(44px, 5vw, 66px)/1.06 Georgia, "Times New Roman", serif; le
 .support-section { border-top: 1px solid var(--line); margin-top: 36px; padding-top: 26px; }
 .steps { margin: 0; padding: 0; list-style: none; }
 .steps li { display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.65; }
-.step-number { color: #7b8b6c; font-size: 14px; padding-top: 2px; }
+.step-number { color: var(--secondary); font-size: 14px; padding-top: 2px; }
 .step-owner { color: var(--secondary); font-size: 12px; text-align: right; }
 .step-owner span { display: block; }
 .disclosures { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 32px; }
@@ -189,7 +191,7 @@ details .compact-list { margin-top: 18px; }
   .masthead-divider, .workspace-name { display: none; }
   .company-chip { font-size: 14px; }
   .prototype-bar { padding: 9px 20px; gap: 8px; font-size: 12px; }
-  .layout-switch button { padding: 7px; font-size: 11px; }
+  .layout-switch button { padding: 7px; font-size: 12px; }
   .layout-switch button span { margin-left: 3px; }
   main { width: calc(100% - 40px); padding: 28px 0 36px; }
   .breadcrumb { margin-bottom: 26px; font-size: 12px; }
