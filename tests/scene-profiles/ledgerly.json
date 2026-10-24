@@ -1,0 +1,21 @@
+{
+  "profile": {
+    "company": "Ledgerly",
+    "website": "https://ledgerly.example/",
+    "offering": "Bookkeeping software for freelancers and tiny agencies, with an optional monthly close done by our three-person team",
+    "channels": "Self-serve signups on our website, an accountant referral program, and app marketplace listings",
+    "products": [
+      "Ledgerly Solo plan",
+      "Ledgerly Team plan",
+      "Monthly close service",
+      "Year-end tax pack"
+    ],
+    "parts": [],
+    "suppliers": [],
+    "supplier_data": "demo"
+  },
+  "expect": {
+    "archetype": "studio",
+    "max_rooms": 4
+  }
+}

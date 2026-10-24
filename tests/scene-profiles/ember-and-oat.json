@@ -1,0 +1,36 @@
+{
+  "profile": {
+    "company": "Ember & Oat",
+    "website": "https://emberandoat.example/",
+    "offering": "Neighborhood bakery café serving sourdough, pastries and coffee at our counter and patio, plus wholesale bread for local restaurants and grocers",
+    "channels": "Walk-in counter and patio seating, online pre-orders for pickup, and weekly wholesale deliveries",
+    "products": [
+      "Country sourdough loaf",
+      "Morning bun",
+      "Almond croissant",
+      "Seasonal fruit galette",
+      "Drip coffee",
+      "Oat milk latte",
+      "Wholesale bread standing order"
+    ],
+    "parts": [
+      "Organic bread flour",
+      "Cultured butter",
+      "Coffee beans",
+      "Oat milk",
+      "Seasonal fruit",
+      "Compostable cups and bags"
+    ],
+    "suppliers": [
+      "Brightfield Mill",
+      "Tule Creek Dairy",
+      "Hollow Pine Roasters",
+      "Ochre Valley Produce",
+      "Leafline Packaging"
+    ],
+    "supplier_data": "uploaded"
+  },
+  "expect": {
+    "archetype": "cafe"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "company": "Harbor Goods",
+    "website": "https://harborgoods.example/",
+    "offering": "Reusable kitchenware and thoughtful home storage",
+    "channels": "Online shop and two neighborhood stores",
+    "products": [
+      "Glass storage set",
+      "Reusable kitchen wrap"
+    ],
+    "parts": [
+      "Glass storage set",
+      "Shipping box"
+    ],
+    "suppliers": [
+      "Clear Coast",
+      "Paper Pier"
+    ],
+    "supplier_data": "demo"
+  },
+  "expect": {
+    "archetype": "storefront"
+  }
+}

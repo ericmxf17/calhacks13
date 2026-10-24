@@ -1,0 +1,34 @@
+{
+  "profile": {
+    "company": "Northline Fastener Supply",
+    "website": "https://northlinefasteners.example/",
+    "offering": "Wholesale distributor of industrial bolts, screws, nuts and anchors for contractors and factories, shipped next day from our Reno warehouse",
+    "channels": "Field sales reps, a business-to-business online catalog, and phone orders",
+    "products": [
+      "Stainless steel hex bolts",
+      "Zinc-plated machine screws",
+      "Nylon-insert lock nuts",
+      "Concrete wedge anchors",
+      "Threaded rod",
+      "Custom kitting and bin stocking"
+    ],
+    "parts": [
+      "Stainless steel hex bolts",
+      "Zinc-plated machine screws",
+      "Nylon-insert lock nuts",
+      "Concrete wedge anchors",
+      "Threaded rod",
+      "Bins and labels"
+    ],
+    "suppliers": [
+      "Great Lakes Bolt Works",
+      "Taizhou Harvest Fasteners",
+      "Ironbridge Anchor Co.",
+      "Copperline Packaging"
+    ],
+    "supplier_data": "uploaded"
+  },
+  "expect": {
+    "archetype": "warehouse"
+  }
+}

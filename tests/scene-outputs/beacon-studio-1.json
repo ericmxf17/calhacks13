@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "archetype": "studio",
+  "palette": {
+    "body": "#c9b8e8",
+    "trim": "#f4f0fa",
+    "accent": "#5b3fa8",
+    "roof": "#2f2a45"
+  },
+  "sign": {
+    "background": "#1f3b63",
+    "color": "#ffffff",
+    "tagline": "Identity, web, and story"
+  },
+  "ground": "plaza",
+  "roof_props": ["rooftop_garden", "solar_panels"],
+  "ground_props": ["planters", "benches", "bike_rack", "street_lamps"],
+  "rooms": [
+    {
+      "id": "finance",
+      "name": "Finance",
+      "short_name": "Finance",
+      "kind": "finance",
+      "furniture": "desk",
+      "color": "#2f6fdb",
+      "description": "Invoices, project margin and cash runway for the retainer and project work the studio bills for.",
+      "tracks": ["Revenue by service line", "Cash flow", "Project margin"]
+    },
+    {
+      "id": "clients",
+      "name": "Clients & Referrals",
+      "short_name": "Clients",
+      "kind": "sales",
+      "furniture": "counter",
+      "color": "#e0603a",
+      "description": "Where new inquiries and referral partnerships turn into signed brand and website projects.",
+      "tracks": ["New inquiries", "Referral partners", "Proposal win rate"]
+    },
+    {
+      "id": "offerings",
+      "name": "Brand & Web Offerings",
+      "short_name": "Offerings",
+      "kind": "product",
+      "furniture": "shelves",
+      "color": "#3f8f7a",
+      "description": "The two things the studio sells, shelved side by side so the owner can see which one carries the year.",
+      "tracks": ["Brand identity package", "Website project", "Best seller"]
+    },
+    {
+      "id": "studio-brand",
+      "name": "Studio Brand",
+      "short_name": "Brand",
+      "kind": "marketing",
+      "furniture": "meeting_table",
+      "color": "#b5482b",
+      "description": "The studio's own voice and portfolio presence, kept in shape so referrals have somewhere to land.",
+      "tracks": ["Portfolio highlights", "Campaign reach", "Social following"]
+    }
+  ],
+  "reasoning": "A brand and web design practice sells thinking rather than stock, so a studio building fits. Its rooms follow the week the owner actually has: invoicing, referrals, the two offerings, and the studio's own brand."
+}

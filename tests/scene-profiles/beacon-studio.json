@@ -1,0 +1,19 @@
+{
+  "profile": {
+    "company": "Beacon Studio",
+    "website": "https://beaconstudio.example/",
+    "offering": "Brand identity and website design services",
+    "channels": "Client referrals, partnerships, and inbound inquiries",
+    "products": [
+      "Brand identity package",
+      "Website project"
+    ],
+    "parts": [],
+    "suppliers": [],
+    "supplier_data": "demo"
+  },
+  "expect": {
+    "archetype": "studio",
+    "max_rooms": 4
+  }
+}

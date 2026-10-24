@@ -1,0 +1,27 @@
+{
+  "profile": {
+    "company": "Pinecrest Tailoring",
+    "website": "https://pinecresttailoring.example.com/",
+    "offering": "Alterations, hemming and custom-fit suits from a small neighborhood tailor shop",
+    "channels": "Walk-in customers and appointments booked by phone",
+    "products": [
+      "Hemming",
+      "Suit alterations",
+      "Custom-fit suit",
+      "Wedding dress fitting"
+    ],
+    "parts": [
+      "Thread",
+      "Lining fabric",
+      "Buttons and zippers"
+    ],
+    "suppliers": [
+      "Wexford Notions",
+      "Bellamy Textiles"
+    ],
+    "supplier_data": "uploaded"
+  },
+  "expect": {
+    "archetype": null
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "profile": {
+    "company": "VoltRide",
+    "website": "https://voltride.example/",
+    "offering": "City and cargo e-bikes, plus replacement batteries, assembled in Oakland",
+    "channels": "Direct online (60% of units) and 85 independent bike shops (40%)",
+    "products": [
+      "VoltRide City",
+      "VoltRide Cargo",
+      "Replacement battery pack"
+    ],
+    "parts": [
+      "battery pack, standard 672Wh",
+      "battery pack, large 960Wh",
+      "hub motor",
+      "mid-drive motor",
+      "frame",
+      "controller and display",
+      "drivetrain and brakes",
+      "wheels and tires",
+      "lights, wiring, fenders",
+      "lights, wiring, racks"
+    ],
+    "suppliers": [
+      "Shenzhen PowerCell",
+      "Hanbit Energy",
+      "Dongguan SafeCell",
+      "Changzhou Drive Systems",
+      "Taichung Alloy Works",
+      "Shenzhen Logic Electronics",
+      "Kaneda Components",
+      "Saigon Wheelworks",
+      "Ningbo Parts Co."
+    ],
+    "supplier_data": "demo"
+  },
+  "expect": {
+    "archetype": "workshop"
+  }
+}

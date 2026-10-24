@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "archetype": "storefront",
+  "palette": {
+    "body": "#8fc9b5",
+    "trim": "#f2faf6",
+    "accent": "#e0603a",
+    "roof": "#2f5d50"
+  },
+  "sign": {
+    "background": "#1f3b63",
+    "color": "#ffffff",
+    "tagline": "Kitchenware for everyday"
+  },
+  "ground": "plaza",
+  "roof_props": ["solar_panels", "vents"],
+  "ground_props": ["planters", "benches", "delivery_van"],
+  "rooms": [
+    {
+      "id": "finance",
+      "name": "Revenue & Margins",
+      "short_name": "Finance",
+      "kind": "finance",
+      "furniture": "desk",
+      "color": "#4a7c6f",
+      "description": "Where the owner reads revenue across the online shop and the neighborhood stores, plus which kitchenware item carries the month.",
+      "tracks": ["Revenue by product", "Best seller", "Store versus online mix"]
+    },
+    {
+      "id": "sales",
+      "name": "Shop Floor & Online",
+      "short_name": "Sales",
+      "kind": "sales",
+      "furniture": "counter",
+      "color": "#d98b5f",
+      "description": "The counter view of units moving through the storefronts and the web shop, split by channel so staffing follows demand.",
+      "tracks": ["Units sold by channel", "Online versus in store", "Channel performance"]
+    },
+    {
+      "id": "product",
+      "name": "Kitchenware Line",
+      "short_name": "Products",
+      "kind": "product",
+      "furniture": "shelves",
+      "color": "#7fa8c9",
+      "description": "The shelf of reusable kitchenware and home storage pieces the shop resells, with the range kept short and easy to explain.",
+      "tracks": ["Product list", "Range breadth", "Which lines sell through"]
+    },
+    {
+      "id": "supply",
+      "name": "Parts & Packaging",
+      "short_name": "Supply",
+      "kind": "supply",
+      "furniture": "crates",
+      "color": "#b9a06b",
+      "description": "Incoming glass storage sets and shipping boxes tracked by supplier, so restocking happens before the shelf runs thin.",
+      "tracks": ["Suppliers and parts", "Restock timing", "Packaging cover"]
+    },
+    {
+      "id": "operations",
+      "name": "Packing & Shipping",
+      "short_name": "Packing",
+      "kind": "operations",
+      "furniture": "workbench",
+      "color": "#8a7fa8",
+      "description": "The bench where online orders are wrapped, boxed and handed to carriers, plus the pace the shop packs at each week.",
+      "tracks": ["Orders packed monthly", "Shipping turnaround", "Waste per parcel"]
+    }
+  ],
+  "reasoning": "Harbor Goods resells finished kitchenware and storage rather than making it, so a neighborhood storefront fits better than a workshop. The rooms cover the money, both sales channels, the shelf itself, restocking and packing."
+}

@@ -1,0 +1,39 @@
+{
+  "version": "number, always 1",
+
+  "archetype": "one of: storefront | workshop | cafe | studio | warehouse",
+
+  "palette": {
+    "body": "#rrggbb, main wall color, HSL lightness 0.45 to 0.85",
+    "trim": "#rrggbb, window frames and edges, HSL lightness 0.80 to 0.97 (almost white)",
+    "accent": "#rrggbb, doors, awnings and details, usually the main brand color, HSL lightness 0.10 to 0.75",
+    "roof": "#rrggbb, HSL lightness 0.20 to 0.60"
+  },
+
+  "sign": {
+    "background": "#rrggbb",
+    "color": "#rrggbb, the text color, contrast ratio with background 4.5 or higher",
+    "tagline": "string, optional, 28 characters or fewer. Leave this key out if nothing fits"
+  },
+
+  "ground": "one of: lawn | plaza | gravel",
+
+  "roof_props": ["0 to 3 of: solar_panels | water_tower | rooftop_garden | vents | antenna | chimney, no repeats"],
+
+  "ground_props": ["0 to 4 of: planters | benches | bike_rack | delivery_van | pallets | cafe_tables | street_lamps, no repeats"],
+
+  "rooms": [
+    {
+      "id": "string, lowercase letters, digits and hyphens, starts with a letter, 24 characters or fewer, unique",
+      "name": "string, 26 characters or fewer",
+      "short_name": "string, 14 characters or fewer, shown on the 3D label",
+      "kind": "one of: finance | sales | marketing | supply | product | operations | people | custom. Only custom may appear twice",
+      "furniture": "one of: desk | shelves | workbench | counter | meeting_table | drafting_table | lounge | crates",
+      "color": "#rrggbb",
+      "description": "string, 180 characters or fewer, what the owner sees and decides in this room",
+      "tracks": ["1 to 3 strings, 40 characters or fewer each, what this room keeps track of"]
+    }
+  ],
+
+  "reasoning": "string, 280 characters or fewer, why this building and these rooms fit the company"
+}

@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "archetype": "workshop",
+  "palette": {
+    "body": "#9fc4b0",
+    "trim": "#f4f7f2",
+    "accent": "#2f6fdb",
+    "roof": "#3b4a4f"
+  },
+  "sign": {
+    "background": "#1f3b63",
+    "color": "#ffffff",
+    "tagline": "E-bikes built in Oakland"
+  },
+  "ground": "gravel",
+  "roof_props": ["solar_panels", "vents"],
+  "ground_props": ["bike_rack", "delivery_van", "pallets", "planters"],
+  "rooms": [
+    {
+      "id": "finance",
+      "name": "Finance",
+      "short_name": "Finance",
+      "kind": "finance",
+      "furniture": "desk",
+      "color": "#4f7cac",
+      "description": "See the revenue the bike line brings in, how many products the shop sells, and which model carries the year.",
+      "tracks": ["Revenue by bike model", "Best seller", "Product count"]
+    },
+    {
+      "id": "supply",
+      "name": "Parts & suppliers",
+      "short_name": "Parts",
+      "kind": "supply",
+      "furniture": "crates",
+      "color": "#c9772f",
+      "description": "Watch which suppliers ship which parts, from battery packs and motors to frames, and spot parts that ride on one supplier.",
+      "tracks": ["Parts per supplier", "Battery suppliers", "Single-source parts"]
+    },
+    {
+      "id": "assembly",
+      "name": "Assembly floor",
+      "short_name": "Assembly",
+      "kind": "operations",
+      "furniture": "workbench",
+      "color": "#6b8f47",
+      "description": "Follow how many city and cargo bikes the Oakland floor turns out each month and where output slows down.",
+      "tracks": ["Monthly assembly output", "Bikes built by model"]
+    },
+    {
+      "id": "dealers",
+      "name": "Dealers & online",
+      "short_name": "Dealers",
+      "kind": "sales",
+      "furniture": "counter",
+      "color": "#b04a5a",
+      "description": "Compare bikes sold direct online with bikes sold through the independent bike shops, and see which channel pulls ahead.",
+      "tracks": ["Units by channel", "Shop orders", "Direct online orders"]
+    },
+    {
+      "id": "models",
+      "name": "Bike models",
+      "short_name": "Models",
+      "kind": "product",
+      "furniture": "shelves",
+      "color": "#7a5ea8",
+      "description": "Keep the lineup in view: the city bike, the cargo bike and the replacement battery pack riders come back for.",
+      "tracks": ["City and cargo models", "Replacement battery pack", "Lineup changes"]
+    },
+    {
+      "id": "team",
+      "name": "Team",
+      "short_name": "Team",
+      "kind": "people",
+      "furniture": "lounge",
+      "color": "#4a9e93",
+      "description": "Track the people who build and ship the bikes, and the roles still open on the floor and in support.",
+      "tracks": ["Open roles", "Assembly crew", "Hiring pipeline"]
+    }
+  ],
+  "reasoning": "VoltRide assembles city and cargo e-bikes in Oakland, so it gets a workshop: rooms for parts and suppliers, the assembly floor, the model line, dealer and online sales, finance, and the team."
+}
