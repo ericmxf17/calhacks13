@@ -177,20 +177,30 @@ existing bearer-protected `/api/backend` API for trusted server callers.
 
 | GET path | Result |
 |---|---|
+| `/api/agent-runs/agents` | Agent roles and verified connection state. Reads one history page per configured agent; never starts runs. |
 | `/api/agent-runs/{role}` | Paginated history and connection state. |
 | `/api/agent-runs/{role}/{runId}` | Selected run information and artifact metadata. |
 | `/api/agent-runs/{role}/{runId}/artifacts/{index}` | Authenticated file download. |
 | Same artifact path with `?preview=1` | Safe text preview, limited to 256 KiB. |
 
 The browser receives no CREAO key, backend bearer token, or signed storage URL.
+The grid and server share `web/src/lib/agent-catalog.ts`, including Brief Writer.
+Each card shows `Connected` only after CREAO accepts a read with its own scoped
+key. Missing credentials show `Needs setup`; rejected keys or service failures
+show `Connection unavailable`. Refresh connections repeats these reads. An
+agent can be connected with no API runs yet. Opening it shows an empty history;
+older website chat sessions are not imported by this API.
+
 The server resolves artifacts from the selected authenticated run. It sends the
 key only to CREAO and follows the verified storage redirect without credentials.
 Downloads use attachment disposition. Markdown, JSON, and text previews render
 as escaped text. Generated HTML is not executed inside the application.
 
-Verified with existing Test Agent runs only. The newer run returned no files;
-the older run returned a Markdown acknowledgement. Its preview and download
-both succeeded. Cross-site and non-local Host requests returned HTTP 403.
+Verified scoped history reads for Bill Analyst, Bill Researcher, Bill Impact
+Planner, Brief Writer, and Test Agent. The four production agents returned empty
+API histories. Test Agent returned two existing runs; the older run returned a
+Markdown acknowledgement. Its preview and download both succeeded.
+Cross-site and non-local Host requests returned HTTP 403.
 The popup was checked on desktop and phone, including Escape, focus return,
 and the unconfigured-agent state. No new CREAO executions were needed.
 

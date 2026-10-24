@@ -1,4 +1,8 @@
-export type BrowserAgentRole = 'bill-analyst' | 'researcher' | 'impact-planner' | 'test-agent'
+import type { AgentRole } from './agent-catalog'
+
+export type BrowserAgentRole = AgentRole
+export type AgentConnection = 'connected' | 'not_configured' | 'unavailable'
+export type AgentConnectionsResponse = { agents: { role: AgentRole; connection: AgentConnection }[] }
 
 export type AgentArtifact = {
   index: number

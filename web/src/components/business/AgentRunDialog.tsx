@@ -244,7 +244,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
       <AgentAvatar stillSrc={agent.avatar.still} animatedSrc={agent.avatar.animated} reducedMotion={reducedMotion} />
       <div className="agent-run-identity"><h2>{agent.name}</h2><p>Run history, output and artifacts</p></div>
       <span className={`agent-run-connection ${connection === 'connected' ? 'is-connected' : ''}`}>
-        {agent.role !== null && <span aria-hidden="true" />}{agent.role === null ? 'Placeholder' : connection === 'connected' ? 'Connected' : connection === 'not_configured' ? 'Not connected' : 'Checking connection'}
+        {agent.role !== null && <span aria-hidden="true" />}{agent.role === null ? 'Placeholder' : connection === 'connected' ? 'Connected' : connection === 'not_configured' ? 'Not connected' : listError ? 'Connection unavailable' : 'Checking connection'}
       </span>
       <button type="button" className="agent-run-close" aria-label="Close run history" onClick={onClose}>×</button>
     </header>
@@ -289,7 +289,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
         {listError && <p className="agent-run-error" role="alert">{listError} {runs && 'Showing the last loaded history.'}</p>}
         {connection === 'not_configured' && <section className="agent-run-message"><h3>Agent not connected</h3><p>{agent.name} is not configured for run history yet.</p></section>}
         {agent.role && connection === null && !listError && <p className="agent-run-muted">Checking the agent connection…</p>}
-        {agent.role && connection === 'connected' && runs?.length === 0 && !listLoading && <section className="agent-run-message"><h3>No runs yet</h3><p>Completed and in-progress runs will appear here.</p></section>}
+        {agent.role && connection === 'connected' && runs?.length === 0 && !listLoading && <section className="agent-run-message"><h3>No API runs on this page</h3><p>Runs started through the CREAO API will appear here, along with their output and artifacts. Conversations started on the CREAO website are not included.</p></section>}
         {detailError && <p className="agent-run-error" role="alert">{detailError} {visibleDetail && 'Showing the last loaded details.'}</p>}
 
         {visibleDetail && <>

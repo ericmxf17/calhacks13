@@ -1,10 +1,9 @@
 import 'server-only'
 
 import { BackendError } from './backend'
-import { agentFor, getRun, listRuns, ProviderError, type Agent, type Run } from './creao'
-import type { AgentRunDetail, AgentRunsResponse, ArtifactPreview } from './agent-run-types'
+import { agentFor, configuredAgents, getRun, listRuns, ProviderError, type Agent, type Run } from './creao'
+import type { AgentConnectionsResponse, AgentRunDetail, AgentRunsResponse, ArtifactPreview } from './agent-run-types'
 
-const browserRoles = new Set(['bill-analyst', 'researcher', 'impact-planner', 'test-agent'])
 const textTypes = new Set(['text/plain', 'text/markdown', 'text/csv', 'application/json', 'text/tab-separated-values'])
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const storageHost = 'storage-bucket-creao-user-upload-production.s3.us-west-2.amazonaws.com'
@@ -120,7 +119,21 @@ async function download(agent: Agent, run: Run, index: number, preview: boolean)
 export async function readAgentRuns(request: Request, path: string[]): Promise<Response> {
   requireLocalAgentPreview(request)
   const [role, runId, section, index] = path
-  if (!browserRoles.has(role)) throw new BackendError(404, 'AGENT_NOT_FOUND', 'This agent is unavailable.')
+  if (path.length === 1 && role === 'agents') {
+    // Verify each configured key with a read. One agent's failure must not hide the others.
+    const agents = await Promise.all(configuredAgents().map(async agent => {
+      if (agent.readiness !== 'configured') return { role: agent.role, connection: 'not_configured' as const }
+      try {
+        await listRuns(agent.role, 1, 0)
+        return { role: agent.role, connection: 'connected' as const }
+      } catch {
+        return { role: agent.role, connection: 'unavailable' as const }
+      }
+    }))
+    const body: AgentConnectionsResponse = { agents }
+    return Response.json(body, { headers: privateHeaders })
+  }
+  if (!configuredAgents().some(agent => agent.role === role)) throw new BackendError(404, 'AGENT_NOT_FOUND', 'This agent is unavailable.')
   const agent = agentFor(role, false)
   const url = new URL(request.url)
   if (path.length === 1) {

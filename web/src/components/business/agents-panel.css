@@ -19,6 +19,11 @@
 .agents-panel-heading h1 { margin: 5px 0 3px; font-size: clamp(30px, 4vw, 42px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.08; }
 .agents-panel-heading p { margin: 0; color: #526b82; font-size: 14px; }
 .agents-panel-heading h1:focus { outline: none; }
+.agents-connection-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.agents-panel-heading .agents-connection-toolbar p { font-size: 12px; }
+.agents-connection-toolbar button { flex-shrink: 0; padding: 7px 10px; border: 1px solid #294b70; border-radius: 5px; color: #294b70; background: #fffdf4; font: inherit; font-size: 12px; cursor: pointer; }
+.agents-connection-toolbar button:disabled { opacity: .6; cursor: wait; }
+.agents-connection-toolbar button:focus-visible { outline: 3px solid #2468d2; outline-offset: 3px; }
 
 .agents-grid {
   display: grid;
@@ -39,7 +44,11 @@
   animation-delay: calc(var(--card-index, 0) * 45ms);
 }
 
-.agent-card-topline { display: flex; justify-content: flex-end; min-height: 22px; }
+.agent-card-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 22px; }
+.agent-card-topline > .agent-kind:only-child { margin-left: auto; }
+.agent-connection { color: #75540b; font-size: 10px; font-weight: 700; }
+.agent-connection[data-connection=connected] { color: #26734f; }
+.agent-connection[data-connection=unavailable] { color: #a33c35; }
 .agent-kind { padding: 4px 8px; border: 1px solid #bdd7e7; border-radius: 4px; background: #eef8ff; color: #345b85; font-size: 10px; font-weight: 800; letter-spacing: .02em; }
 .agent-kind-placeholder { border-color: #e0af27; background: #fff2bd; color: #75540b; }
 .agent-avatar { display: block; width: 72px; height: 72px; margin: 1px 0 10px; object-fit: contain; }
@@ -65,6 +74,7 @@
 @media (max-width: 599px) {
   .agents-panel { inset: 126px 12px 94px; padding: 2px 5px 22px; }
   .agents-panel-heading { margin-bottom: 16px; }
+  .agents-connection-toolbar { align-items: flex-start; flex-direction: column; gap: 8px; }
   .agents-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .agent-card { min-height: 0; padding: 15px 16px 17px; }
 }
