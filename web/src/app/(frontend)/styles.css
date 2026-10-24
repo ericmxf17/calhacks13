@@ -1,4 +1,7 @@
 @import "../../components/business/scene.css";
+@import "../../components/business/consul-theme.css";
+
+/* Shared Consul styling for account setup, demo, and interactive room navigation. */
 
 .figma-custom-code-fragment {
   display: contents;

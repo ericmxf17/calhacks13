@@ -38,3 +38,27 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 @media(min-width:1101px) and (max-width:1599px){.intro{top:14%}.intro h1{font-size:35px}}
 @media(max-width:760px){.established{display:none}.room-hotspot.label-left{transform:translateX(6%)}.room-hotspot.label-right{transform:translateX(-6%)}}
+
+/* Desktop detail panels follow their window; the building occupies the other side. */
+@media(min-width:761px){
+  .world[data-panel-side=left] .department-view{left:0;right:auto;padding:20px 3% 25px 5%;background:linear-gradient(270deg,#eeede500,#eeede5ee 8%,#eeede5 35%);animation-name:room-enter-left}
+  .world[data-panel-side=left] .back-button{left:auto;right:43px}
+  .inside-room .flat-scene{transform:translateX(-25%);transition:transform .65s ease}
+  .inside-room[data-panel-side=left] .flat-scene{transform:translateX(25%)}
+}
+@media(min-width:761px) and (max-width:1100px){.world[data-panel-side=left] .department-view{padding-left:4%;padding-right:2%}}
+@media(min-width:1600px){.world[data-panel-side=left] .department-view{padding-left:8%}}
+@keyframes room-enter-left{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+
+/* Keep room navigation discoverable without hover or scrolling to the footer. */
+.room-hotspot.room-hotspot-compact{min-width:130px;padding:9px 11px;transform:none;background:#fbfaf4;border-color:#cbd1bf;box-shadow:0 3px 14px #34413818}
+.room-hotspot.room-hotspot-compact small{font-size:7px;color:#64715b;letter-spacing:1px}
+.room-hotspot.room-hotspot-compact strong{font-size:11px}
+.room-switcher{display:block;margin-top:18px;padding:0 0 16px;border-top:0;border-bottom:1px solid var(--color-line)}
+.room-switcher-label{display:block;margin-bottom:9px;font-size:10px;color:#64715b}
+.room-switcher>div{display:flex;flex-wrap:wrap;gap:6px}
+.room-switcher button{display:inline-flex;align-items:center;gap:7px;border:1px solid #c4cbb9;background:#f7f7ef;color:#526148;font-size:10px;padding:8px 11px}
+.room-switcher button svg{width:12px;height:12px}
+.room-switcher button[aria-pressed=true]{background:#52664c;border-color:#52664c;color:#fff}
+@media(pointer:coarse){.room-switcher button,.room-hotspot.room-hotspot-compact{min-height:44px}}
+@media(max-width:760px){.inside-room .room-hotspot-compact{display:none}}
