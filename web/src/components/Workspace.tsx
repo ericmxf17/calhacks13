@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent, type InputHTMLAttributes } from 'react'
 import dynamic from 'next/dynamic'
-import type { BusinessInput } from '@/lib/business-input'
+import { validateBusiness, type BusinessInput } from '@/lib/business-input'
 
 const Scene = dynamic(() => import('./business/App'), {
   ssr: false,
@@ -23,6 +23,17 @@ const fieldClass =
   'w-full rounded-lg border border-line bg-white/40 px-4 py-3 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/10'
 const primary =
   'flex w-full items-center justify-center gap-3 rounded-lg bg-ink px-5 py-4 text-sm text-paper transition hover:bg-accent disabled:cursor-wait disabled:opacity-50'
+
+type WorkspaceView = 'account' | 'demo'
+const demoBusiness: BusinessInput = {
+  company: 'Consul Goods',
+  website: 'https://consulgoods.example',
+  offering: 'Everyday home goods and accessories',
+  channels: 'Online and retail stores',
+  demo: true,
+  products: [{ name: 'Canvas tote', price: 48, units: 2400 }],
+  parts: [],
+}
 
 function Field({ label, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
@@ -48,37 +59,70 @@ async function request(body?: unknown) {
   return data
 }
 
-export default function Workspace() {
-  const [loading, setLoading] = useState(true)
+export default function Workspace({ initialView = 'account' }: { initialView?: WorkspaceView }) {
+  const [view, setView] = useState<WorkspaceView>(initialView)
+  const [loading, setLoading] = useState(initialView === 'account')
   const [signedIn, setSignedIn] = useState(false)
   const [complete, setComplete] = useState(false)
   const [mode, setMode] = useState<'signup' | 'login'>('signup')
   const [step, setStep] = useState(0)
-  const [business, setBusiness] = useState<BusinessInput>(empty)
+  const [business, setBusiness] = useState<BusinessInput>(initialView === 'demo' ? demoBusiness : empty)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [fileName, setFileName] = useState('')
   const [editing, setEditing] = useState(false)
   const [parsing, setParsing] = useState(false)
+  const hasWorkspaceAccess = signedIn || view === 'demo'
   useEffect(() => {
+    if (view === 'demo') return
+    let active = true
     request()
       .then((data) => {
+        if (!active) return
         setSignedIn(!!data.user)
         if (data.business?.company) {
           setBusiness(data.business)
           setComplete(true)
         }
       })
-      .catch(() => setError('We couldn’t connect to your workspace. Please try again.'))
-      .finally(() => setLoading(false))
-  }, [])
+      .catch(() => {
+        if (active) setError('We couldn’t connect to your workspace. Please try again.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+    return () => {
+      active = false
+    }
+  }, [view])
   const update = (key: keyof BusinessInput, value: unknown) =>
     setBusiness((b) => ({ ...b, [key]: value }))
+  function exitDemo() {
+    setBusiness(empty)
+    setStep(0)
+    setComplete(false)
+    setEditing(false)
+    setError('')
+    setFileName('')
+    setLoading(true)
+    setView('account')
+  }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (loading && view === 'account') return
     setError('')
-    if (signedIn && step < 2) {
+    if (hasWorkspaceAccess && step < 2) {
       setStep(step + 1)
+      return
+    }
+    if (view === 'demo') {
+      try {
+        setBusiness(validateBusiness(business))
+        setComplete(true)
+        setEditing(false)
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Please check your business details.')
+      }
       return
     }
     setBusy(true)
@@ -178,12 +222,6 @@ export default function Workspace() {
       setBusy(false)
     }
   }
-  if (loading)
-    return (
-      <div className="grid min-h-dvh place-items-center bg-paper font-display text-2xl text-ink">
-        A little closer to your business…
-      </div>
-    )
   if (complete && !editing)
     return (
       <>
@@ -198,7 +236,7 @@ export default function Workspace() {
           >
             Business settings
           </button>
-          <button disabled={busy} onClick={logout} className="hover:text-ink">
+          <button disabled={busy} onClick={view === 'demo' ? exitDemo : logout} className="hover:text-ink">
             Sign out
           </button>
         </div>
@@ -278,7 +316,7 @@ export default function Workspace() {
           className="self-center rounded-2xl border border-white/70 bg-white/30 p-6 shadow-sm md:p-9"
           aria-labelledby="setup-title"
         >
-          {signedIn && (
+          {hasWorkspaceAccess && (
             <ol className="mb-9 flex items-center gap-2" aria-label="Setup progress">
               {['Your business', 'Your products', 'Your suppliers'].map((name, i) => (
                 <li
@@ -297,17 +335,17 @@ export default function Workspace() {
             </ol>
           )}
           <p className="mb-3 text-[9px] tracking-[0.2em] text-muted">
-            {signedIn ? `STEP 0${step + 1} OF 03 · ABOUT TWO MINUTES` : 'YOUR OWN LITTLE WORLD'}
+            {hasWorkspaceAccess ? `STEP 0${step + 1} OF 03 · ABOUT TWO MINUTES` : 'YOUR OWN LITTLE WORLD'}
           </p>
           <h2 id="setup-title" className="font-display text-3xl leading-tight">
-            {signedIn
+            {hasWorkspaceAccess
               ? titles[step]
               : mode === 'signup'
                 ? 'Make yourself at home.'
                 : 'Welcome home.'}
           </h2>
           <p className="mb-7 mt-3 text-xs leading-6 text-muted">
-            {!signedIn
+            {!hasWorkspaceAccess
               ? 'One account. A whole new way to see your business.'
               : step === 0
                 ? 'Start with the basics. We’ll take it from here.'
@@ -315,8 +353,8 @@ export default function Workspace() {
                   ? 'Add your products. A rough annual estimate is just fine. Prices are in USD.'
                   : 'Bring your suppliers and parts together, or start exploring with demo data.'}
           </p>
-        <form key={signedIn ? `setup-${step}` : mode} onSubmit={submit} className="grid gap-5">
-            {!signedIn ? (
+        <form key={hasWorkspaceAccess ? `setup-${step}` : mode} onSubmit={submit} className="grid gap-5">
+            {!hasWorkspaceAccess ? (
               <>
                 <Field
                   label="Work email"
@@ -538,13 +576,14 @@ export default function Workspace() {
               className={primary}
               disabled={
                 busy ||
+                (loading && view === 'account' && !signedIn) ||
                 parsing ||
-                (signedIn && step === 2 && !business.demo && !business.parts.length)
+                (hasWorkspaceAccess && step === 2 && !business.demo && !business.parts.length)
               }
             >
-              {busy
+              {busy || (loading && view === 'account' && !signedIn)
                 ? 'Just a moment…'
-                : !signedIn
+                : !hasWorkspaceAccess
                   ? mode === 'signup'
                     ? 'Create your account'
                     : 'Sign in'
@@ -553,7 +592,7 @@ export default function Workspace() {
                     : 'Continue'}
               <span aria-hidden="true">→</span>
             </button>
-            {signedIn && (
+            {hasWorkspaceAccess && (
               <div className="flex justify-between text-xs text-muted">
                 {step > 0 ? (
                   <button
@@ -566,7 +605,7 @@ export default function Workspace() {
                     ← Back
                   </button>
                 ) : (
-                  <button type="button" onClick={logout}>
+                  <button type="button" onClick={view === 'demo' ? exitDemo : logout}>
                     Sign out
                   </button>
                 )}
@@ -579,7 +618,7 @@ export default function Workspace() {
               </div>
             )}
           </form>
-          {!signedIn && (
+          {!hasWorkspaceAccess && (
             <div className="demo-entry">
               <span>Just looking around?</span>
               <a href="/demo" className="demo-button">
@@ -588,7 +627,7 @@ export default function Workspace() {
               <small>No account needed · Illustrative business data</small>
             </div>
           )}
-          {!signedIn && (
+          {!hasWorkspaceAccess && (
             <p className="mt-6 text-center text-xs text-muted">
               {mode === 'signup' ? 'Already have a home here?' : 'New to Consul?'}{' '}
               <button
