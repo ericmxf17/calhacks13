@@ -117,6 +117,10 @@ export default function App({ company = 'Consul Goods', departments = defaultDep
     {!active && homeReady && <footer className="world-footer"><div className="coordinate"><span>01 — THE WHOLE PICTURE</span><small>{company} · Your business, connected</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">A little closer to everything.</span></footer>}
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
+      <Button id="nav-consul" className="bottom-navigation-item" aria-disabled="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
+        <span>Consul</span>
+      </Button>
       <Button className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => sceneView.view === 'home' ? close() : selectView('home')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>
         <span>Home</span>
