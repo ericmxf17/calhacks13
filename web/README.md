@@ -155,3 +155,24 @@ the application imports it for site metadata.
   error. Production output was not built.
 - Sign-up, sign-in, and saving business data remain unverified until the
   Figma backend is connected. No replacement database or authentication was added.
+
+## Profile scene rendering
+
+Start the development server, then run this command from `web` in a second terminal.
+
+```powershell
+node scripts/profile-browser.mjs --tag capture --repeat 5 --seconds 3 --trace --interactions --out "$env:TEMP/consul-performance"
+```
+
+The script uses an installed Chrome through the Chrome DevTools Protocol. It creates
+an isolated headless profile and removes that profile on exit. It records actual
+WebGL draw calls, React commits, layout reads, DOM mutations and animated SVG
+transforms. CPU profiles and timeline JSON files open in Chrome DevTools. Traced
+windows are marked separately because profiling adds overhead. Use untraced windows
+for comparisons. `--chrome` overrides the Chrome executable path. `--width` and
+`--height` select the viewport.
+
+The probe warms the scene before measuring Home idle, Agents idle and Agents pointer
+movement. `--interactions` also exercises camera reversals, room navigation, resize
+and reduced motion. These are development diagnostics, not production FPS or page
+load benchmarks. Chrome needs to render a real WebGL canvas for a valid capture.

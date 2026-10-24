@@ -7,6 +7,7 @@ import { type Department, type DepartmentId } from './departments'
 export type BusinessView = 'home' | 'agents'
 type Props = { company: string; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 const palette = { stone: '#ffb16d', trim: '#fff4d4', dark: '#253b64', gold: '#ffd447', glass: '#58cde3', wall: '#ef8259', floor: '#e48b58' }
+const settleEpsilon = 1e-4
 
 function Box({ at, size, color = palette.stone }: { at: [number, number, number]; size: [number, number, number]; color?: string }) {
   return <mesh position={at} castShadow receiveShadow><boxGeometry args={size}/><meshStandardMaterial color={color} roughness={0.84}/></mesh>
@@ -54,9 +55,18 @@ function Furnishing({ color, variant = 0 }: { color: string; variant?: number })
 function DepartmentRoom({ department, active, open, index, portal }: { department: Department; active: DepartmentId | null; open: Props['open']; index: number; portal: RefObject<HTMLElement> }) {
   const [hovered, setHovered] = useState(false)
   const shutters = useRef<Group>(null)
+  const continuing = useRef(false)
+  const invalidate = useThree(state => state.invalidate)
   const selected = active === department.id
   useFrame((_, dt) => {
-    if (shutters.current) shutters.current.position.x = MathUtils.damp(shutters.current.position.x, selected ? -1.35 : 0, 6, dt)
+    if (!shutters.current) return
+    const destination = selected ? -1.35 : 0
+    // The first frame after idle includes the entire dormant interval in dt.
+    const delta = continuing.current ? dt : 1 / 60
+    const next = MathUtils.damp(shutters.current.position.x, destination, 6, delta)
+    continuing.current = Math.abs(next - destination) > settleEpsilon
+    shutters.current.position.x = continuing.current ? next : destination
+    if (continuing.current) invalidate()
   })
   const [x, y, z] = department.position
   return <group position={[x, y, z]}>
@@ -120,7 +130,8 @@ function Storefront({ company, departments, active, open, portal }: Pick<Props, 
 }
 
 function CameraRig({ departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
-  const { camera, size } = useThree()
+  const { camera, size, gl, invalidate } = useThree()
+  const continuing = useRef(false)
   const target = useRef(new Vector3(0, 3.5, 0))
   const position = useRef(new Vector3(8, 6.5, 16))
   const focus = useRef(new Vector3())
@@ -132,12 +143,27 @@ function CameraRig({ departments, active, pointer, reducedMotion, view: requeste
   const initialHomeReported = useRef(false)
   const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; zoom: number; elapsed: number; complete: boolean } | null>(null)
   useEffect(() => {
+    if (requestedView !== 'home' || active || reducedMotion) return
+    // App updates the pointer ref at the React root before this window listener.
+    const move = (event: PointerEvent) => { if (event.pointerType !== 'touch') invalidate() }
+    const world = gl.domElement.closest('.world')
+    const leave = () => invalidate()
+    window.addEventListener('pointermove', move, { passive: true })
+    world?.addEventListener('pointerleave', leave)
+    return () => {
+      window.removeEventListener('pointermove', move)
+      world?.removeEventListener('pointerleave', leave)
+    }
+  }, [requestedView, active, reducedMotion, gl, invalidate])
+  useEffect(() => {
     const transition = swing.current
     if (viewSettled || currentView.current !== requestedView || (transition && !transition.complete)) return
     interactive.current = requestedView === 'home'
     settledCallback.current(requestedView)
   }, [requestedView, viewSettled, onViewSettled])
   useFrame((_, dt) => {
+    const delta = continuing.current ? dt : 1 / 60
+    continuing.current = false
     const orthographic = camera as OrthographicCamera
     if (currentView.current !== requestedView) {
       interactive.current = false
@@ -149,14 +175,16 @@ function CameraRig({ departments, active, pointer, reducedMotion, view: requeste
       swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), zoom: orthographic.zoom, elapsed: 0, complete: false }
     }
     const transition = swing.current
-    if (transition && (!transition.complete || requestedView === 'agents')) {
-      transition.elapsed += dt
-      const progress = reducedMotion || transition.complete ? 1 : Math.min(transition.elapsed / .9, 1)
+    if (transition && !transition.complete) {
+      transition.elapsed += delta
+      const progress = reducedMotion ? 1 : Math.min(transition.elapsed / .9, 1)
       const eased = progress * progress * (3 - 2 * progress)
       camera.position.copy(transition.position)
-      orthographic.zoom = transition.zoom
+      if (orthographic.zoom !== transition.zoom) {
+        orthographic.zoom = transition.zoom
+        orthographic.updateProjectionMatrix()
+      }
       camera.quaternion.slerpQuaternions(transition.from, transition.to, eased)
-      orthographic.updateProjectionMatrix()
       if (progress === 1 && !transition.complete) {
         transition.complete = true
         initialHomeReported.current = true
@@ -164,11 +192,17 @@ function CameraRig({ departments, active, pointer, reducedMotion, view: requeste
         position.current.copy(camera.position)
         settledCallback.current(requestedView)
       }
+      // Returning Home resumes its position/target damping after the rotation.
+      continuing.current = progress < 1 || requestedView === 'home'
+      if (continuing.current) invalidate()
       return
     }
+    // The agents view is a fixed pose. Request reversals are handled above before
+    // this return, so a new home request can still begin from the rendered pose.
+    if (requestedView === 'agents') return
     const mobile = size.width < 760
     const room = departments.find(d => d.id === active)
-    const amount = reducedMotion ? 1 : 1 - Math.exp(-dt * 4)
+    const amount = reducedMotion ? 1 : 1 - Math.exp(-delta * 4)
     if (room) {
       const direction = room.position[0] < 0 ? -1 : 1
       focus.current.set(room.position[0] + (mobile ? .05 : direction * 1.7), room.position[1] - (mobile ? .4 : .2), .6)
@@ -178,11 +212,22 @@ function CameraRig({ departments, active, pointer, reducedMotion, view: requeste
       view.current.set(7.3 + (reducedMotion ? 0 : pointer.current.x * .9), 6.7 - (reducedMotion ? 0 : pointer.current.y * .55), 17)
     }
     target.current.lerp(focus.current, amount); position.current.lerp(view.current, amount)
+    const targetSettled = target.current.distanceToSquared(focus.current) <= settleEpsilon ** 2
+    const positionSettled = position.current.distanceToSquared(view.current) <= settleEpsilon ** 2
+    if (targetSettled) target.current.copy(focus.current)
+    if (positionSettled) position.current.copy(view.current)
     camera.position.copy(position.current); camera.lookAt(target.current)
     const baseZoom = Math.min(size.height / (mobile ? 12 : 10.8), size.width / (mobile ? 9 : 15.5))
     const zoom = room ? baseZoom * (mobile ? 1.55 : 1.9) : baseZoom
-    orthographic.zoom = MathUtils.lerp(orthographic.zoom, zoom, amount)
-    orthographic.updateProjectionMatrix()
+    const dampedZoom = MathUtils.lerp(orthographic.zoom, zoom, amount)
+    const zoomSettled = Math.abs(dampedZoom - zoom) <= settleEpsilon
+    const nextZoom = zoomSettled ? zoom : dampedZoom
+    if (orthographic.zoom !== nextZoom) {
+      orthographic.zoom = nextZoom
+      orthographic.updateProjectionMatrix()
+    }
+    continuing.current = !targetSettled || !positionSettled || !zoomSettled
+    if (continuing.current) invalidate()
     if (!initialHomeReported.current) {
       initialHomeReported.current = true
       interactive.current = true
@@ -195,7 +240,7 @@ function CameraRig({ departments, active, pointer, reducedMotion, view: requeste
 export default function BusinessScene(props: Props) {
   const portal = useRef<HTMLDivElement>(null!)
   const interactive = useRef(false)
-  return <><div ref={portal} className="hotspot-layer"/><Canvas orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 1.6]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
+  return <><div ref={portal} className="hotspot-layer"/><Canvas frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 1.6]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
     <color attach="background" args={['#dcf5fc']}/>
     <fog attach="fog" args={['#dcf5fc', 28, 65]}/>
     <ambientLight intensity={1.1}/>
