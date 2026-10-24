@@ -18,12 +18,22 @@ FIXTURES = {
     "plan": "tests/hr973-impact-plan.json",
     "brief": "tests/hr973-brief.json",
 }
-ASSETS = {
-    "/": ("index.html", "text/html"),
-    "/index.html": ("index.html", "text/html"),
-    "/styles.css": ("styles.css", "text/css"),
-    "/app.js": ("app.js", "text/javascript"),
-}
+DIST = HERE / "dist"
+
+
+def build_assets():
+    """Expose only built frontend files, never arbitrary repository paths."""
+    import mimetypes
+
+    if not (DIST / "index.html").is_file():
+        raise SystemExit("Build the frontend first: cd prototypes/bill-impact && npm install && npm run build")
+    assets = {"/": (DIST / "index.html", "text/html")}
+    for file in DIST.rglob("*"):
+        if file.is_file() and not file.is_symlink():
+            assets["/" + file.relative_to(DIST).as_posix()] = (
+                file, mimetypes.guess_type(file)[0] or "application/octet-stream"
+            )
+    return assets
 
 
 def read_snapshot():
@@ -47,6 +57,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=5173, help="loopback port (default: 5173)")
     args = parser.parse_args()
+    assets = build_assets()
     snapshot = json.dumps(read_snapshot()).encode("utf-8")
 
     class PreviewHandler(BaseHTTPRequestHandler):
@@ -60,9 +71,9 @@ def main():
             path = urlsplit(self.path).path
             if path == "/snapshot.json":
                 body, content_type = snapshot, "application/json"
-            elif path in ASSETS:
-                filename, content_type = ASSETS[path]
-                body = (HERE / filename).read_bytes()
+            elif path in assets:
+                filename, content_type = assets[path]
+                body = filename.read_bytes()
             else:
                 self.send_error(404, "This preview only serves its own assets and saved snapshot.")
                 return

@@ -1,74 +1,79 @@
-# Explore the bill-impact prototype
+# Bill-impact dashboard
 
-Run this from the repository root with Python 3.10 or newer.
+React + Vite + Tailwind CSS, with official shadcn/ui components (Radix): Button,
+Badge, Accordion, Separator, Table, Select, and Skeleton. Component source lives
+in `src/components/ui`; `components.json` configures future shadcn additions.
 
-```powershell
-python prototypes/bill-impact/preview.py
+## Run the preview
+
+Requires Node.js 20.19+ (or 22.12+) and Python 3.10+.
+
+```sh
+cd prototypes/bill-impact
+npm ci
+npm run build
+python3 preview.py
 ```
 
-Open [the local preview](http://127.0.0.1:5173). Stop the server with Ctrl+C.
-If port 5173 is occupied, pass `--port 5174` and open the printed URL.
-There are no packages to install, external assets to load, or API keys to configure.
+Open http://127.0.0.1:5173. Stop the server with Ctrl+C. Use `--port 5175` for an
+alternate Python preview port. Rebuild and restart after changing frontend files.
 
-Use **01 Brief** to read the opportunities and risks before the recommendation.
-Use **02 Decision first** to read the same recommendation before the findings.
-Select **View strategies**, choose a strategy, and change its scenario.
-Use **Back to overview** or browser Back to return. The URL retains the selected
-layout, strategy, and scenario across reloads.
+For hot reload, leave the Python preview running on 5173 and run `npm run dev` in
+a second terminal in this directory. Open http://127.0.0.1:5174. Vite proxies
+`/snapshot.json` to Python. No API keys or external assets are needed at runtime.
 
-This is a throwaway design study for [issue #1](https://github.com/ericmxf17/calhacks13/issues/1).
-The two information orders, wording, palette, and detail density are proposals.
-The prototype does not define the final product specification.
+## Essential overview
 
-## Saved inputs
+1. **Understand the bill:** a plain-English summary, passage likelihood, and the
+   official bill link. The saved analysis date and sample status are visible.
+2. **See business implications:** two opportunities and two risks, with compact
+   numbers. Assumed sales growth, conditional exposure, and contract penalties
+   are labeled separately.
+3. **Decide what to do:** a visible verdict, expected first-year profit change,
+   the main caveat, and a “View strategies” link.
 
-The preview reads one complete fictional VoltRide analysis from 2026-10-23.
-It uses `agents/hr973-expected-output.json`, `company.json`, and
-`tests/hr973-{forecast,impact-plan,impact-results,brief}.json`.
-The newer `tests/agent2-hr973.json` research is outside that complete snapshot.
-Mixing its research adjustments into the header without updating the strategy
-calculations and brief would show conflicting results.
+The layout experiment switcher was removed to keep one clear information order.
+On mobile the columns stack. Supporting context and sources are expandable.
 
-The preview server reads its snapshot at startup. Restart the server after
-changing fixtures. HTML, CSS, and JavaScript reload from disk on refresh.
-The server binds to loopback and serves only the prototype's three static assets,
-index page, and `/snapshot.json`. It does not expose the repository directory.
+The strategy page preserves comparison across evaluated options, URL-based
+strategy/scenario selection, outcome costs, readiness, supplier capacity, product
+outcomes, next steps, switch signals, sources, and calculation limits. It explains
+expected impact versus worst case. Detailed breakdowns use shadcn accordions.
 
-| Display | Source | Meaning |
-| --- | --- | --- |
-| Chance of passage | `forecast.probability` | Saved forecast, 22.5%. |
-| Recommended impact | Result option matching `brief.recommendation.option_id` | Expected first-year impact across scenarios. |
-| Sales opportunity | Impact-plan assumption A5 | Assumed e-bike unit growth, not forecast revenue. |
-| Annual exposure | `do_nothing` pass outcome's `annual_profit_change` | Conditional annual gross profit exposed if a rule applies. |
-| Early-exit penalty | PowerCell contract's `early_exit_penalty` | One-time contract term, not the cost of waiting. |
-| Scenario costs | Selected option's `by_scenario` entry | Its actual calculated costs, timing problems, and product outcomes. |
+## Data contract
 
-The frontend formats amounts. It does not calculate financial outcomes or
-forecast odds. Numeric traceability uses the existing brief checker. That check
-does not establish factual accuracy or legal validity. Scenario probabilities
-retain the stored rounding and may not sum to exactly 100%.
+This remains a fixture-backed prototype for [issue #1](https://github.com/ericmxf17/calhacks13/issues/1).
+It reads the complete saved VoltRide analysis from 2026-10-23:
 
-## Design choices
+- `agents/hr973-expected-output.json`
+- `company.json`
+- `tests/hr973-{forecast,impact-plan,impact-results,brief}.json`
 
-We compared a browser-owned view model with a generated display document.
-The browser-owned model won because one launcher loads the existing fixtures
-without a generated copy that can drift. The independent review agreed.
-The prototype keeps the fixture field names inside one browser module.
-It joins records by option and scenario IDs and maps the few overview findings
-explicitly instead of extracting numbers from prose.
+The newer research in `tests/agent2-hr973.json` is intentionally outside this
+snapshot. The Python server reads fixtures once at startup and checks numeric
+traceability using the existing brief checker. It serves only built frontend
+assets and `/snapshot.json`, not arbitrary repository files.
 
-Bean Mode's **Model the Domain** principle put navigation and selection in the URL.
-**Experience First** kept both information orders available at every width.
-**Exhaust the Design Space** led to two layouts with identical content.
-**Build the Lever** produced the repeatable preview command.
-**Prove It Works** requires direct browser checks of each layout and interaction.
+`src/analysis.js` checks matching bill IDs, forecast/results consistency, and
+complete numeric scenario outcomes. It joins strategies/scenarios by ID and
+explicitly maps this sample’s findings; it does not parse numbers from prose.
+The UI formats backend numbers without recalculating financial outcomes or odds.
+For example, the recommended impact rounds to **−$88.5K** from **−$88,469**, while
+the saved written brief rounds it to −$88K.
 
-System Segoe UI and Georgia fonts keep this offline preview independent of font
-downloads. No frontend framework, live agent connection, or production API was added.
+The overview copy and finding mapping are specific to H.R. 973/VoltRide. Before
+accepting live agent output, define a structured risks/opportunities contract and
+connect a live orchestration endpoint. Numeric traceability does not establish
+factual accuracy or legal validity. Scenario probabilities use stored rounding.
 
-## Review before a production build
+## Validation
 
-Decide whether the recommendation belongs before or after the findings.
-Review which scenario details matter for the first release.
-Agree on a structured risks-and-opportunities contract before accepting live agent
-output. The explicit finding mapping here is specific to the saved H.R. 973 sample.
+```sh
+npm test
+npm run build
+```
+
+The data tests cover conditional exposure versus weighted impact and rejection
+of inconsistent forecasts or missing scenario outcomes. Also check overview →
+strategies → back, option selection, scenario changes, expanded breakdowns,
+keyboard navigation, and narrow-screen layout in the browser.
