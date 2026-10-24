@@ -141,14 +141,21 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   }, [assembling, assembled])
   const homeReady = sceneView.view === 'home' && sceneView.settled && !assembling
   const councilReady = sceneView.view === 'council' && sceneView.settled
-  // New owners get the tour once, as soon as their finished building is ready. The header button replays it.
+  // The tour starts on its own as soon as the finished building is ready: always right after setup, and
+  // otherwise the first time this browser opens the company. Once per visit; the header button replays it.
   const [touring, setTouring] = useState(false)
-  const buildingReady = homeReady && !constructing
+  const tourOffered = useRef(false)
+  // Wait for the 3D scene's first frame (or give up after a few seconds, if it can't draw).
+  const [firstFrame, setFirstFrame] = useState(false)
+  const sceneDrawn = useCallback(() => setFirstFrame(true), [])
+  useEffect(() => { const timer = window.setTimeout(sceneDrawn, 6000); return () => window.clearTimeout(timer) }, [sceneDrawn])
+  const buildingReady = homeReady && !constructing && firstFrame
   useEffect(() => {
-    if (!firstVisit || !buildingReady || assemblingNow.current || tourSeen()) return
-    markTourSeen()
+    if (!buildingReady || assemblingNow.current || tourOffered.current || (!firstVisit && tourSeen(company))) return
+    tourOffered.current = true
+    markTourSeen(company)
     setTouring(true)
-  }, [firstVisit, buildingReady])
+  }, [firstVisit, buildingReady, company])
   const activeDepartment = departments.find(department => department.id === active)
   const panelSide = activeDepartment?.side === 'left' ? 'left' : 'right'
   const roomColors = activeDepartment ? { '--room-color': activeDepartment.ink, '--room-soft': activeDepartment.soft } as CSSProperties : undefined
@@ -186,7 +193,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
       if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
-    <div className="scene-layer" inert={!homeReady}><SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} assembling={assembling} onAssembled={assembled} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
+    <div className="scene-layer" inert={!homeReady}><SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} assembling={assembling} onAssembled={assembled} onDrawn={sceneDrawn} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="world-header-content">

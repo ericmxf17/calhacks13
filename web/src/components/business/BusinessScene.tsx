@@ -12,7 +12,7 @@ import Construction from './scene/archetypes/Construction'
 import Assemble, { type AssembleStage } from './scene/assemble'
 
 export type BusinessView = 'home' | 'agents' | 'council'
-type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; assembling?: boolean; onAssembled?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
+type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; assembling?: boolean; onAssembled?: () => void; onDrawn?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 
 function CameraRig({ layout, departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'layout' | 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
   const { camera, size, gl, invalidate } = useThree()
@@ -126,6 +126,13 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
   return null
 }
 
+/** Tells the page once the scene has drawn its first frame, so overlays don't open over an empty sky. */
+function FirstFrame({ onDrawn }: { onDrawn?: () => void }) {
+  const done = useRef(false)
+  useFrame(() => { if (!done.current) { done.current = true; onDrawn?.() } })
+  return null
+}
+
 export default function BusinessScene(props: Props) {
   const portal = useRef<HTMLDivElement>(null!)
   const interactive = useRef(false)
@@ -163,6 +170,7 @@ export default function BusinessScene(props: Props) {
       <Lot layout={layout} ground={props.constructing ? 'gravel' : scene.ground}/>
     </ThemeProvider>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.17, 0]} receiveShadow><planeGeometry args={[200, 200]}/><shadowMaterial color="#76899b" opacity={.24}/></mesh>
+    <FirstFrame onDrawn={props.onDrawn}/>
     <CameraRig layout={layout} departments={props.departments} active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion} view={props.view} viewSettled={props.viewSettled} onViewSettled={props.onViewSettled} interactive={interactive}/>
   </Canvas></>
 }

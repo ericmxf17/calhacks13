@@ -20,13 +20,14 @@ export function tourSteps(company: string): TourStep[] {
   ]
 }
 
-const seenKey = 'consul:tour:v1'
-/** Whether this browser has already started the tour once. */
-export function tourSeen() {
-  try { return localStorage.getItem(seenKey) === 'seen' } catch { return false }
+// Remembered per company, so each new company still gets the tour once in this browser.
+const seenKey = (company: string) => `consul:tour:v2:${company.trim().toLowerCase()}`
+/** Whether this browser has already shown the tour for this company. */
+export function tourSeen(company: string) {
+  try { return localStorage.getItem(seenKey(company)) === 'seen' } catch { return false }
 }
-export function markTourSeen() {
-  try { localStorage.setItem(seenKey, 'seen') } catch { /* Storage may be unavailable. */ }
+export function markTourSeen(company: string) {
+  try { localStorage.setItem(seenKey(company), 'seen') } catch { /* Storage may be unavailable. */ }
 }
 
 type Box = { top: number; left: number; width: number; height: number }
