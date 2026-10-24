@@ -84,7 +84,7 @@ export default function App({ company = 'Consul Goods' }: { company?: string }) 
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
     <div className="scene-layer"><SceneBoundary fallback={fallback}><BusinessScene active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
-      <div className="wordmark"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
+      <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="workspace-status"><i/> {company}<span className="status-divider"/><span className="established">Illustrative room data</span></div>
     </header>
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}

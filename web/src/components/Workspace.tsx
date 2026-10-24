@@ -220,7 +220,7 @@ export default function Workspace() {
   return (
     <main className="consul-onboarding min-h-dvh bg-paper text-ink">
       <header className="flex items-center justify-between px-6 py-7 md:px-12">
-        <div className="flex items-center gap-3">
+        <div className="brand-glass flex items-center gap-3">
           <span className="font-display text-4xl">c.</span>
           <div className="text-lg font-medium tracking-tight">
             consul

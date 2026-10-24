@@ -13,11 +13,25 @@
   position: relative;
   isolation: isolate;
 }
-.consul-onboarding header { border-bottom: 2px solid #b8ddec; background: #ffffff70; }
+.consul-onboarding header { border-bottom: 1px solid #ffffff80; background: transparent; }
+.brand-glass {
+  padding: 10px 16px 10px 10px;
+  border: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff91, #ffffff38);
+  -webkit-backdrop-filter: blur(18px) saturate(155%);
+  backdrop-filter: blur(18px) saturate(155%);
+  box-shadow: 0 8px 24px #274f6c14;
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .brand-glass { background: #f1faffed; }
+}
+@media(prefers-reduced-transparency:reduce) { .brand-glass { background: #f1faff; backdrop-filter: none; -webkit-backdrop-filter: none; } }
 .consul-onboarding header .font-display {
   display: grid; place-items: center; width: 45px; height: 45px;
-  background: #ffd447; color: #243957; box-shadow: 4px 4px 0 #d8a925;
-  font-weight: 900; border-radius: 6px; font-size: 34px;
+  background: linear-gradient(145deg, #ffe67b, #ffd447 58%, #ffbc38); color: #243957;
+  box-shadow: inset 0 1px 0 #fff5bb, 0 3px 8px #d8a92540;
+  font-weight: 900; border-radius: 12px; font-size: 34px;
 }
 .consul-onboarding h1, .consul-onboarding h2 { font-weight: 800; letter-spacing: -1.4px; }
 .consul-onboarding h1 { line-height: 1.12; }
@@ -55,7 +69,7 @@
 .world[data-department=supply] { --room-color: #158265; --room-soft: #d7f6e8; }
 .world[data-department=marketing] { --room-color: #bd4e38; --room-soft: #ffebe0; }
 .world:after { box-shadow: none; }
-.wordmark-symbol { display: grid; place-items: center; width: 44px; height: 44px; font-size: 34px; font-weight: 900; background: #ffd447; color: #243957; box-shadow: 4px 4px 0 #d8a925; border-radius: 5px; letter-spacing: -3px; }
+.wordmark-symbol { display: grid; place-items: center; width: 44px; height: 44px; font-size: 34px; font-weight: 900; background: linear-gradient(145deg, #ffe67b, #ffd447 58%, #ffbc38); color: #243957; box-shadow: inset 0 1px 0 #fff5bb, 0 3px 8px #d8a92540; border-radius: 12px; letter-spacing: -3px; }
 .wordmark>div { font-size: 24px; font-weight: 800; }
 .workspace-status { color: #405d76; background: #ffffffd9; padding: 9px 12px; border: 1px solid #b8ddec; border-radius: 5px; }
 .workspace-status>i { background: #21ad79; width: 7px; height: 7px; border-radius: 1px; }
@@ -106,6 +120,7 @@
 @media(min-width:1600px) { .intro { max-width: 300px; }.intro h1 { font-size: 42px; } }
 @media(max-width:1100px) { .intro h1 { font-size: 32px; }.metric strong { font-size: 21px; } }
 @media(max-width:760px) {
+  .brand-glass { padding: 7px 11px 7px 7px; border-radius: 17px; }
   .demo-exit { top: 76px; right: 24px; }
   .consul-onboarding [aria-labelledby=setup-title] { padding: 22px; box-shadow: 5px 5px 0 #bdd7e7; }
   .wordmark>div { font-size: 20px; }.workspace-status { padding: 6px 8px; }
