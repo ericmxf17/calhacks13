@@ -1,6 +1,8 @@
-import Link from 'next/link';
-import { Leaf } from 'lucide-react';
+import localFont from 'next/font/local';
+import AppHeader from '@/components/app-header';
 import './globals.css';
+
+const inter = localFont({ src: './fonts/InterVariable.woff2', weight: '100 900', variable: '--font-inter', display: 'swap' });
 
 export const metadata = {
   title: { default: 'H.R. 973 · VoltRide · Policy desk', template: '%s · VoltRide · Policy desk' },
@@ -8,13 +10,9 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return <html lang="en"><body><div className="app">
+  return <html lang="en" className={`${inter.variable} dark`}><body><div className="app">
     <a href="#main" className="skip-link">Skip to analysis</a>
-    <header className="app-header"><div className="header-inner">
-      <Link href="/" className="brand"><span className="brand-icon"><Leaf size={19} /></span>policy desk<span className="brand-dot">.</span></Link>
-      <span className="header-description">Policy into perspective</span>
-      <span className="company-label"><span>V</span>VoltRide</span>
-    </div></header>
+    <AppHeader />
     <main id="main" tabIndex={-1}>{children}</main>
     <footer><span>Fictional company · Saved sample, not live bill data</span><span>Strategic analysis, not legal advice.</span></footer>
   </div></body></html>;

@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, CircleAlert, Info, ShieldAlert, TrendingUp } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, CheckCircle2, ChevronRight, Circle, CircleAlert, FileText, Info, ShieldAlert, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -25,7 +25,7 @@ function resolveSelection(data, selection) {
   };
 }
 function Bullets({ items }) { return items?.length ? <ul className="detail-list">{items.map((item, i) => <li key={i}>{item}</li>)}</ul> : <p className="muted">Nothing listed in this saved analysis.</p>; }
-function Disclosure({ value, title, children }) { return <AccordionItem value={value}><AccordionTrigger>{title}</AccordionTrigger><AccordionContent>{children}</AccordionContent></AccordionItem>; }
+function Disclosure({ value, title, children }) { return <AccordionItem value={value}><AccordionTrigger><span className="disclosure-title"><FileText size={17} aria-hidden="true" /><span>{title}</span></span></AccordionTrigger><AccordionContent>{children}</AccordionContent></AccordionItem>; }
 function Verdict({ data, route }) {
   const option = data.recommendation;
   return <section className="verdict" aria-labelledby="verdict-heading">
@@ -45,7 +45,7 @@ function Overview({ data, route }) {
   return <>
     <section className="bill-header" aria-labelledby="page-title">
       <div><div className="bill-eyebrow"><Badge variant="outline">H.R. 973</Badge><span>119th Congress</span></div>
-        <h1 id="page-title" tabIndex={-1}>Safer batteries.<br /><span>What it means for VoltRide.</span></h1>
+        <h1 id="page-title" tabIndex={-1}>Battery safety standards</h1>
         <p className="bill-summary">This bill would require e-bikes and their batteries to meet federal safety standards. VoltRide may need to certify its supplier and Cargo model.</p>
         <Button asChild variant="link" className="bill-source"><a href={data.bill.bill.url} target="_blank" rel="noreferrer">Read the bill <ArrowUpRight size={14} /></a></Button>
       </div>
@@ -54,24 +54,30 @@ function Overview({ data, route }) {
     <Separator />
     <section className="impact-section" aria-label="What this means for your business">
       <div className="findings-grid">
-        <section aria-labelledby="opportunities-title" className="findings opportunities"><h2 id="opportunities-title"><TrendingUp size={18} /> Opportunities<span>What you could gain</span></h2>
-          <ul className="finding-list"><li><div className="finding-heading"><h3>{growth.title}</h3><span className="impact-number positive">{growth.value || 'Not quantified'}</span></div><p>More e-bike sales as competitors with uncertified batteries lose ground.</p><span className="finding-caption">Assumed sales growth · not a guaranteed gain</span></li>
+        <section aria-labelledby="opportunities-title" className="findings opportunities"><h2 id="opportunities-title"><span className="section-icon"><TrendingUp size={18} aria-hidden="true" /></span> Opportunities<span>What you could gain</span></h2>
+          <ul className="finding-list"><li><div className="finding-heading"><h3>{growth.title}</h3><span className="impact-number positive">{growth.value || 'Not quantified'}</span></div><p>More e-bike sales as competitors with uncertified batteries lose ground.</p><span className="finding-caption">Sales growth assumption · low confidence</span></li>
           <li><div className="finding-heading"><h3>{headstart.title}</h3><Badge variant="secondary">Existing advantage</Badge></div><p>You already ship certified batteries in NYC—a useful starting point.</p></li></ul>
         </section>
-        <section aria-labelledby="risks-title" className="findings risks"><h2 id="risks-title"><ShieldAlert size={18} /> Risks<span>What you could lose</span></h2>
+        <section aria-labelledby="risks-title" className="findings risks"><h2 id="risks-title"><span className="section-icon"><ShieldAlert size={18} aria-hidden="true" /></span> Risks<span>What you could lose</span></h2>
           <ul className="finding-list"><li><div className="finding-heading"><h3>Product sales could stop</h3><span className="impact-number negative">{exposure.value || 'Not quantified'}</span></div><p>Annual gross profit exposed if a rule applies and you take no action.</p><span className="finding-caption">Conditional exposure · not the expected loss</span></li>
           <li><div className="finding-heading"><h3>Leaving your supplier early</h3><span className="impact-number negative">{penalty.value || 'Not quantified'}</span></div><p>One-time contract penalty if you switch before the agreement ends.</p></li></ul>
         </section>
       </div>
     </section>
     <Verdict data={data} route={route} />
-    <p className="interpretation"><Info size={14} /><span><strong>How to read this:</strong> risks show what could happen; the verdict weighs the modeled scenarios to suggest what to do.</span></p>
+    <p className="interpretation"><Info size={14} /><span>All amounts in USD. Exposure is conditional; expected impact weighs the saved scenarios.</span></p>
     <Accordion type="single" collapsible className="overview-details"><Disclosure value="context" title="Bill context, assumptions & sources"><p className="detail-intro">{data.bill.bill.title}</p><p>{data.brief.bill_in_plain_english}</p><h3>Where these findings come from</h3><ul className="detail-list">{[...data.findings.opportunities, ...data.findings.risks].map(finding => <li key={finding.title}><strong>{finding.title}.</strong> {finding.source}</li>)}</ul><h3>Assumptions to verify</h3><Bullets items={data.brief.assumptions_to_verify} /><Sources data={data} /></Disclosure></Accordion>
   </>;
 }
-function Sources({ data }) { return <><h3>Sources</h3><ul className="detail-list sources">{data.brief.sources.map(source => <li key={source}><a href={source} target="_blank" rel="noreferrer">{source}<ArrowUpRight size={12} /></a></li>)}</ul><p className="muted">{data.verification.numbers_trace_to_inputs ? 'Brief numbers trace to the saved inputs.' : 'Some brief numbers could not be traced to the saved inputs.'} Numeric traceability does not verify factual accuracy or legal validity.</p></>; }
+const sourceTitles = {
+  'https://www.congress.gov/bill/119th-congress/house-bill/973': 'H.R. 973 bill overview',
+  'https://www.congress.gov/119/bills/hr973/BILLS-119hr973eh.htm': 'H.R. 973 text as passed by the House',
+  'https://api.congress.gov/v3/bill/119/s/389': 'S. 389 companion bill record',
+};
+function Sources({ data }) { return <><h3>Sources</h3><ul className="detail-list sources">{data.brief.sources.map(source => <li key={source}><a className="source-link" href={source} target="_blank" rel="noreferrer"><span><strong>{sourceTitles[source] || 'Supporting evidence'}</strong><small>{new URL(source).hostname}</small></span><ArrowUpRight size={15} aria-hidden="true" /></a></li>)}</ul><p className="muted">{data.verification.numbers_trace_to_inputs ? 'Brief numbers trace to the saved inputs.' : 'Some brief numbers could not be traced to the saved inputs.'} Numeric traceability does not verify factual accuracy or legal validity.</p></>; }
 function Strategies({ data, route }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const selected = data.strategies.get(route.option);
   const scenario = data.scenarios.get(route.scenario);
   const outcome = selected.by_scenario.find(item => item.scenario_id === scenario.id);
@@ -79,15 +85,15 @@ function Strategies({ data, route }) {
   const issues = [...outcome.compliance_issues.map(item => `${item.product}: ${item.problem}. ${item.result}.`), ...outcome.timing_problems, ...outcome.warnings];
   return <>
     <Button asChild variant="ghost" className="back-button"><Link href="/"><ArrowLeft size={16} /> Back to overview</Link></Button>
-    <div className="detail-header"><div className="section-kicker">H.R. 973 / Strategy comparison</div><h1 id="page-title" tabIndex={-1}>Choose your next move.</h1><p>Compare cost with readiness. A lower expected cost can come with a larger downside.</p></div>
+    <div className="detail-header"><div className="section-kicker">H.R. 973 / VoltRide</div><h1 id="page-title" tabIndex={-1}>Compare strategies</h1><p>Compare cost with readiness. A lower expected cost can come with a larger downside.</p></div>
     <section className="recommendation-explained"><Badge variant="secondary">Recommended</Badge><h2>{optionName(data, data.recommendation)}</h2><p>{data.brief.recommendation.why}</p><div className="tradeoff"><CircleAlert size={16} /><span>{data.brief.recommendation.tradeoff}</span></div></section>
     <div className="comparison-heading"><h2>Compare the evaluated strategies</h2><span>Select a strategy to explore its outcomes</span></div>
-    <Table className="strategy-table"><TableHeader><TableRow><TableHead>Strategy</TableHead><TableHead className="text-right">Expected first year</TableHead><TableHead className="text-right">Worst case</TableHead><TableHead>Ready if it passes?</TableHead></TableRow></TableHeader><TableBody>{data.results.ranking_by_expected_impact.map(id => {
+    <div className="strategy-comparison"><Table className="strategy-table"><TableHeader><TableRow><TableHead>Strategy</TableHead><TableHead className="text-right">Expected first year</TableHead><TableHead className="text-right">Worst case</TableHead><TableHead>Ready if it passes?</TableHead></TableRow></TableHeader><TableBody>{data.results.ranking_by_expected_impact.map(id => {
       const option = data.strategies.get(id);
-      return <TableRow key={id} data-state={id === route.option ? 'selected' : undefined}><TableCell><Link className="strategy-link" aria-current={id === route.option ? 'true' : undefined} href={strategyHref(id, route.scenario)} scroll={false}>{optionName(data, option)}{id === data.recommendation.option_id && <Badge variant="secondary">Recommended</Badge>}<ChevronRight size={14} /></Link></TableCell><TableCell className="text-right tabular-nums">{money(option.expected_first_year_impact)}</TableCell><TableCell className="text-right tabular-nums">{money(option.worst_case)}</TableCell><TableCell><Badge variant="outline" className={option.compliant_in_every_pass_scenario ? 'status-ready' : 'status-risk'}>{option.compliant_in_every_pass_scenario ? 'Ready' : 'Timing or compliance risk'}</Badge></TableCell></TableRow>;
-    })}</TableBody></Table>
+      return <TableRow key={id} data-state={id === route.option ? 'selected' : undefined}><TableCell><Button asChild variant="ghost" className="strategy-link"><Link aria-current={id === route.option ? 'true' : undefined} href={strategyHref(id, route.scenario)} scroll={false}><span className="strategy-select-mark" aria-hidden="true">{id === route.option ? <CheckCircle2 size={19} /> : <Circle size={19} />}</span><span>{optionName(data, option)}{id === data.recommendation.option_id && <Badge variant="secondary">Recommended</Badge>}</span><ChevronRight size={16} aria-hidden="true" /></Link></Button></TableCell><TableCell className="text-right tabular-nums">{money(option.expected_first_year_impact)}</TableCell><TableCell className="text-right tabular-nums">{money(option.worst_case)}</TableCell><TableCell><Badge variant="outline" className={option.compliant_in_every_pass_scenario ? 'status-ready' : 'status-risk'}>{option.compliant_in_every_pass_scenario ? 'Ready' : 'Timing or compliance risk'}</Badge></TableCell></TableRow>;
+    })}</TableBody></Table></div>
     <p className="table-explanation">Expected first year = profit change weighted across scenarios. Worst case = the largest modeled first-year loss. All amounts are relative to the current business, in USD.</p>
-    <section className="scenario-section" aria-labelledby="scenario-heading"><div className="scenario-heading"><div><span className="section-kicker">Selected strategy</span><h2 id="scenario-heading">{optionName(data, selected)}</h2><p>{selected.description}</p></div><div className="scenario-control"><label htmlFor="scenario">What if…</label><Select value={route.scenario} onValueChange={value => router.push(strategyHref(route.option, value), { scroll: false })}><SelectTrigger id="scenario" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{data.results.scenarios.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent></Select></div></div>
+    <section className="scenario-section" aria-labelledby="scenario-heading"><div className="scenario-heading"><div><span className="section-kicker">Selected strategy</span><h2 id="scenario-heading">{optionName(data, selected)}</h2><p>{selected.description}</p></div><div className="scenario-control"><label htmlFor="scenario">Scenario</label><Select value={route.scenario} onValueChange={value => startTransition(() => router.push(strategyHref(route.option, value), { scroll: false }))}><SelectTrigger id="scenario" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{data.results.scenarios.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent></Select>{isPending && <span className="scenario-updating" role="status">Updating scenario…</span>}</div></div>
       <p className="scenario-probability">{percent(scenario.probability)} overall scenario probability · {scenario.months_until_rule_applies === null ? 'No rule takes effect' : `Rule applies in ${scenario.months_until_rule_applies} months (assumption)`}</p>
       <div className="outcome-summary" aria-live="polite"><div><span>Annual gross profit change</span><strong>{money(outcome.annual_profit_change)}</strong><small>Once the rule applies</small></div><div><span>One-time costs</span><strong>{money(outcome.one_time_total)}</strong><small>Includes sales lost while fixes finish</small></div><div><span>First-year profit change</span><strong>{money(outcome.first_year_impact)}</strong><small>For this scenario only</small></div></div>
       <div className="outcome-status"><Badge variant="outline" className={ready ? 'status-ready' : 'status-risk'}>{ready ? (scenario.months_until_rule_applies === null ? 'No new deadline' : 'Ready by deadline') : 'Not ready by deadline'}</Badge><Badge variant="outline" className={outcome.feasible ? 'status-ready' : 'status-risk'}>{outcome.feasible ? 'Within supplier capacity' : 'Supplier capacity issue'}</Badge><span>Gross margin: {percent(outcome.gross_margin_after)}</span></div>
