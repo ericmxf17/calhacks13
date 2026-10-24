@@ -1,0 +1,69 @@
+{
+  "_about": "Output format for Agent 3 (Impact Planner). impact.py reads this file and does all the math. Every ID must exist in company.json. Every number not taken from company.json or the bill must point to an assumption.",
+
+  "bill_id": "string, copied from Agent 1",
+  "as_of": "YYYY-MM-DD, today",
+
+  "relevance": {
+    "relevant_provisions": [
+      {"provision_id": "string, from Agent 1", "why": "string", "affected_items": ["company IDs: products, components, suppliers, inventory"]}
+    ],
+    "not_relevant": [
+      {"provision_id": "string", "reason": "string"}
+    ]
+  },
+
+  "assumptions": [
+    {
+      "id": "string, A1, A2, ...",
+      "statement": "string, plain English",
+      "value": "number or null",
+      "unit": "string or null",
+      "basis": "company_data | bill_text | research | estimate",
+      "source": "string, where it came from",
+      "confidence": "high | medium | low"
+    }
+  ],
+
+  "scenarios": [
+    {
+      "id": "string, S1, S2, ...",
+      "name": "string",
+      "branch": "pass | fail",
+      "share_of_branch": "number. Shares within each branch must add up to 1.0",
+      "months_until_rule_applies": "number, or null if no rule applies in this scenario",
+      "rules": ["rule objects (see rule types below)"],
+      "market_effects": ["effect objects (see effect types below)"]
+    }
+  ],
+
+  "options": [
+    {
+      "id": "string. One option must be 'do_nothing'",
+      "name": "string",
+      "description": "string",
+      "actions": ["action objects (see action types below)"]
+    }
+  ],
+
+  "_rule_types": {
+    "requires_supplier_certification": {"component_ids": ["string"], "certification": "string", "provision_id": "string"},
+    "requires_product_certification": {"product_ids": ["string"], "certification": "string", "provision_id": "string"}
+  },
+
+  "_effect_types (allowed in market_effects and in actions)": {
+    "component_cost_change": {"component_ids": ["string"], "supplier_ids": ["optional, only these suppliers"], "change_percent": "number", "assumption_id": "string"},
+    "price_change": {"product_ids": ["string"], "change_percent": "number", "assumption_id": "string"},
+    "volume_change": {"product_ids": ["string"], "change_percent": "number", "assumption_id": "string"},
+    "one_time_cost": {"amount": "number, USD", "description": "string", "assumption_id": "string"},
+    "annual_cost_change": {"amount": "number, USD per year, positive means more cost", "description": "string", "assumption_id": "string"}
+  },
+
+  "_action_types (allowed only in options)": {
+    "supplier_certification": {"supplier_id": "string", "certification": "string", "weeks": "number", "unit_cost_change_percent": "number", "one_time_cost": "optional number", "assumption_id": "string"},
+    "sourcing_shift": {"component_ids": ["string"], "new_shares": [{"supplier_id": "string", "share": "number", "unit_cost": "optional number, only if the supplier is new to this part"}], "start_in_months": "number", "use_inventory_first": "boolean"},
+    "product_certification": {"product_id": "string", "certification": "string", "cost": "optional, defaults to company certification_costs", "weeks": "optional, same"},
+    "drop_product": {"product_id": "string"},
+    "_any_action_can_add": {"start_in_months": "number, when the action starts", "only_if_rule_applies": "boolean, true = only happens in scenarios where a rule applies (for 'wait and react' options)"}
+  }
+}

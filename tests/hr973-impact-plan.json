@@ -1,0 +1,120 @@
+{
+  "_note": "Sample Agent 3 output for H.R. 973 and the VoltRide demo company. Use it to test impact.py and to compare against Agent 3's real output.",
+  "bill_id": "hr973-119",
+  "as_of": "2026-10-23",
+
+  "relevance": {
+    "relevant_provisions": [
+      {"provision_id": "P1", "why": "Makes UL 2271 mandatory for e-bike batteries and UL 2849 mandatory for e-bike systems. 70% of VoltRide's batteries come from an uncertified supplier, and VoltRide Cargo has no UL 2849 certification.",
+       "affected_items": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT", "SUP-BAT-01", "PRD-CARGO", "INV-01"]},
+      {"provision_id": "P3", "why": "Future UL updates become mandatory automatically, so certification is an ongoing cost.", "affected_items": ["SUP-BAT-02", "SUP-BAT-03"]},
+      {"provision_id": "P4", "why": "Makes the standards enforceable, so selling non-compliant bikes is not an option.", "affected_items": ["PRD-CITY", "PRD-CARGO", "PRD-SPARE"]}
+    ],
+    "not_relevant": [
+      {"provision_id": "P2", "reason": "VoltRide sells to consumers, so the consumer-product limit doesn't exempt it."},
+      {"provision_id": "P5", "reason": "Agency report only. No requirement for VoltRide."}
+    ]
+  },
+
+  "assumptions": [
+    {"id": "A0", "statement": "Fastest case: the bill passes within 2 months and the CPSC issues the rule quickly with an early compliance date", "value": 7, "unit": "months", "basis": "estimate", "source": "Bill gives the CPSC 180 days but sets no compliance date (open question in Agent 1 output)", "confidence": "low"},
+    {"id": "A1", "statement": "If the bill passes in the lame-duck session, the CPSC issues the rule about 6 months later and compliance starts about 1 month after that", "value": 9, "unit": "months", "basis": "estimate", "source": "Same open question", "confidence": "low"},
+    {"id": "A2", "statement": "The CPSC sets a later compliance date", "value": 15, "unit": "months", "basis": "estimate", "source": "Same open question", "confidence": "low"},
+    {"id": "A3", "statement": "Even if the bill fails, the CPSC or more states could require certified batteries within about 2 years", "value": 0.25, "unit": "share of fail branch", "basis": "research", "source": "Agent 2 alternative_paths (verify)", "confidence": "low"},
+    {"id": "A4", "statement": "Shenzhen PowerCell can get UL 2271 certified in about 26 weeks and would raise prices about 15%", "value": 15, "unit": "percent", "basis": "company_data", "source": "company.json supplier notes for SUP-BAT-01", "confidence": "medium"},
+    {"id": "A5", "statement": "Low-cost brands with uncertified batteries (like Zoomly) lose sales, and VoltRide picks up about 5% more e-bike sales", "value": 5, "unit": "percent", "basis": "estimate", "source": "company.json competitors", "confidence": "low"},
+    {"id": "A6", "statement": "Demand for certified batteries rises, so certified suppliers raise prices about 5%", "value": 5, "unit": "percent", "basis": "estimate", "source": "None yet", "confidence": "low"}
+  ],
+
+  "scenarios": [
+    {
+      "id": "S0", "name": "Passes, compliance in about 7 months", "branch": "pass", "share_of_branch": 0.25,
+      "months_until_rule_applies": 7,
+      "rules": [
+        {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+        {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}
+      ],
+      "market_effects": [
+        {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 5, "assumption_id": "A5"},
+        {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 5, "assumption_id": "A6"}
+      ]
+    },
+    {
+      "id": "S1", "name": "Passes, compliance in about 9 months", "branch": "pass", "share_of_branch": 0.4,
+      "months_until_rule_applies": 9,
+      "rules": [
+        {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+        {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}
+      ],
+      "market_effects": [
+        {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 5, "assumption_id": "A5"},
+        {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 5, "assumption_id": "A6"}
+      ]
+    },
+    {
+      "id": "S2", "name": "Passes, compliance in about 15 months", "branch": "pass", "share_of_branch": 0.35,
+      "months_until_rule_applies": 15,
+      "rules": [
+        {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+        {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}
+      ],
+      "market_effects": [
+        {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 5, "assumption_id": "A5"},
+        {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 5, "assumption_id": "A6"}
+      ]
+    },
+    {
+      "id": "S3", "name": "Fails, nothing changes", "branch": "fail", "share_of_branch": 0.75,
+      "months_until_rule_applies": null, "rules": [], "market_effects": []
+    },
+    {
+      "id": "S4", "name": "Fails, but the CPSC or states require it within 2 years", "branch": "fail", "share_of_branch": 0.25,
+      "months_until_rule_applies": 24,
+      "rules": [
+        {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+        {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}
+      ],
+      "market_effects": []
+    }
+  ],
+
+  "options": [
+    {"id": "do_nothing", "name": "Do nothing", "description": "Keep current suppliers and products.", "actions": []},
+    {
+      "id": "switch_now", "name": "Switch to certified suppliers now",
+      "description": "Move all batteries to Dongguan SafeCell and Hanbit next month, use up current stock first, and certify the Cargo model.",
+      "actions": [
+        {"type": "sourcing_shift", "component_ids": ["CMP-CITY-BAT", "CMP-SPARE-BAT", "CMP-CARGO-BAT"],
+         "new_shares": [{"supplier_id": "SUP-BAT-03", "share": 0.6}, {"supplier_id": "SUP-BAT-02", "share": 0.4}],
+         "start_in_months": 1, "use_inventory_first": true},
+        {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849"}
+      ]
+    },
+    {
+      "id": "switch_after_contract", "name": "Switch after the PowerCell contract ends",
+      "description": "Same as switching now, but wait 6 months so the PowerCell contract ends first.",
+      "actions": [
+        {"type": "sourcing_shift", "component_ids": ["CMP-CITY-BAT", "CMP-SPARE-BAT", "CMP-CARGO-BAT"],
+         "new_shares": [{"supplier_id": "SUP-BAT-03", "share": 0.6}, {"supplier_id": "SUP-BAT-02", "share": 0.4}],
+         "start_in_months": 6, "use_inventory_first": true},
+        {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849"}
+      ]
+    },
+    {
+      "id": "react_if_passes", "name": "Wait, then certify if it passes",
+      "description": "Spend nothing now. If the bill passes (about 2 months from now) or a rule is announced, have PowerCell get certified and certify the Cargo model.",
+      "actions": [
+        {"type": "supplier_certification", "supplier_id": "SUP-BAT-01", "certification": "UL 2271", "weeks": 26, "unit_cost_change_percent": 15, "assumption_id": "A4", "start_in_months": 2, "only_if_rule_applies": true},
+        {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849", "start_in_months": 2, "only_if_rule_applies": true}
+      ]
+    },
+    {
+      "id": "certify_powercell", "name": "Pay PowerCell to get certified",
+      "description": "Keep the current supplier mix, have PowerCell get UL 2271 (about 15% higher price), and certify the Cargo model.",
+      "actions": [
+        {"type": "supplier_certification", "supplier_id": "SUP-BAT-01", "certification": "UL 2271", "weeks": 26, "unit_cost_change_percent": 15, "assumption_id": "A4"},
+        {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849"}
+      ]
+    }
+  ]
+}

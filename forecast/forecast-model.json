@@ -1,0 +1,57 @@
+{
+  "trained_on_congresses": [
+    "117",
+    "118"
+  ],
+  "features": [
+    "intercept",
+    "log_days_left",
+    "bipartisan",
+    "origin_chamber_control",
+    "other_chamber_control",
+    "companion_bill",
+    "many_cosponsors"
+  ],
+  "stages": {
+    "introduced": {
+      "weights": {
+        "intercept": -11.5637,
+        "log_days_left": 0.9376,
+        "bipartisan": 1.8369,
+        "origin_chamber_control": 0.1711,
+        "other_chamber_control": -0.0658,
+        "companion_bill": -0.0372,
+        "many_cosponsors": 0.5348
+      },
+      "n": 185159
+    },
+    "reported": {
+      "weights": {
+        "intercept": -7.0657,
+        "log_days_left": 0.7871,
+        "bipartisan": 0.8495,
+        "origin_chamber_control": -0.6849,
+        "other_chamber_control": -0.0551,
+        "companion_bill": 0.1017,
+        "many_cosponsors": -0.1677
+      },
+      "n": 9971
+    },
+    "passed_one": {
+      "weights": {
+        "intercept": -4.1711,
+        "log_days_left": 0.4453,
+        "bipartisan": 0.4211,
+        "origin_chamber_control": -0.3933,
+        "other_chamber_control": 0.1758,
+        "companion_bill": 0.7034,
+        "many_cosponsors": -0.0959
+      },
+      "n": 7646
+    },
+    "passed_both": {
+      "fixed_probability": 0.883,
+      "n": 273
+    }
+  }
+}

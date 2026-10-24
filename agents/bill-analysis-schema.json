@@ -1,0 +1,70 @@
+{
+  "_about": "Output format for Agent 1 (Bill Analyst). Every field is required unless marked optional. Use null when a value is unknown. Never guess.",
+
+  "bill": {
+    "id": "string, e.g. 'hr973-119'",
+    "congress": "number, e.g. 119",
+    "type": "string: hr | s | hjres | sjres",
+    "number": "number",
+    "title": "string, the bill's short title",
+    "policy_area": "string or null",
+    "url": "string, congress.gov page",
+    "text_version_used": "string, e.g. 'Engrossed in House (2025-04-28)'"
+  },
+
+  "status": {
+    "stage": "one of: introduced | in_committee | reported_by_committee | passed_one_chamber | passed_both_chambers | enacted | failed",
+    "latest_action": {"date": "YYYY-MM-DD", "text": "string"},
+    "sponsor": {"name": "string", "party": "D | R | I", "state": "string"},
+    "cosponsors": {"total": "number", "by_party": {"D": "number", "R": "number", "I": "number"}},
+    "committees": ["string"],
+    "chamber_votes": [
+      {"chamber": "House | Senate", "date": "YYYY-MM-DD", "yeas": "number or null", "nays": "number or null", "method": "string, e.g. 'roll call, suspension of the rules (2/3 required)'"}
+    ],
+    "companion_bills": [
+      {
+        "id": "string, e.g. 's389-119'",
+        "title": "string",
+        "sponsor": {"name": "string", "party": "D | R | I", "state": "string"},
+        "cosponsors": {"total": "number", "by_party": {"D": "number", "R": "number", "I": "number"}},
+        "latest_action": {"date": "YYYY-MM-DD", "text": "string"},
+        "how_found": "string, e.g. 'related bills endpoint' or 'title search'"
+      }
+    ],
+    "congress_ends": "YYYY-MM-DD",
+    "days_until_congress_ends": "number"
+  },
+
+  "plain_summary": "string, 2 to 3 sentences in plain English",
+
+  "provisions": [
+    {
+      "id": "string, P1, P2, ...",
+      "section": "string, e.g. 'Sec. 2(a)'",
+      "type": "one of: mandatory_standard | certification_requirement | ban_or_restriction | labeling | reporting_requirement | tax_credit | grant_or_subsidy | tariff_or_duty | penalty | agency_study | other",
+      "plain_english": "string, one or two sentences",
+      "who_must_act": ["one or more of: manufacturers | importers | distributors | retailers | consumers | federal_agency | states"],
+      "regulator": "string or null, e.g. 'Consumer Product Safety Commission'",
+      "affected_products": ["string, plain product categories"],
+      "standards_referenced": ["string, normalized codes like 'UL 2271'"],
+      "amounts": [
+        {"description": "string", "value": "number", "unit": "string, e.g. 'percent' or 'USD'"}
+      ],
+      "timing": {
+        "trigger": "string, e.g. 'enactment'",
+        "deadline_text": "string, copied from the bill, or null",
+        "days_after_trigger": "number or null",
+        "what_happens_then": "string",
+        "compliance_date_known": "boolean"
+      },
+      "business_relevance": "high | medium | low",
+      "relevance_reason": "string",
+      "quote": "string, exact words from the bill text that support this provision",
+      "confidence": "high | medium | low"
+    }
+  ],
+
+  "open_questions": ["string, things the bill leaves unclear that affect businesses"],
+  "sources": ["string, every URL used"],
+  "generated_at": "YYYY-MM-DD"
+}

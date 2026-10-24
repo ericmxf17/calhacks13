@@ -1,0 +1,283 @@
+{
+  "bill_id": "hr9041-119",
+  "as_of": "2026-10-23",
+  "pass_probability": 0.003,
+  "baseline": {
+    "products": [
+      {
+        "id": "PRD-CITY",
+        "name": "VoltRide City",
+        "units": 5500,
+        "net_price": 1520,
+        "unit_cost": 865.0,
+        "gross_profit": 3602500.0
+      },
+      {
+        "id": "PRD-CARGO",
+        "name": "VoltRide Cargo",
+        "units": 2000,
+        "net_price": 2240,
+        "unit_cost": 1370.0,
+        "gross_profit": 1740000.0
+      },
+      {
+        "id": "PRD-SPARE",
+        "name": "Replacement battery pack",
+        "units": 1500,
+        "net_price": 420,
+        "unit_cost": 254.0,
+        "gross_profit": 249000.0
+      }
+    ],
+    "revenue": 13470000.0,
+    "gross_profit": 5591500.0,
+    "gross_margin": 0.4151
+  },
+  "scenarios": [
+    {
+      "id": "S1",
+      "name": "Passes",
+      "branch": "pass",
+      "probability": 0.003,
+      "months_until_rule_applies": null
+    },
+    {
+      "id": "S2",
+      "name": "Fails",
+      "branch": "fail",
+      "probability": 0.997,
+      "months_until_rule_applies": null
+    }
+  ],
+  "options": [
+    {
+      "option_id": "do_nothing",
+      "option_name": "Do nothing",
+      "description": "Watch the bill. Act only if it moves.",
+      "expected_first_year_impact": 969.3,
+      "worst_case": 0.0,
+      "best_case": 323101.0,
+      "compliant_in_every_pass_scenario": true,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": 323101.0,
+          "gross_margin_after": 0.4311,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": 323101.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 840.6,
+              "gross_profit": 3848801.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1331.6,
+              "gross_profit": 1816800.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 254.0,
+              "gross_profit": 249000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "-8% unit cost on CMP-CITY-FRM, CMP-CITY-DRV, CMP-CITY-WHL, CMP-CITY-MSC, CMP-CARGO-FRM, CMP-CARGO-DRV, CMP-CARGO-WHL, CMP-CARGO-MSC [assumption B1: Duties make up about 8% of the landed cost of qualifying bicycle parts. PLACEHOLDER: replace with VoltRide's actual duties paid.]",
+            "+3% units on PRD-CITY [assumption B3: Tax-free employer reimbursement raises VoltRide City sales about 3%]"
+          ],
+          "probability": 0.003
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": 0.0,
+          "gross_margin_after": 0.4151,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": 0.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5500,
+              "net_price": 1520,
+              "unit_cost": 865.0,
+              "gross_profit": 3602500.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1370.0,
+              "gross_profit": 1740000.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 254.0,
+              "gross_profit": 249000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [],
+          "probability": 0.997
+        }
+      ]
+    },
+    {
+      "option_id": "employer_program",
+      "option_name": "Start an employer sales program now",
+      "description": "Build partnerships with employers so VoltRide is ready if the benefit passes.",
+      "expected_first_year_impact": -2998.31,
+      "worst_case": -3975.0,
+      "best_case": 321589.01,
+      "compliant_in_every_pass_scenario": true,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": 361589.01,
+          "gross_margin_after": 0.4312,
+          "below_target_margin": false,
+          "one_time_costs": [
+            {
+              "item": "Employer sales program setup",
+              "amount": 40000,
+              "how": "Given in plan [assumption B4: Setting up an employer sales program costs about $40,000]"
+            }
+          ],
+          "one_time_total": 40000,
+          "first_year_impact": 321589.01,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5722,
+              "net_price": 1520,
+              "unit_cost": 840.6,
+              "gross_profit": 3887289.01
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1331.6,
+              "gross_profit": 1816800.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 254.0,
+              "gross_profit": 249000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "+1% units on PRD-CITY [assumption B5: An employer program adds about 1% to City sales even without the tax benefit]",
+            "-8% unit cost on CMP-CITY-FRM, CMP-CITY-DRV, CMP-CITY-WHL, CMP-CITY-MSC, CMP-CARGO-FRM, CMP-CARGO-DRV, CMP-CARGO-WHL, CMP-CARGO-MSC [assumption B1: Duties make up about 8% of the landed cost of qualifying bicycle parts. PLACEHOLDER: replace with VoltRide's actual duties paid.]",
+            "+3% units on PRD-CITY [assumption B3: Tax-free employer reimbursement raises VoltRide City sales about 3%]"
+          ],
+          "probability": 0.003
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": 36025.0,
+          "gross_margin_after": 0.4152,
+          "below_target_margin": false,
+          "one_time_costs": [
+            {
+              "item": "Employer sales program setup",
+              "amount": 40000,
+              "how": "Given in plan [assumption B4: Setting up an employer sales program costs about $40,000]"
+            }
+          ],
+          "one_time_total": 40000,
+          "first_year_impact": -3975.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5555,
+              "net_price": 1520,
+              "unit_cost": 865.0,
+              "gross_profit": 3638525.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1370.0,
+              "gross_profit": 1740000.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 254.0,
+              "gross_profit": 249000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "+1% units on PRD-CITY [assumption B5: An employer program adds about 1% to City sales even without the tax benefit]"
+          ],
+          "probability": 0.997
+        }
+      ]
+    }
+  ],
+  "ranking_by_expected_impact": [
+    "do_nothing",
+    "employer_program"
+  ],
+  "method_notes": [
+    "Annual profit change is the yearly gross profit change once the rule applies, minus any added yearly costs.",
+    "First-year impact = annual profit change - one-time costs (certifications, penalties, unsellable stock, lost sales while fixes finish).",
+    "Expected impact weights each scenario by its probability. Pass probability comes from forecast.py.",
+    "Products that break a rule are treated as unsellable once the rule applies.",
+    "While fixes are still finishing, the whole product is treated as unsellable (no partial sales from already-compliant suppliers), so gap losses are a worst case.",
+    "Costs before the rule applies (for example, paying more for certified parts early) are not counted."
+  ]
+}

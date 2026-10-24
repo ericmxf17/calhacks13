@@ -1,0 +1,15 @@
+# Secrets: never commit API keys
+.env
+.env.*
+*.key
+
+# Python
+__pycache__/
+*.pyc
+
+# Mac
+.DS_Store
+
+# Raw training data (100MB, re-downloadable from govinfo.gov)
+bulk*/
+*.zip

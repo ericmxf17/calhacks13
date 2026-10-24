@@ -1,0 +1,148 @@
+{
+  "bill": {
+    "id": "hr973-119",
+    "congress": 119,
+    "type": "hr",
+    "number": 973,
+    "title": "Setting Consumer Standards for Lithium-Ion Batteries Act",
+    "policy_area": null,
+    "url": "https://www.congress.gov/bill/119th-congress/house-bill/973",
+    "text_version_used": "Engrossed in House (2025-04-28)"
+  },
+
+  "status": {
+    "stage": "passed_one_chamber",
+    "latest_action": {"date": "2025-04-29", "text": "Received in the Senate."},
+    "sponsor": {"name": "Rep. Ritchie Torres", "party": "D", "state": "NY"},
+    "cosponsors": {"total": 23, "by_party": {"D": 17, "R": 6, "I": 0}},
+    "committees": ["House Energy and Commerce"],
+    "chamber_votes": [
+      {"chamber": "House", "date": "2025-04-28", "yeas": 365, "nays": 42, "method": "roll call, suspension of the rules (2/3 required)"}
+    ],
+    "companion_bills": [
+      {
+        "id": "s389-119",
+        "title": "Setting Consumer Standards for Lithium-Ion Batteries Act",
+        "sponsor": {"name": "Sen. Kirsten Gillibrand", "party": "D", "state": "NY"},
+        "cosponsors": {"total": 5, "by_party": {"D": 2, "R": 3, "I": 0}},
+        "latest_action": {"date": "2025-07-29", "text": "Placed on Senate Legislative Calendar under General Orders. Calendar No. 133."},
+        "how_found": "title search (not listed as identical in the related bills endpoint)"
+      }
+    ],
+    "congress_ends": "2027-01-03",
+    "days_until_congress_ends": 72
+  },
+
+  "plain_summary": "Requires the Consumer Product Safety Commission to turn three existing voluntary UL safety standards for e-bikes, e-scooters, and their lithium-ion batteries into mandatory federal rules within 180 days of the bill becoming law. Future updates to those standards would automatically become mandatory unless the Commission objects. The Commission must also report to Congress on battery fires within 5 years.",
+
+  "provisions": [
+    {
+      "id": "P1",
+      "section": "Sec. 2(a)",
+      "type": "mandatory_standard",
+      "plain_english": "The CPSC must make three UL safety standards mandatory: UL 2271 for light electric vehicle batteries, UL 2849 for e-bike electrical systems, and UL 2272 for personal e-mobility devices like scooters and hoverboards.",
+      "who_must_act": ["federal_agency", "manufacturers", "importers", "distributors", "retailers"],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": ["lithium-ion batteries for e-bikes and e-scooters", "e-bike electrical systems", "personal e-mobility devices"],
+      "standards_referenced": ["UL 2271", "UL 2849", "UL 2272"],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": "Not later than 180 days after the date of the enactment of this Act",
+        "days_after_trigger": 180,
+        "what_happens_then": "The CPSC must have issued the final standards. The bill does not say when businesses must comply.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "high",
+      "relevance_reason": "Any e-bike or battery that does not meet these standards could no longer be legally sold to consumers once the rule takes effect.",
+      "quote": "Not later than 180 days after the date of the enactment of this Act, the Consumer Product Safety Commission (referred to in this section as the ``Commission'') shall promulgate, under section 553 of title 5, United States Code, the provisions of ANSI/CAN/UL 2271-Standard for Batteries for Use in Light Electric Vehicle Applications, ANSI/CAN/UL 2849-Standard for Safety for Electrical Systems for eBikes, and ANSI/CA/UL 2272-Standard for Electrical Systems for Personal E-Mobility Devices",
+      "confidence": "high"
+    },
+    {
+      "id": "P2",
+      "section": "Sec. 2(b)",
+      "type": "other",
+      "plain_english": "The rules only apply to consumer products, not to commercial or industrial equipment.",
+      "who_must_act": ["federal_agency"],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": ["consumer e-bikes, e-scooters, and batteries"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {"trigger": "enactment", "deadline_text": null, "days_after_trigger": null, "what_happens_then": "Sets the scope of the standards in P1.", "compliance_date_known": false},
+      "business_relevance": "medium",
+      "relevance_reason": "Products sold only to businesses (for example, some delivery fleet bikes) might fall outside the rule. That depends on how the CPSC defines consumer products.",
+      "quote": "the Commission shall limit the application of such standards to consumer products as defined in section 3(a)(5) of the Consumer Product Safety Act",
+      "confidence": "high"
+    },
+    {
+      "id": "P3",
+      "section": "Sec. 2(c)",
+      "type": "mandatory_standard",
+      "plain_english": "When UL updates any of the three standards, the new version automatically becomes mandatory 180 days after the CPSC is notified, unless the CPSC objects within 90 days.",
+      "who_must_act": ["manufacturers", "importers", "distributors", "retailers", "federal_agency"],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": ["lithium-ion batteries for e-bikes and e-scooters", "e-bike electrical systems", "personal e-mobility devices"],
+      "standards_referenced": ["UL 2271", "UL 2849", "UL 2272"],
+      "amounts": [],
+      "timing": {
+        "trigger": "UL notifies the CPSC of a revised standard",
+        "deadline_text": "effective 180 days after the date on which the organization notifies the Commission",
+        "days_after_trigger": 180,
+        "what_happens_then": "The revised standard becomes mandatory unless the CPSC objects within 90 days.",
+        "compliance_date_known": true
+      },
+      "business_relevance": "medium",
+      "relevance_reason": "Companies would need to keep re-certifying products as UL updates its standards, which is an ongoing cost.",
+      "quote": "effective 180 days after the date on which the organization notifies the Commission (or such later date specified by the Commission in the Federal Register) unless, within 90 days after receiving that notice, the Commission notifies the organization",
+      "confidence": "high"
+    },
+    {
+      "id": "P4",
+      "section": "Sec. 2(d)",
+      "type": "penalty",
+      "plain_english": "The standards count as official consumer product safety rules, so the CPSC's normal enforcement powers apply to products that don't comply.",
+      "who_must_act": ["manufacturers", "importers", "distributors", "retailers"],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": ["lithium-ion batteries for e-bikes and e-scooters", "e-bike electrical systems", "personal e-mobility devices"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {"trigger": "rule takes effect", "deadline_text": null, "days_after_trigger": null, "what_happens_then": "Non-compliant products can face standard CPSC enforcement.", "compliance_date_known": false},
+      "business_relevance": "high",
+      "relevance_reason": "Turns voluntary standards into enforceable rules. The bill does not list specific penalties itself.",
+      "quote": "shall be treated as a consumer product safety rule promulgated under section 9 of the Consumer Product Safety Act",
+      "confidence": "medium"
+    },
+    {
+      "id": "P5",
+      "section": "Sec. 2(e)",
+      "type": "agency_study",
+      "plain_english": "Within 5 years, the CPSC must report to Congress on battery fires, including whether the batteries met the standard and which country they were made in.",
+      "who_must_act": ["federal_agency"],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": ["lithium-ion batteries in micromobility products"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {"trigger": "enactment", "deadline_text": "Not later than 5 years after the date of enactment of this Act", "days_after_trigger": null, "what_happens_then": "Report goes to the House Energy and Commerce and Senate Commerce committees.", "compliance_date_known": true},
+      "business_relevance": "low",
+      "relevance_reason": "No direct business requirement, but tracking country of manufacture could lead to future rules targeting batteries from specific countries.",
+      "quote": "if known, the manufacturer and country of manufacture of a lithium-ion battery that resulted in a fire, explosion, or other hazard",
+      "confidence": "high"
+    }
+  ],
+
+  "open_questions": [
+    "When must businesses comply? The bill gives the CPSC 180 days to issue the rule, but does not set the date businesses must meet it.",
+    "Will existing inventory made before the rule takes effect still be sellable?",
+    "How will the CPSC define 'consumer product' for e-bikes sold to delivery workers or fleets?"
+  ],
+
+  "sources": [
+    "https://api.congress.gov/v3/bill/119/hr/973",
+    "https://api.congress.gov/v3/bill/119/hr/973/actions",
+    "https://api.congress.gov/v3/bill/119/hr/973/cosponsors",
+    "https://api.congress.gov/v3/bill/119/hr/973/summaries",
+    "https://api.congress.gov/v3/bill/119/s/389",
+    "https://www.congress.gov/119/bills/hr973/BILLS-119hr973eh.htm"
+  ],
+  "generated_at": "2026-10-23"
+}

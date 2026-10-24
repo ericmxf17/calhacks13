@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "disclaimer": "FICTIONAL COMPANY. All names and numbers are realistic placeholders for a hackathon demo, not real data.",
+    "version": "0.2",
+    "currency": "USD",
+    "fiscal_year": 2026,
+    "cost_note": "Component unit costs are landed costs (they already include any duties and shipping to Oakland)."
+  },
+
+  "company": {
+    "name": "VoltRide",
+    "hq": "Oakland, CA",
+    "founded": 2019,
+    "employees": 62,
+    "roles": ["manufacturer", "importer", "retailer"],
+    "business_model": "Designs e-bikes, imports components, and does final assembly in Oakland. Sells direct-to-consumer online and through bike shops.",
+    "assembly_site": {"location": "Oakland, CA", "annual_capacity_units": 10000}
+  },
+
+  "financials": {
+    "annual_revenue": 13470000,
+    "operating_expenses": 3900000,
+    "cash_on_hand": 2100000,
+    "target_gross_margin": 0.40
+  },
+
+  "products": [
+    {
+      "id": "PRD-CITY",
+      "name": "VoltRide City",
+      "category": "e-bike",
+      "description": "commuter e-bike, 500W rear hub motor",
+      "retail_price": 1699,
+      "avg_net_price": 1520,
+      "annual_units": 5500,
+      "certifications": ["UL 2849"],
+      "components": [
+        {"id": "CMP-CITY-BAT", "part": "battery pack, standard 672Wh", "category": "lithium-ion battery", "qty": 1,
+         "sourcing": [
+           {"supplier_id": "SUP-BAT-01", "unit_cost": 205, "share": 0.70},
+           {"supplier_id": "SUP-BAT-02", "unit_cost": 285, "share": 0.20},
+           {"supplier_id": "SUP-BAT-03", "unit_cost": 245, "share": 0.10}
+         ]},
+        {"id": "CMP-CITY-MOT", "part": "hub motor", "category": "motor", "qty": 1, "sourcing": [{"supplier_id": "SUP-MOT-01", "unit_cost": 95, "share": 1.0}]},
+        {"id": "CMP-CITY-FRM", "part": "frame", "category": "bicycle frame", "qty": 1, "sourcing": [{"supplier_id": "SUP-FRM-01", "unit_cost": 110, "share": 1.0}]},
+        {"id": "CMP-CITY-CTL", "part": "controller and display", "category": "electronics", "qty": 1, "sourcing": [{"supplier_id": "SUP-CTL-01", "unit_cost": 55, "share": 1.0}]},
+        {"id": "CMP-CITY-DRV", "part": "drivetrain and brakes", "category": "bicycle parts", "qty": 1, "sourcing": [{"supplier_id": "SUP-DRV-01", "unit_cost": 95, "share": 1.0}]},
+        {"id": "CMP-CITY-WHL", "part": "wheels and tires", "category": "bicycle parts", "qty": 1, "sourcing": [{"supplier_id": "SUP-WHL-01", "unit_cost": 60, "share": 1.0}]},
+        {"id": "CMP-CITY-MSC", "part": "lights, wiring, fenders", "category": "bicycle parts", "qty": 1, "sourcing": [{"supplier_id": "SUP-MSC-01", "unit_cost": 40, "share": 1.0}]}
+      ],
+      "other_costs_per_unit": {"assembly_labor": 85, "inbound_freight": 35, "packaging": 20, "warranty_reserve": 45}
+    },
+    {
+      "id": "PRD-CARGO",
+      "name": "VoltRide Cargo",
+      "category": "e-bike",
+      "description": "longtail cargo e-bike, mid-drive motor",
+      "retail_price": 2499,
+      "avg_net_price": 2240,
+      "annual_units": 2000,
+      "certifications": [],
+      "components": [
+        {"id": "CMP-CARGO-BAT", "part": "battery pack, large 960Wh", "category": "lithium-ion battery", "qty": 1,
+         "sourcing": [
+           {"supplier_id": "SUP-BAT-01", "unit_cost": 265, "share": 0.70},
+           {"supplier_id": "SUP-BAT-02", "unit_cost": 365, "share": 0.20},
+           {"supplier_id": "SUP-BAT-03", "unit_cost": 315, "share": 0.10}
+         ]},
+        {"id": "CMP-CARGO-MOT", "part": "mid-drive motor", "category": "motor", "qty": 1, "sourcing": [{"supplier_id": "SUP-MOT-01", "unit_cost": 280, "share": 1.0}]},
+        {"id": "CMP-CARGO-FRM", "part": "frame", "category": "bicycle frame", "qty": 1, "sourcing": [{"supplier_id": "SUP-FRM-01", "unit_cost": 185, "share": 1.0}]},
+        {"id": "CMP-CARGO-CTL", "part": "controller and display", "category": "electronics", "qty": 1, "sourcing": [{"supplier_id": "SUP-CTL-01", "unit_cost": 60, "share": 1.0}]},
+        {"id": "CMP-CARGO-DRV", "part": "drivetrain and brakes", "category": "bicycle parts", "qty": 1, "sourcing": [{"supplier_id": "SUP-DRV-01", "unit_cost": 140, "share": 1.0}]},
+        {"id": "CMP-CARGO-WHL", "part": "wheels and tires", "category": "bicycle parts", "qty": 1, "sourcing": [{"supplier_id": "SUP-WHL-01", "unit_cost": 85, "share": 1.0}]},
+        {"id": "CMP-CARGO-MSC", "part": "lights, wiring, racks", "category": "bicycle parts", "qty": 1, "sourcing": [{"supplier_id": "SUP-MSC-01", "unit_cost": 70, "share": 1.0}]}
+      ],
+      "other_costs_per_unit": {"assembly_labor": 110, "inbound_freight": 55, "packaging": 30, "warranty_reserve": 65}
+    },
+    {
+      "id": "PRD-SPARE",
+      "name": "Replacement battery pack",
+      "category": "lithium-ion battery",
+      "description": "aftermarket standard 672Wh battery",
+      "retail_price": 449,
+      "avg_net_price": 420,
+      "annual_units": 1500,
+      "certifications": [],
+      "components": [
+        {"id": "CMP-SPARE-BAT", "part": "battery pack, standard 672Wh", "category": "lithium-ion battery", "qty": 1,
+         "sourcing": [
+           {"supplier_id": "SUP-BAT-01", "unit_cost": 205, "share": 0.70},
+           {"supplier_id": "SUP-BAT-02", "unit_cost": 285, "share": 0.20},
+           {"supplier_id": "SUP-BAT-03", "unit_cost": 245, "share": 0.10}
+         ]}
+      ],
+      "other_costs_per_unit": {"assembly_labor": 0, "inbound_freight": 8, "packaging": 6, "warranty_reserve": 15}
+    }
+  ],
+
+  "suppliers": [
+    {
+      "id": "SUP-BAT-01", "name": "Shenzhen PowerCell", "country": "China",
+      "supplies": "lithium-ion battery packs", "certifications": [],
+      "lead_time_weeks": 10, "available_capacity_units_per_year": 20000,
+      "contract": {"ends": "2027-03-31", "min_annual_units": 5000, "early_exit_penalty": 75000},
+      "notes": "Cheapest option. Says it could get UL 2271 certified in about 26 weeks, raising its price about 15%."
+    },
+    {
+      "id": "SUP-BAT-02", "name": "Hanbit Energy", "country": "South Korea",
+      "supplies": "lithium-ion battery packs", "certifications": ["UL 2271"],
+      "lead_time_weeks": 14, "available_capacity_units_per_year": 4000,
+      "contract": {"ends": "2028-06-30", "min_annual_units": 1000, "early_exit_penalty": 50000},
+      "notes": "Highest quality. Limited spare capacity for VoltRide."
+    },
+    {
+      "id": "SUP-BAT-03", "name": "Dongguan SafeCell", "country": "China",
+      "supplies": "lithium-ion battery packs", "certifications": ["UL 2271"],
+      "lead_time_weeks": 12, "available_capacity_units_per_year": 6000,
+      "contract": {"ends": "2027-12-31", "min_annual_units": 0, "early_exit_penalty": 0},
+      "notes": "Certified and cheaper than Hanbit. Newer supplier with a shorter track record."
+    },
+    {"id": "SUP-MOT-01", "name": "Changzhou Drive Systems", "country": "China", "supplies": "hub and mid-drive motors", "certifications": [], "lead_time_weeks": 8, "available_capacity_units_per_year": 15000},
+    {"id": "SUP-FRM-01", "name": "Taichung Alloy Works", "country": "Taiwan", "supplies": "aluminum frames", "certifications": [], "lead_time_weeks": 12, "available_capacity_units_per_year": 12000},
+    {"id": "SUP-CTL-01", "name": "Shenzhen Logic Electronics", "country": "China", "supplies": "motor controllers and displays", "certifications": [], "lead_time_weeks": 6, "available_capacity_units_per_year": 20000},
+    {"id": "SUP-DRV-01", "name": "Kaneda Components", "country": "Malaysia", "supplies": "drivetrains and hydraulic brakes", "certifications": [], "lead_time_weeks": 16, "available_capacity_units_per_year": 10000},
+    {"id": "SUP-WHL-01", "name": "Saigon Wheelworks", "country": "Vietnam", "supplies": "wheels and tires", "certifications": [], "lead_time_weeks": 10, "available_capacity_units_per_year": 15000},
+    {"id": "SUP-MSC-01", "name": "Ningbo Parts Co.", "country": "China", "supplies": "lights, wiring, fenders, racks", "certifications": [], "lead_time_weeks": 6, "available_capacity_units_per_year": 30000}
+  ],
+
+  "inventory": [
+    {
+      "id": "INV-01",
+      "item": "standard battery pack",
+      "supplier_id": "SUP-BAT-01",
+      "usable_in_components": ["CMP-CITY-BAT", "CMP-SPARE-BAT"],
+      "units": 2800,
+      "unit_cost": 205
+    }
+  ],
+
+  "certification_costs": [
+    {"certification": "UL 2849", "level": "product", "cost": 60000, "weeks": 16, "notes": "Whole e-bike electrical system, per model."}
+  ],
+
+  "supplier_qualification": {"cost": 40000, "weeks": 14, "notes": "Testing and approval to add a supplier to a component it doesn't supply yet."},
+
+  "sales": {
+    "channels": [
+      {"channel": "direct-to-consumer online", "share_of_units": 0.60},
+      {"channel": "independent bike shops", "share_of_units": 0.40}
+    ],
+    "regions": [
+      {"region": "California", "share_of_units": 0.40},
+      {"region": "New York City", "share_of_units": 0.20, "notes": "NYC already requires certified e-bikes and batteries (Local Law 39 of 2023, verify). VoltRide ships only certified batteries here."},
+      {"region": "Rest of US", "share_of_units": 0.40}
+    ]
+  },
+
+  "competitors": [
+    {"name": "Zoomly", "type": "low-cost online brand", "retail_price_range": [899, 1199], "battery_certification": "mostly uncertified", "notes": "Undercuts VoltRide on price. Would be hit hardest by a federal battery safety rule."},
+    {"name": "Pedalux", "type": "premium brand", "retail_price_range": [2800, 4200], "battery_certification": "fully certified", "notes": "Already compliant. Competes with VoltRide Cargo."}
+  ],
+
+  "goals_fy2027": [
+    "Grow VoltRide Cargo to 3,500 units a year",
+    "Expand bike shop network from 85 to 150 shops",
+    "Keep gross margin at or above 40%"
+  ]
+}

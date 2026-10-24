@@ -1,0 +1,50 @@
+{
+  "probability": 0.003,
+  "model_probability": 0.003,
+  "starting_point": {
+    "stage": "introduced",
+    "days_left": 72,
+    "probability": 0.001,
+    "explanation": "A typical bill at this stage with 72 days left, before looking at its other signals."
+  },
+  "factors": [
+    {
+      "factor": "Has cosponsors from both parties",
+      "applies": true,
+      "effect_on_odds": "x6.28"
+    },
+    {
+      "factor": "Sponsor's party controls the chamber where it started",
+      "applies": false,
+      "effect_on_odds": "no effect"
+    },
+    {
+      "factor": "Sponsor's party controls the other chamber",
+      "applies": false,
+      "effect_on_odds": "no effect"
+    },
+    {
+      "factor": "Has a matching bill in the other chamber",
+      "applies": false,
+      "effect_on_odds": "no effect"
+    },
+    {
+      "factor": "Has many cosponsors (20+ House, 5+ Senate)",
+      "applies": false,
+      "effect_on_odds": "no effect"
+    }
+  ],
+  "research_adjustments": [],
+  "research_adjustment_total": "x1.00 (limited to x0.5-x2.0)",
+  "notes": [
+    "Only 72 days are left in this Congress. If it doesn't pass both chambers by then, the bill dies and must be reintroduced.",
+    "Most bills never leave committee. Watch for a committee markup, which raises the odds sharply."
+  ],
+  "model_info": {
+    "trained_on_congresses": [
+      "117",
+      "118"
+    ],
+    "method": "Logistic regression per stage, trained on every House and Senate bill in those Congresses."
+  }
+}

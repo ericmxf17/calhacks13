@@ -1,0 +1,257 @@
+{
+  "bill": {
+    "id": "hr973-119",
+    "congress": 119,
+    "type": "hr",
+    "number": 973,
+    "title": "Setting Consumer Standards for Lithium-Ion Batteries Act",
+    "policy_area": "Commerce",
+    "url": "https://www.congress.gov/bill/119th-congress/house-bill/973",
+    "text_version_used": "Engrossed in House (2025-04-28)"
+  },
+  "status": {
+    "stage": "passed_one_chamber",
+    "latest_action": {
+      "date": "2025-04-29",
+      "text": "Received in the Senate."
+    },
+    "sponsor": {
+      "name": "Rep. Torres, Ritchie",
+      "party": "D",
+      "state": "NY"
+    },
+    "cosponsors": {
+      "total": 23,
+      "by_party": {
+        "D": 17,
+        "R": 6,
+        "I": 0
+      }
+    },
+    "committees": [
+      "House Committee on Energy and Commerce"
+    ],
+    "chamber_votes": [
+      {
+        "chamber": "House",
+        "date": "2025-04-28",
+        "yeas": 365,
+        "nays": 42,
+        "method": "roll call, suspension of the rules (2/3 required), Roll no. 103"
+      }
+    ],
+    "companion_bills": [
+      {
+        "id": "s389-119",
+        "title": "Setting Consumer Standards for Lithium-Ion Batteries Act",
+        "sponsor": {
+          "name": "Sen. Gillibrand, Kirsten E.",
+          "party": "D",
+          "state": "NY"
+        },
+        "cosponsors": {
+          "total": 5,
+          "by_party": {
+            "D": 2,
+            "R": 3,
+            "I": 0
+          }
+        },
+        "latest_action": {
+          "date": "2025-07-29",
+          "text": "Placed on Senate Legislative Calendar under General Orders. Calendar No. 133."
+        },
+        "how_found": "provided in run inputs as companion_bill (s389); identity confirmed via Congress.gov API short title match"
+      }
+    ],
+    "congress_ends": "2027-01-03",
+    "days_until_congress_ends": 71
+  },
+  "plain_summary": "The bill requires the Consumer Product Safety Commission to turn three existing voluntary safety standards for rechargeable lithium-ion batteries and the e-bikes and e-scooters that use them into mandatory federal consumer product safety rules within 180 days of enactment. Once in force, manufacturers and distributors of those micromobility products would have to comply with the UL 2271, UL 2849 and UL 2272 standards, and later revisions to those standards would automatically become mandatory unless the Commission objects. The bill also requires a report to Congress within five years on lithium-ion battery fires and explosions in micromobility products.",
+  "provisions": [
+    {
+      "id": "P1",
+      "section": "Sec. 2(a)",
+      "type": "mandatory_standard",
+      "plain_english": "Within 180 days of enactment, the CPSC must adopt the ANSI/CAN/UL 2271, ANSI/CAN/UL 2849 and ANSI/CAN/UL 2272 standards (as they read on the date of enactment) as final mandatory consumer product safety standards for lithium-ion batteries and the electrical systems of e-bikes and other personal e-mobility devices.",
+      "who_must_act": [
+        "manufacturers",
+        "importers",
+        "distributors",
+        "retailers",
+        "federal_agency"
+      ],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": [
+        "rechargeable lithium-ion batteries for light electric vehicles",
+        "electric bicycles (e-bikes)",
+        "electric scooters and other personal e-mobility devices",
+        "battery packs and electrical systems for micromobility devices"
+      ],
+      "standards_referenced": [
+        "UL 2271",
+        "UL 2849",
+        "UL 2272"
+      ],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": "Not later than 180 days after the date of the enactment of this Act",
+        "days_after_trigger": 180,
+        "what_happens_then": "The three ANSI/CAN/UL standards become final mandatory consumer product safety standards, so products within scope must meet them.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "high",
+      "relevance_reason": "Converts voluntary battery and e-mobility safety standards into binding federal rules for anyone making, importing, distributing or selling e-bikes, e-scooters, light-electric-vehicle batteries or their electrical systems.",
+      "quote": "Not later than 180 days after the date of the enactment of this Act, the Consumer Product Safety Commission (referred to in this section as the \"Commission\") shall promulgate, under section 553 of title 5, United States Code, the provisions of ANSI/CAN/UL 2271-Standard for Batteries for Use in Light Electric Vehicle Applications, ANSI/CAN/UL 2849-Standard for Safety for Electrical Systems for eBikes, and ANSI/CA/UL 2272-Standard for Electrical Systems for Personal E-Mobility Devices, as in effect on the date of enactment of this Act, as final consumer product safety standards.",
+      "confidence": "high"
+    },
+    {
+      "id": "P2",
+      "section": "Sec. 2(b)",
+      "type": "other",
+      "plain_english": "The Commission must limit the standards to products that meet the Consumer Product Safety Act definition of a \"consumer product\", so the rule's reach depends on that definition rather than covering every battery or vehicle type.",
+      "who_must_act": [
+        "federal_agency"
+      ],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": [
+        "consumer products containing rechargeable lithium-ion batteries",
+        "consumer e-bikes and personal e-mobility devices"
+      ],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": null,
+        "days_after_trigger": null,
+        "what_happens_then": "The scope of the mandatory standards is confined to consumer products as defined in section 3(a)(5) of the Consumer Product Safety Act.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "medium",
+      "relevance_reason": "Determines whether a given battery or vehicle falls inside the mandatory rule at all, which decides who is regulated.",
+      "quote": "In adopting the standards under subsection (a), the Commission shall limit the application of such standards to consumer products as defined in section 3(a)(5) of the Consumer Product Safety Act (15 U.S.C. 2052(a)(5)).",
+      "confidence": "high"
+    },
+    {
+      "id": "P3",
+      "section": "Sec. 2(c)",
+      "type": "mandatory_standard",
+      "plain_english": "If the standards bodies revise any of the three standards after enactment, they must notify the CPSC, and the revision automatically becomes a mandatory CPSC standard 180 days after that notice unless the Commission objects within 90 days as not improving safety.",
+      "who_must_act": [
+        "manufacturers",
+        "importers",
+        "distributors"
+      ],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": [
+        "rechargeable lithium-ion batteries for light electric vehicles",
+        "electric bicycles (e-bikes)",
+        "electric scooters and other personal e-mobility devices"
+      ],
+      "standards_referenced": [
+        "UL 2271",
+        "UL 2849",
+        "UL 2272"
+      ],
+      "amounts": [],
+      "timing": {
+        "trigger": "notification by the standards organization of a final approved revision",
+        "deadline_text": "effective 180 days after the date on which the organization notifies the Commission (or such later date specified by the Commission in the Federal Register)",
+        "days_after_trigger": 180,
+        "what_happens_then": "The revised voluntary standard is treated as a CPSC consumer product safety standard, unless within 90 days the Commission notifies the organization that the revision does not improve safety and that it is retaining the existing standard.",
+        "compliance_date_known": true
+      },
+      "business_relevance": "high",
+      "relevance_reason": "Creates a rolling auto-update mechanism: future UL/ANSI revisions become binding federal requirements on a 180-day clock without new rulemaking, so product compliance must track standards revisions.",
+      "quote": "The revised voluntary standard shall be considered to be a consumer product safety standard issued by the Commission under section 9 of the Consumer Product Safety Act (15 U.S.C. 2058), effective 180 days after the date on which the organization notifies the Commission (or such later date specified by the Commission in the Federal Register) unless, within 90 days after receiving that notice, the Commission notifies the organization that it has determined that the proposed revision, in whole or in part, does not improve the safety of the consumer product covered by the standard and that the Commission is retaining the existing consumer product safety standard.",
+      "confidence": "high"
+    },
+    {
+      "id": "P4",
+      "section": "Sec. 2(d)",
+      "type": "penalty",
+      "plain_english": "The resulting standard, including any adopted revision, has the legal force of a consumer product safety rule issued under section 9 of the Consumer Product Safety Act, which is the provision that carries the CPSC's enforcement and penalty machinery.",
+      "who_must_act": [
+        "manufacturers",
+        "importers",
+        "distributors",
+        "retailers"
+      ],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": [
+        "rechargeable lithium-ion batteries for light electric vehicles",
+        "electric bicycles (e-bikes)",
+        "electric scooters and other personal e-mobility devices"
+      ],
+      "standards_referenced": [
+        "UL 2271",
+        "UL 2849",
+        "UL 2272"
+      ],
+      "amounts": [],
+      "timing": {
+        "trigger": "promulgation of the standard under this section",
+        "deadline_text": null,
+        "days_after_trigger": null,
+        "what_happens_then": "The standard is enforceable as a consumer product safety rule under section 9 of the Consumer Product Safety Act, exposing non-compliant products to the CPSC's standard enforcement remedies.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "high",
+      "relevance_reason": "Makes the standards enforceable rules rather than guidance, so non-compliant products face the CPSC's recall, stop-sale and civil penalty exposure; the bill itself sets no penalty amounts.",
+      "quote": "A standard promulgated under this section, including a revision of such standard adopted by the Commission, shall be treated as a consumer product safety rule promulgated under section 9 of the Consumer Product Safety Act (15 U.S.C. 2058).",
+      "confidence": "high"
+    },
+    {
+      "id": "P5",
+      "section": "Sec. 2(e)",
+      "type": "agency_study",
+      "plain_english": "Within five years the CPSC must report to Congress on lithium-ion battery fires, explosions and other hazards in micromobility products, including make and model, whether the product complied with the new standard, and the manufacturer and country of manufacture where known.",
+      "who_must_act": [
+        "federal_agency"
+      ],
+      "regulator": "Consumer Product Safety Commission",
+      "affected_products": [
+        "micromobility products using lithium-ion batteries"
+      ],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": "Not later than 5 years after the date of enactment of this Act",
+        "days_after_trigger": null,
+        "what_happens_then": "The Commission submits a report to the Senate Committee on Commerce, Science, and Transportation and the House Committee on Energy and Commerce.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "low",
+      "relevance_reason": "A reporting duty on the agency with no direct obligation on businesses, though incident and manufacturer data collected could inform later rulemaking or enforcement priorities.",
+      "quote": "Not later than 5 years after the date of enactment of this Act, the Commission shall submit to the Committee on Commerce, Science, and Transportation of the Senate and the Committee on Energy and Commerce of the House of Representatives, a report regarding fires, explosions, and other hazards relating to lithium-ion batteries used in micromobility products during the period beginning on the date of enactment of this Act and ending on the report date.",
+      "confidence": "high"
+    }
+  ],
+  "open_questions": [
+    "The bill sets a 180-day deadline for the CPSC to issue the standards but never states the date by which manufacturers, importers or sellers must actually comply with them, so business compliance dates are unknown until the final rule is published.",
+    "Sec. 2(a) refers to \"ANSI/CA/UL 2272\" while Sec. 2(c)(1) refers to \"ANSI/CAN/UL 2272\"; the \"CA\" appears to be a drafting error for \"CAN\" but the intended standard should be confirmed.",
+    "The standards are frozen \"as in effect on the date of enactment,\" so it is unclear what happens to products certified to a standard version adopted between enactment and the CPSC's final rule.",
+    "Sec. 2(b) limits scope to \"consumer products\" under 15 U.S.C. 2052(a)(5), leaving unclear whether commercial or rental fleet micromobility devices, and separately sold replacement battery packs, are covered.",
+    "The bill does not specify certification, testing, labeling or third-party lab requirements, or whether existing products already in the stream of commerce must be recalled or retrofitted.",
+    "Whether the CPSC will specify a later effective date in the Federal Register for revisions under Sec. 2(c)(2), and how the 90-day objection window interacts with the 180-day effective date, is left to the agency.",
+    "The bill cites enforcement via section 9 of the Consumer Product Safety Act but does not state penalty amounts, which would come from existing CPSA penalty provisions."
+  ],
+  "sources": [
+    "https://api.congress.gov/v3/bill/119/hr/973",
+    "https://api.congress.gov/v3/bill/119/hr/973/actions",
+    "https://api.congress.gov/v3/bill/119/hr/973/cosponsors",
+    "https://api.congress.gov/v3/bill/119/hr/973/committees",
+    "https://api.congress.gov/v3/bill/119/hr/973/summaries",
+    "https://api.congress.gov/v3/bill/119/hr/973/text",
+    "https://api.congress.gov/v3/bill/119/hr/973/relatedbills",
+    "https://www.congress.gov/119/bills/hr973/BILLS-119hr973eh.htm",
+    "https://api.congress.gov/v3/bill/119/s/389",
+    "https://api.congress.gov/v3/bill/119/s/389/actions",
+    "https://api.congress.gov/v3/bill/119/s/389/cosponsors",
+    "https://www.congress.gov/bill/119th-congress/house-bill/973",
+    "https://www.congress.gov/bill/119th-congress/senate-bill/389"
+  ],
+  "generated_at": "2026-10-24"
+}

@@ -1,0 +1,48 @@
+{
+  "_note": "Sample Agent 3 output for H.R. 9041 (an opportunity bill) and the VoltRide demo company.",
+  "bill_id": "hr9041-119",
+  "as_of": "2026-10-23",
+
+  "relevance": {
+    "relevant_provisions": [
+      {"provision_id": "SEC8", "why": "Bicycle parts imported for US assembly, including e-bikes, would enter duty-free for 10 years. VoltRide assembles in Oakland, so qualifying parts would get cheaper.",
+       "affected_items": ["CMP-CITY-FRM", "CMP-CITY-DRV", "CMP-CITY-WHL", "CMP-CITY-MSC", "CMP-CARGO-FRM", "CMP-CARGO-DRV", "CMP-CARGO-WHL", "CMP-CARGO-MSC"]},
+      {"provision_id": "SEC9", "why": "Employers could give tax-free reimbursements for buying an e-bike to commute, which should raise demand for commuter bikes.", "affected_items": ["PRD-CITY"]}
+    ],
+    "not_relevant": [
+      {"provision_id": "SEC2-7, SEC10-14", "reason": "Road and infrastructure funding. Good for cycling overall, but no direct, measurable effect on VoltRide."}
+    ]
+  },
+
+  "assumptions": [
+    {"id": "B1", "statement": "Duties make up about 8% of the landed cost of qualifying bicycle parts. PLACEHOLDER: replace with VoltRide's actual duties paid.", "value": -8, "unit": "percent", "basis": "estimate", "source": "None. company.json does not list duties separately.", "confidence": "low"},
+    {"id": "B2", "statement": "Only frames, drivetrains, wheels, and small parts qualify. Batteries, motors, and controllers may not (check the tariff list in Sec. 8, note 34(f)).", "value": null, "unit": null, "basis": "bill_text", "source": "H.R. 9041 Sec. 8", "confidence": "medium"},
+    {"id": "B3", "statement": "Tax-free employer reimbursement raises VoltRide City sales about 3%", "value": 3, "unit": "percent", "basis": "estimate", "source": "None yet. Agent 2 should look for results from the earlier federal bike commuter benefit.", "confidence": "low"},
+    {"id": "B4", "statement": "Setting up an employer sales program costs about $40,000", "value": 40000, "unit": "USD", "basis": "estimate", "source": "None", "confidence": "low"},
+    {"id": "B5", "statement": "An employer program adds about 1% to City sales even without the tax benefit", "value": 1, "unit": "percent", "basis": "estimate", "source": "None", "confidence": "low"}
+  ],
+
+  "scenarios": [
+    {
+      "id": "S1", "name": "Passes", "branch": "pass", "share_of_branch": 1.0,
+      "months_until_rule_applies": null, "rules": [],
+      "market_effects": [
+        {"type": "component_cost_change", "component_ids": ["CMP-CITY-FRM", "CMP-CITY-DRV", "CMP-CITY-WHL", "CMP-CITY-MSC", "CMP-CARGO-FRM", "CMP-CARGO-DRV", "CMP-CARGO-WHL", "CMP-CARGO-MSC"], "change_percent": -8, "assumption_id": "B1"},
+        {"type": "volume_change", "product_ids": ["PRD-CITY"], "change_percent": 3, "assumption_id": "B3"}
+      ]
+    },
+    {"id": "S2", "name": "Fails", "branch": "fail", "share_of_branch": 1.0, "months_until_rule_applies": null, "rules": [], "market_effects": []}
+  ],
+
+  "options": [
+    {"id": "do_nothing", "name": "Do nothing", "description": "Watch the bill. Act only if it moves.", "actions": []},
+    {
+      "id": "employer_program", "name": "Start an employer sales program now",
+      "description": "Build partnerships with employers so VoltRide is ready if the benefit passes.",
+      "actions": [
+        {"type": "one_time_cost", "amount": 40000, "description": "Employer sales program setup", "assumption_id": "B4"},
+        {"type": "volume_change", "product_ids": ["PRD-CITY"], "change_percent": 1, "assumption_id": "B5"}
+      ]
+    }
+  ]
+}

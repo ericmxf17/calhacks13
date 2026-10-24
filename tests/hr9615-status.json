@@ -1,0 +1,33 @@
+{
+  "_note": "Partial Agent 1 output (status only), built from the official govinfo bill status file. Used to test forecast.py.",
+  "bill": {
+    "id": "hr9615-119",
+    "congress": 119,
+    "type": "hr",
+    "number": 9615,
+    "title": "BRACE Act"
+  },
+  "status": {
+    "stage": "passed_one_chamber",
+    "latest_action": {
+      "date": "2026-09-16",
+      "text": "Received in the Senate and Read twice and referred to the Committee on Environment and Public Works."
+    },
+    "sponsor": {
+      "name": "Rep. Mariannette Miller-Meeks",
+      "party": "R",
+      "state": "IA"
+    },
+    "cosponsors": {
+      "total": 3,
+      "by_party": {
+        "D": 2,
+        "R": 1,
+        "I": 0
+      }
+    },
+    "companion_bills": [],
+    "congress_ends": "2027-01-03",
+    "days_until_congress_ends": 72
+  }
+}

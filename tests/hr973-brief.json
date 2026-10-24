@@ -1,0 +1,72 @@
+{
+  "bill_id": "hr973-119",
+  "headline": "A battery safety bill with a 22.5% chance of passing could make every VoltRide product unsellable unless its main battery supplier gets certified.",
+  "bill_in_plain_english": "H.R. 973 would make three UL safety standards for e-bikes and their batteries mandatory nationwide. The CPSC would have 180 days after it becomes law to issue the rule.",
+
+  "odds": {
+    "probability_text": "22.5% chance of becoming law this Congress",
+    "why": [
+      "It passed the House 365 to 42, with cosponsors from both parties (raises the odds x1.52).",
+      "A matching Senate bill (S. 389) is waiting for a floor vote (raises the odds x2.02).",
+      "Only 72 days are left in this Congress. If the Senate doesn't act by then, the bill dies."
+    ],
+    "what_would_change_it": [
+      "Up: Senate leaders schedule a vote, or the bill is added to a year-end package.",
+      "Down: a senator publicly objects or places a hold.",
+      "Even if it dies, the CPSC or more states could require the same certifications later."
+    ]
+  },
+
+  "what_it_means": [
+    "If VoltRide does nothing and the rule takes effect, 70% of its batteries and the Cargo model would not comply, so none of its three products could be sold: about $5.6M in gross profit a year.",
+    "Paying Shenzhen PowerCell to get UL 2271 certified raises its battery price about 15%, but keeps gross margin at 39.7% if the bill passes and 40.0% if it fails.",
+    "Certifying VoltRide Cargo to UL 2849 costs $60K and takes 16 weeks.",
+    "Moving all batteries to already-certified suppliers costs more ($374K to $449K in the first year), and switching before the PowerCell contract ends triggers a $75K penalty.",
+    "The 2,800 uncertified battery packs in stock would be used up before even a 7-month deadline at the current pace."
+  ],
+
+  "recommendation": {
+    "option_id": "react_if_passes",
+    "summary": "Wait, but have PowerCell's certification ready to start the day the bill passes or a rule is announced.",
+    "why": "It has the best expected first-year impact (-$88K, compared with -$217K for certifying now), because it spends nothing unless a rule is actually coming.",
+    "tradeoff": "If the rule arrives fast (about 7 months out), the fixes take 35 weeks but the rule starts in 30 weeks, so sales would stop for a few weeks. That worst case is about -$509K, compared with -$266K for certifying now.",
+    "switch_if": [
+      "The Senate schedules a vote on S. 389.",
+      "The CPSC signals an early compliance date.",
+      "PowerCell can't commit in writing to finishing certification within 26 weeks."
+    ]
+  },
+
+  "options_compared": [
+    {"option_id": "react_if_passes", "name": "Wait, then certify if it passes", "expected_impact_text": "-$88K", "worst_case_text": "-$509K", "ready_if_it_passes": false, "one_line": "Cheapest on average, but too slow if the rule comes fast."},
+    {"option_id": "certify_powercell", "name": "Pay PowerCell to get certified now", "expected_impact_text": "-$217K", "worst_case_text": "-$266K", "ready_if_it_passes": true, "one_line": "The safest choice. Ready in every scenario, but you pay more for batteries even if the bill fails."},
+    {"option_id": "switch_after_contract", "name": "Switch after the PowerCell contract ends", "expected_impact_text": "-$374K", "worst_case_text": "-$402K", "ready_if_it_passes": true, "one_line": "Ready in every scenario, but certified suppliers cost more."},
+    {"option_id": "switch_now", "name": "Switch to certified suppliers now", "expected_impact_text": "-$449K", "worst_case_text": "-$477K", "ready_if_it_passes": true, "one_line": "Like switching later, plus a $75K contract penalty."},
+    {"option_id": "do_nothing", "name": "Do nothing", "expected_impact_text": "-$2.4M", "worst_case_text": "-$5.6M", "ready_if_it_passes": false, "one_line": "Every product becomes unsellable if a rule takes effect."}
+  ],
+
+  "next_steps": [
+    {"step": "Get a written quote and timeline from PowerCell for UL 2271 certification, ready to sign the day the bill passes.", "who": "Head of supply chain", "by_when": "Within 2 weeks"},
+    {"step": "Get a UL 2849 testing quote and slot for VoltRide Cargo.", "who": "Head of product", "by_when": "Within a month"},
+    {"step": "Check the PowerCell contract for a change-in-law clause that would waive the exit penalty.", "who": "Legal counsel", "by_when": "This week"},
+    {"step": "Track S. 389 weekly and set an alert for any Senate vote or CPSC announcement.", "who": "Policy analyst", "by_when": "Ongoing until January 3"}
+  ],
+
+  "opportunities": [
+    "Low-cost brands like Zoomly that rely on uncertified batteries would be hit hardest. The plan assumes VoltRide picks up about 5% more e-bike sales if the rule applies.",
+    "VoltRide already ships only certified batteries in New York City, which it can use as proof it is ready."
+  ],
+
+  "assumptions_to_verify": [
+    "When compliance would start. The bill doesn't say. The plan uses 7, 9, and 15 months.",
+    "PowerCell's estimate of 26 weeks and a 15% price increase to get certified.",
+    "Whether stock made before the rule can still be sold afterward."
+  ],
+
+  "sources": [
+    "https://www.congress.gov/bill/119th-congress/house-bill/973",
+    "https://www.congress.gov/119/bills/hr973/BILLS-119hr973eh.htm",
+    "https://api.congress.gov/v3/bill/119/s/389"
+  ],
+  "disclaimer": "Strategic analysis, not legal advice."
+}

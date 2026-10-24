@@ -1,0 +1,36 @@
+{
+  "_about": "Output format for Agent 4 (Brief Writer). This is what the user reads. Every number must come from forecast, impact_results, or company. verify_brief.py checks this.",
+
+  "bill_id": "string",
+  "headline": "string, one sentence: what the bill means for this company",
+  "bill_in_plain_english": "string, 1 to 2 sentences",
+
+  "odds": {
+    "probability_text": "string, e.g. '22.5% chance of becoming law this Congress'",
+    "why": ["string, the 2 or 3 biggest reasons from the forecast"],
+    "what_would_change_it": ["string, events that would raise or lower the odds"]
+  },
+
+  "what_it_means": ["string, 3 to 5 bullets with the key numbers from impact_results"],
+
+  "recommendation": {
+    "option_id": "string, must match an option in impact_results",
+    "summary": "string, one sentence",
+    "why": "string",
+    "tradeoff": "string, what you give up compared with the next-best option",
+    "switch_if": ["string, signals that should make the company switch to another option"]
+  },
+
+  "options_compared": [
+    {"option_id": "string", "name": "string", "expected_impact_text": "string", "worst_case_text": "string", "ready_if_it_passes": "boolean", "one_line": "string"}
+  ],
+
+  "next_steps": [
+    {"step": "string", "who": "string, a role like 'Head of supply chain'", "by_when": "string, a date or trigger"}
+  ],
+
+  "opportunities": ["string"],
+  "assumptions_to_verify": ["string, the low-confidence assumptions that matter most"],
+  "sources": ["string"],
+  "disclaimer": "Strategic analysis, not legal advice."
+}

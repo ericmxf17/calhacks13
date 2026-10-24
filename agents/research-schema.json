@@ -1,0 +1,79 @@
+{
+  "_about": "Output format for Agent 2 (Researcher). Works for any bill. Every claim needs a source URL. Use empty lists when nothing was found. Never guess.",
+
+  "bill_id": "string, copied from Agent 1, e.g. 'hr973-119'",
+
+  "expert_analysis": [
+    {
+      "source_type": "one of: crs_report | cbo_estimate | committee_report | government_agency | law_firm | trade_association | think_tank | advocacy_group | news",
+      "organization": "string",
+      "title": "string",
+      "date": "YYYY-MM-DD or null",
+      "url": "string",
+      "stance": "support | oppose | neutral | mixed",
+      "key_points": ["string, plain English"],
+      "short_quote": "string, 25 words or fewer, copied exactly"
+    }
+  ],
+
+  "stakeholders": [
+    {
+      "name": "string",
+      "type": "industry | consumer | labor | safety | environmental | government | other",
+      "stance": "support | oppose | neutral | mixed | unknown",
+      "what_they_want": "string",
+      "evidence_url": "string"
+    }
+  ],
+
+  "lobbying": {
+    "searched": "boolean",
+    "query_used": "string",
+    "filings_found": "number",
+    "clients": [
+      {"client": "string", "registrant": "string", "year": "number", "what_they_lobbied_on": "string, copied from the filing"}
+    ],
+    "notes": "string. Filings show who is lobbying, not which side they are on."
+  },
+
+  "comparable_past_laws": [
+    {
+      "name": "string",
+      "jurisdiction": "string, e.g. 'New York City' or 'US federal' or 'European Union'",
+      "year_enacted": "number",
+      "similarity": "string, what it has in common with this bill",
+      "what_happened": [
+        {"effect": "string, a measured or reported result", "evidence_url": "string"}
+      ],
+      "lessons_for_businesses": "string",
+      "confidence": "high | medium | low"
+    }
+  ],
+
+  "alternative_paths": [
+    {
+      "path": "one of: agency_rulemaking | state_or_local_laws | larger_package | executive_action | court_case | other",
+      "description": "string, how the same requirement could happen even if this bill fails",
+      "status": "string",
+      "evidence_url": "string"
+    }
+  ],
+
+  "political_context": [
+    {"fact": "string", "evidence_url": "string", "date": "YYYY-MM-DD or null"}
+  ],
+
+  "forecast_adjustments": [
+    {
+      "factor": "string, from the allowed list in the instructions",
+      "multiplier": "number between 0.5 and 2.0",
+      "reason": "string",
+      "evidence_url": "string",
+      "evidence_date": "YYYY-MM-DD"
+    }
+  ],
+
+  "key_uncertainties": ["string"],
+  "sources": ["string, every URL used"],
+  "generated_at": "YYYY-MM-DD"
+}
