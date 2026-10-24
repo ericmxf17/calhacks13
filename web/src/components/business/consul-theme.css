@@ -115,6 +115,9 @@
 .room-switcher button:hover { background: var(--room-soft); color: #243957; }
 .metrics { gap: 10px; border: 0; }
 .metric { padding: 13px 10px; background: #fff; border: 1px solid #bdd7e7; border-top: 4px solid var(--room-color); border-radius: 5px; box-shadow: 3px 3px 0 #ddeaf3; }
+.room-callout { margin: 0 0 18px; padding: 12px 14px; background: var(--room-soft, #fff7d6); border: 1px solid var(--room-color); border-left: 5px solid var(--room-color); border-radius: 5px; color: #243957; }
+.room-callout strong { display: block; font-size: 10px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 5px; }
+.room-callout p { font-size: 11px; line-height: 1.6; margin: 0; color: #2f4a63; }
 .metric>span { font-size: 10px; }
 .metric strong { font-weight: 800; font-size: 25px; color: #243957; }
 .metric small { font-size: 9px; color: #456c64; }

@@ -4,6 +4,8 @@ export type Department = {
   description: string; metrics: { label: string; value: string; change: string }[];
   chartTitle: string; chartNote: string; chartLabels: string[]; chartValues: number[]; unit: string;
   listTitle: string; rows: { initial: string; title: string; subtitle: string; value: string }[]
+  // Optional: the time period the room's figures cover, and a highlighted note shown above the metrics.
+  period?: string; callout?: { title: string; body: string }
 }
 export const departments: Department[] = [
   { id: 'finance', name: 'Finance', shortName: 'Finance', floor: 'SECOND FLOOR', number: '01', position: [-1.57, 5.7, 1.04], color: '#ffd447',
