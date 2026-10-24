@@ -17,6 +17,22 @@ bill number
 
 Rule: **AI reads and writes, code calculates.** Agents never invent probabilities or dollar figures, and `verify_brief.py` checks that they didn't.
 
+## Run the whole chain
+
+```bash
+python3 backend/pipeline.py hr 973 --companion s389 --demo
+```
+
+`--demo` uses saved real outputs from the four CREAO agents, so it finishes in a second with no API keys. Drop `--demo` to call the live agents (each run takes several minutes).
+
+**Live setup:** copy `backend/.env.example` to `backend/.env` and fill in each agent's appId and `capi_` key (create the key on each agent's page in agent.creao.ai). `.env` is gitignored.
+
+Each run saves every step in `runs/<bill>-<time>/`, from `1-bill-analysis.json` through `8-brief.json`, plus `summary.json`. If a step fails, fix it and continue with `python3 backend/pipeline.py --resume runs/<folder>`. Finished steps are skipped.
+
+**Test the live code without keys:** `python3 tests/test_pipeline_live.py` runs the chain against a fake CREAO server and checks that each agent gets the right key and inputs.
+
+**To confirm with CREAO:** the client assumes the run endpoints are `POST /api/v1/apps/{appId}/runs` and `GET /api/v1/apps/{appId}/runs/{runId}`, that `inputs` keys match each agent's input names, and that the answer is in `result.text` or a saved `.json` file. If any of these differ, the only file to change is `backend/creao.py`.
+
 ## Run the whole pipeline on the sample files
 
 ```bash
@@ -41,6 +57,9 @@ In the real app, the `*-expected-output.json`, `*-impact-plan.json`, and `*-brie
 | `agents/brief-writer-instructions.md` | Paste into CREAO to make Agent 4 |
 | `agents/brief-schema.json` | Agent 4's output format (what the front end shows) |
 | `agents/hr973-expected-output.json` | A known-correct Agent 1 answer, for testing |
+| `backend/pipeline.py` | Runs the whole chain for one bill, live or `--demo` |
+| `backend/creao.py` | Starts CREAO agent runs, waits for them, and reads their JSON answers |
+| `backend/.env.example` | Where each agent's appId and key go |
 | `impact/impact.py` | Calculates every option under every scenario. No packages needed |
 | `impact/slim_inputs.py` | Shrinks Agent 1 and 2 outputs into Agent 3's inputs |
 | `impact/brief_inputs.py` | Bundles everything into Agent 4's single input |
