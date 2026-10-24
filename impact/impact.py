@@ -211,14 +211,14 @@ def evaluate(company, plan, option, scenario, as_of):
                 for cid in rule["component_ids"]:
                     p, comp = components[cid]
                     for s in comp["sourcing"]:
-                        if s["share"] > 0 and cert not in suppliers[s["supplier_id"]]["certifications"]:
+                        if p["annual_units"] > 0 and s["share"] > 0 and cert not in suppliers[s["supplier_id"]]["certifications"]:
                             noncompliant.setdefault(p["id"], []).append(f"{comp['part']} from {suppliers[s['supplier_id']]['name']} lacks {cert}")
                     for s in base_sourcing(base, cid):
                         if cert not in base_supplier(base, s["supplier_id"])["certifications"]:
                             at_risk_suppliers.setdefault(s["supplier_id"], set()).add(cid)
             else:
                 for pid in rule["product_ids"]:
-                    if cert not in products[pid]["certifications"]:
+                    if products[pid]["annual_units"] > 0 and cert not in products[pid]["certifications"]:
                         noncompliant.setdefault(pid, []).append(f"{products[pid]['name']} lacks {cert}")
 
     # Fixes that aren't ready when the rule starts cost sales during the gap

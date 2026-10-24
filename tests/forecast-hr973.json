@@ -1,0 +1,58 @@
+{
+  "probability": 0.257,
+  "model_probability": 0.224,
+  "starting_point": {
+    "stage": "passed_one",
+    "days_left": 71,
+    "probability": 0.093,
+    "explanation": "A typical bill at this stage with 71 days left, before looking at its other signals."
+  },
+  "factors": [
+    {
+      "factor": "Has cosponsors from both parties",
+      "applies": true,
+      "effect_on_odds": "x1.52"
+    },
+    {
+      "factor": "Sponsor's party controls the chamber where it started",
+      "applies": false,
+      "effect_on_odds": "no effect"
+    },
+    {
+      "factor": "Sponsor's party controls the other chamber",
+      "applies": false,
+      "effect_on_odds": "no effect"
+    },
+    {
+      "factor": "Has a matching bill in the other chamber",
+      "applies": true,
+      "effect_on_odds": "x2.02"
+    },
+    {
+      "factor": "Has many cosponsors (20+ House, 5+ Senate)",
+      "applies": true,
+      "effect_on_odds": "x0.91"
+    }
+  ],
+  "research_adjustments": [
+    {
+      "factor": "broad_coalition",
+      "multiplier": 1.2,
+      "reason": "Industry (ULSE explicitly urging Senate passage; PeopleForBikes supporting a mandatory standard), consumer groups (Consumer Reports) and fire-service organizations (IAFC, NVFC lobbying) all back the same core requirement, and delivery platforms lobby for the bill. The support is for the UL-standard mandate rather than every bill provision.",
+      "evidence_url": "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/",
+      "evidence_date": "2026-04-21",
+      "multiplier_used": 1.2
+    }
+  ],
+  "research_adjustment_total": "x1.20 (limited to x0.5-x2.0)",
+  "notes": [
+    "Only 71 days are left in this Congress. If it doesn't pass both chambers by then, the bill dies and must be reintroduced."
+  ],
+  "model_info": {
+    "trained_on_congresses": [
+      "117",
+      "118"
+    ],
+    "method": "Logistic regression per stage, trained on every House and Senate bill in those Congresses."
+  }
+}

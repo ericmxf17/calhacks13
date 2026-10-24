@@ -1,0 +1,93 @@
+{
+  "bill_id": "hr973-119",
+  "as_of": "2026-10-24",
+  "relevance": {
+    "relevant_provisions": [
+      {"provision_id": "P1", "why": "The core mandate makes UL 2271 mandatory for the lithium-ion packs VoltRide buys and UL 2849 mandatory for its e-bike electrical systems, and VoltRide is a manufacturer, importer and retailer of exactly those products.", "affected_items": ["PRD-CITY", "PRD-CARGO", "PRD-SPARE", "CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT", "SUP-BAT-01", "SUP-BAT-02", "SUP-BAT-03", "INV-01"]},
+      {"provision_id": "P2", "why": "The consumer-product limitation decides whether the separately sold replacement battery pack (PRD-SPARE) is inside the mandatory rule at all, which the bill's own open questions leave unresolved.", "affected_items": ["PRD-SPARE", "CMP-SPARE-BAT"]},
+      {"provision_id": "P3", "why": "Future UL 2271/2849 revisions become binding automatically, so every certified VoltRide model and pack must be re-tracked on an ongoing basis.", "affected_items": ["PRD-CITY", "PRD-CARGO", "CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"]},
+      {"provision_id": "P4", "why": "Because the standard becomes enforceable as a CPSA section 9 rule, VoltRide's imported, non-UL 2271 packs become a stop-sale, recall and civil-penalty exposure rather than a voluntary gap.", "affected_items": ["PRD-CITY", "PRD-CARGO", "PRD-SPARE"]}
+    ],
+    "not_relevant": [
+      {"provision_id": "P5", "reason": "This is a five-year reporting duty on the CPSC to Congress; it creates no obligation, cost or restriction for VoltRide."}
+    ]
+  },
+  "assumptions": [
+    {"id": "A1", "statement": "SUP-BAT-01 supplies 70% of every battery-pack component VoltRide buys and its packs are tested only to EN 15194, not UL 2271.", "value": 0.7, "unit": "share of battery units", "basis": "company_data", "source": "company.suppliers SUP-BAT-01 certifications/notes and product sourcing shares", "confidence": "high"},
+    {"id": "A2", "statement": "SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.", "value": 15, "unit": "percent unit-cost increase", "basis": "company_data", "source": "company.suppliers SUP-BAT-01 notes", "confidence": "medium"},
+    {"id": "A3", "statement": "Certifying the VoltRide Cargo electrical system to UL 2849 costs $60,000 and takes 16 weeks; the City is already certified.", "value": 60000, "unit": "USD", "basis": "company_data", "source": "company.certification_costs and PRD-CITY certifications", "confidence": "high"},
+    {"id": "A4", "statement": "Because the bill orders the CPSC to adopt the standards within 180 days of enactment, the earliest binding compliance point is about 6 months after enactment. This figure runs from enactment, not from today; scenario timings add A18's passage lag.", "value": 6, "unit": "months", "basis": "bill_text", "source": "bill_analysis.provisions P1 timing (180 days after enactment)", "confidence": "high"},
+    {"id": "A5", "statement": "A middle-case compliance date of about 18 months after enactment reflects CPSC's statement that it could set an effective date later than 180 days. This figure runs from enactment, not from today.", "value": 18, "unit": "months", "basis": "research", "source": "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of", "confidence": "medium"},
+    {"id": "A6", "statement": "A slow case of about 30 months after enactment covers a rule delayed by OMB review, quorum problems or litigation over a final rule. This figure runs from enactment, not from today.", "value": 30, "unit": "months", "basis": "research", "source": "https://www.bicycleretailer.com/industry-news/2026/07/01/industry-now-can-comment-cpsc-proposed-e-mobility-device-battery-testing", "confidence": "low"},
+    {"id": "A7", "statement": "In the fail branch I assign 55% to a binding CPSC micromobility battery rule within about 12 months: the proposal was published 2026-06-24, comments closed 2026-08-24, an oral hearing was held 2026-10-21, the final rule is pending and the agency regained a quorum in August 2026.", "value": 0.55, "unit": "share of fail branch", "basis": "research", "source": "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of", "confidence": "medium"},
+    {"id": "A8", "statement": "The CPSC rule covers more than the bill: it reaches separately sold user-replaceable battery packs, so PRD-SPARE and CMP-SPARE-BAT are also in scope in the agency-rule scenario.", "value": null, "unit": null, "basis": "research", "source": "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of", "confidence": "medium"},
+    {"id": "A9", "statement": "CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.", "value": 35000, "unit": "USD", "basis": "estimate", "source": "estimate informed by CPSC NPR description in research (adds tests rather than adopting UL unchanged)", "confidence": "low"},
+    {"id": "A10", "statement": "Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.", "value": 8, "unit": "percent unit-cost increase", "basis": "estimate", "source": "estimate; supplier notes show certification is priced into packs but give no figure for SUP-BAT-02/03", "confidence": "low"},
+    {"id": "A11", "statement": "Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.", "value": 3, "unit": "percent unit volume change", "basis": "estimate", "source": "estimate based on company.competitors Zoomly notes", "confidence": "low"},
+    {"id": "A12", "statement": "Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.", "value": 25000, "unit": "USD per year", "basis": "estimate", "source": "estimate; provision P3 creates no stated amount", "confidence": "low"},
+    {"id": "A13", "statement": "VoltRide needs about 9,000 battery packs a year (5,500 City + 2,000 Cargo + 1,500 spare), and the certified suppliers SUP-BAT-02 (4,000/yr) and SUP-BAT-03 (6,000/yr) together have enough capacity to cover all of it.", "value": 9000, "unit": "battery units per year", "basis": "company_data", "source": "company.products annual_units and company.suppliers available_capacity_units_per_year", "confidence": "high"},
+    {"id": "A14", "statement": "The 2,800 standard packs in inventory came from SUP-BAT-01 and are already built to EN 15194 only, so they stay uncertified and unsellable once a UL 2271 mandate applies even if SUP-BAT-01 later gets its packs certified.", "value": 2800, "unit": "units", "basis": "company_data", "source": "company.inventory INV-01 and supplier SUP-BAT-01 certifications", "confidence": "high"},
+    {"id": "A15", "statement": "Leaving SUP-BAT-01 before its contract ends on 2027-03-31 (about 5 months away) triggers a $75,000 early-exit penalty and breaches its 5,000-unit annual minimum, and a full exit strands the 2,800-pack inventory.", "value": 75000, "unit": "USD", "basis": "company_data", "source": "company.suppliers SUP-BAT-01 contract terms; company.inventory INV-01", "confidence": "high"},
+    {"id": "A16", "statement": "California SB 1271 accepts EN 15194 but the federal bill and the CPSC proposal do not, so the standard VoltRide relies on for 40% of its units is not a federal substitute.", "value": null, "unit": null, "basis": "research", "source": "https://www.bicycleretailer.com/industry-news/2026/07/01/industry-now-can-comment-cpsc-proposed-e-mobility-device-battery-testing", "confidence": "high"},
+    {"id": "A17", "statement": "A fast pass scenario keeps the existing supplier mix, so the uncertified 70% share from SUP-BAT-01 is a stop-sale exposure from the compliance date unless the supplier certifies.", "value": null, "unit": null, "basis": "company_data", "source": "company product sourcing shares and supplier SUP-BAT-01 certifications", "confidence": "high"},
+    {"id": "A18", "statement": "The earliest realistic passage is about 2 months from today (the bill is in the Senate with 71 days left in the Congress), so every pass-branch compliance date counted from today adds 2 months to the post-enactment lag, and 2 months is also when the company would learn a rule is coming if the bill passes.", "value": 2, "unit": "months", "basis": "estimate", "source": "estimate based on bill_analysis.status (Senate, 71 days left in Congress) and the user's 2-month passage floor", "confidence": "medium"}
+  ],
+  "scenarios": [
+    {"id": "S1", "name": "Pass - fast compliance (about 8 months from today: 2-month passage + 6-month post-enactment lag)", "branch": "pass", "share_of_branch": 0.35, "months_until_rule_applies": 8,
+     "rules": [
+       {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+       {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}],
+     "market_effects": [
+       {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 8, "assumption_id": "A10"},
+       {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 3, "assumption_id": "A11"},
+       {"type": "annual_cost_change", "amount": 25000, "description": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions", "assumption_id": "A12"}]},
+    {"id": "S2", "name": "Pass - middle compliance (about 20 months from today: 2-month passage + 18-month lag)", "branch": "pass", "share_of_branch": 0.45, "months_until_rule_applies": 20,
+     "rules": [
+       {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+       {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}],
+     "market_effects": [
+       {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 8, "assumption_id": "A10"},
+       {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 3, "assumption_id": "A11"},
+       {"type": "annual_cost_change", "amount": 25000, "description": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions", "assumption_id": "A12"}]},
+    {"id": "S3", "name": "Pass - slow compliance (about 32 months from today: 2-month passage + 30-month lag, rule delayed or litigated)", "branch": "pass", "share_of_branch": 0.2, "months_until_rule_applies": 32,
+     "rules": [
+       {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+       {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}],
+     "market_effects": [
+       {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 8, "assumption_id": "A10"},
+       {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 3, "assumption_id": "A11"},
+       {"type": "annual_cost_change", "amount": 25000, "description": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions", "assumption_id": "A12"}]},
+    {"id": "S4", "name": "Fail - bill dies, nothing changes", "branch": "fail", "share_of_branch": 0.45, "months_until_rule_applies": null, "rules": [], "market_effects": []},
+    {"id": "S5", "name": "Fail - CPSC finalizes its broader micromobility battery rule (about 12 months)", "branch": "fail", "share_of_branch": 0.55, "months_until_rule_applies": 12,
+     "rules": [
+       {"type": "requires_supplier_certification", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "certification": "UL 2271", "provision_id": "P1"},
+       {"type": "requires_product_certification", "product_ids": ["PRD-CITY", "PRD-CARGO"], "certification": "UL 2849", "provision_id": "P1"}],
+     "market_effects": [
+       {"type": "component_cost_change", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "supplier_ids": ["SUP-BAT-02", "SUP-BAT-03"], "change_percent": 8, "assumption_id": "A10"},
+       {"type": "volume_change", "product_ids": ["PRD-CITY", "PRD-CARGO"], "change_percent": 3, "assumption_id": "A11"},
+       {"type": "one_time_cost", "amount": 35000, "description": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements", "assumption_id": "A9"}]}
+  ],
+  "options": [
+    {"id": "do_nothing", "name": "Do nothing", "description": "Keep the current supplier mix, sell the EN 15194-only packs and the uncertified Cargo, and deal with any rule after it lands.", "actions": []},
+    {"id": "certify_incumbent_and_cargo", "name": "Prepare now: certify SUP-BAT-01 and the Cargo e-bike",
+     "description": "Pay for SUP-BAT-01 to reach UL 2271 (about 26 weeks, +15% pack price) and certify the Cargo electrical system to UL 2849 now ($60,000, 16 weeks). This keeps the 5,000-unit contract minimum and avoids the exit penalty, but it does not rescue the 2,800 packs already built, which stay uncertified and must be written down or sold before a rule bites.",
+     "actions": [
+       {"type": "supplier_certification", "supplier_id": "SUP-BAT-01", "certification": "UL 2271", "weeks": 26, "unit_cost_change_percent": 15, "assumption_id": "A2", "start_in_months": 0, "only_if_rule_applies": false},
+       {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849", "cost": 60000, "weeks": 16, "start_in_months": 0, "only_if_rule_applies": false}]},
+    {"id": "shift_to_certified_suppliers", "name": "Prepare now: move battery volume to SUP-BAT-02 and SUP-BAT-03",
+     "description": "Switch all three battery components to the already-certified suppliers (40% Hanbit, 60% SafeCell, which fits 3,690 and 5,535 of the roughly 9,225 needed units inside their 4,000 and 6,000 unit capacities), certify Cargo, and accept the SUP-BAT-01 exit consequences the calculator already prices.",
+     "actions": [
+       {"type": "sourcing_shift", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "new_shares": [{"supplier_id": "SUP-BAT-02", "share": 0.4}, {"supplier_id": "SUP-BAT-03", "share": 0.6}], "start_in_months": 0, "use_inventory_first": false},
+       {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849", "cost": 60000, "weeks": 16, "start_in_months": 0, "only_if_rule_applies": false}]},
+    {"id": "wait_and_react", "name": "Wait and react: move only when a rule is final",
+     "description": "Hold the current mix and inventory, watch the CPSC docket, and about 2 months out - when a passing bill signals a rule is coming - certify Cargo and shift battery volume to SUP-BAT-02/03, ahead of the earliest compliance date.",
+     "actions": [
+       {"type": "product_certification", "product_id": "PRD-CARGO", "certification": "UL 2849", "cost": 60000, "weeks": 16, "start_in_months": 2, "only_if_rule_applies": true},
+       {"type": "sourcing_shift", "component_ids": ["CMP-CITY-BAT", "CMP-CARGO-BAT", "CMP-SPARE-BAT"], "new_shares": [{"supplier_id": "SUP-BAT-02", "share": 0.4}, {"supplier_id": "SUP-BAT-03", "share": 0.6}], "start_in_months": 2, "use_inventory_first": false, "only_if_rule_applies": true}]},
+    {"id": "trim_to_city_and_spare", "name": "Prepare now: drop Cargo, keep City and spare packs, certify SUP-BAT-01",
+     "description": "Shelve the Cargo line (it has no certification and a $60,000, 16-week path) and protect the 5,500-unit City line and 1,500 spare packs by certifying SUP-BAT-01 and keeping the contract minimum; the 2,800 packs already built stay uncertified either way.",
+     "actions": [
+       {"type": "drop_product", "product_id": "PRD-CARGO"},
+       {"type": "supplier_certification", "supplier_id": "SUP-BAT-01", "certification": "UL 2271", "weeks": 26, "unit_cost_change_percent": 15, "assumption_id": "A2", "start_in_months": 0, "only_if_rule_applies": false}]}
+  ]
+}
