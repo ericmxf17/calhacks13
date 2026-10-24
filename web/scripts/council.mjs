@@ -16,9 +16,10 @@ try {
   if (operation === 'setup') result = await request('?view=setup')
   else if (operation === 'sources' && argument) result = await request(`?view=sources&role=${encodeURIComponent(argument)}&offset=${encodeURIComponent(offset)}`)
   else if (operation === 'submit' && argument) result = await request('', JSON.parse(await readFile(argument, 'utf8')))
+  else if (operation === 'thread' && argument) result = await request(`?view=thread&jobId=${encodeURIComponent(argument)}`)
   else if ((operation === 'read' || operation === 'inspect') && argument) {
     result = await request(`?jobId=${encodeURIComponent(argument)}`)
     if (operation === 'inspect') result = { id: result.id, business: result.business.company, businessKey: result.businessKey, question: result.question, status: result.status, stage: result.stage, message: result.message, sources: result.sources.map(source => ({ ...source, text: `${source.text.length} characters; use read for full saved source excerpts` })), turns: result.turns, decision: result.decision }
-  } else throw new Error('Usage: node scripts/council.mjs setup | sources <agent-role> [offset] | submit <saved-request.json> | read <job-uuid> | inspect <job-uuid>')
+  } else throw new Error('Usage: node scripts/council.mjs setup | sources <agent-role> [offset] | submit <saved-request.json> | read <job-uuid> | inspect <job-uuid> | thread <leaf-job-uuid>')
   console.log(JSON.stringify(result, null, 2))
 } catch (error) { console.error(error.message); process.exitCode = 1 }

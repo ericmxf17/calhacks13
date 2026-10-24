@@ -1,6 +1,6 @@
 import { BackendError, readBody } from '@/lib/backend'
 import { privateHeaders, requireLocalAgentPreview } from '@/lib/agent-run-reader'
-import { councilSetup, councilSourceOptions, readCouncilJob, submitCouncil } from '@/lib/council'
+import { councilSetup, councilSourceOptions, readCouncilJob, readCouncilThread, submitCouncil } from '@/lib/council'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -18,6 +18,7 @@ export async function GET(request: Request) {
       if (!/^\d+$/.test(rawOffset) || !Number.isSafeInteger(Number(rawOffset))) throw new BackendError(400, 'INVALID_INPUT', 'Choose a valid source page offset.')
       return Response.json(await councilSourceOptions(query.get('role'), Number(rawOffset)), { headers: privateHeaders })
     }
+    if (query.get('view') === 'thread') return Response.json(await readCouncilThread(query.get('jobId')), { headers: privateHeaders })
     return Response.json(await readCouncilJob(query.get('jobId')), { headers: privateHeaders })
   } catch (error) { return failure(error) }
 }

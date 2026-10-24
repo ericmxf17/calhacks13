@@ -200,3 +200,29 @@ Preview any building type during development at
 `/demo/scenes?archetype=cafe&rooms=5` (add `&props=chimney;cafe_tables,planters` to
 choose roof and ground props). The page returns 404 outside development.
 
+## Talk to the council
+
+Open **Consul** from a company workspace. The camera swings to the council before
+the conversation appears. The left roster shows Finance, Operations, Skeptic,
+and Chair; the current role reports its public focus. **Context & sources**
+shows the company setup and selected CREAO evidence. Each round ends with the
+Chair's synthesis and a decision card inside the conversation.
+
+The composer sends a new question or a follow-up to the existing Factory
+backend. Follow-ups retain the original evidence snapshots and source IDs.
+Choose **New conversation** to change evidence. Company edits also start a
+separate context. Reading or reloading a saved conversation does not start a
+model run. See the [council backend guide](../backend/README.md#consul-council)
+for credentials, round limits, and recovery.
+
+The conversation and message primitives are adapted from
+[Vercel AI Elements](https://elements.ai-sdk.dev/components/conversation).
+Their source and license are kept in `src/components/ai-elements/`. The composer
+uses the existing council API; it does not require another model provider.
+
+During development, `/demo/council` shows the production renderer with an
+explicitly illustrative conversation and Chair decision. Use
+`/demo/council?stage=skeptic` to inspect the active-role state. These previews
+perform no provider calls or browser-storage writes and return 404 outside
+development.
+

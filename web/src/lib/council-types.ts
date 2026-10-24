@@ -9,10 +9,12 @@ export type CouncilEvidence = { id: string; title: string; text: string; provena
 export type CouncilClaim = { text: string; sourceIds: string[] }
 export type CouncilTurn = { role: CouncilRole; sessionId: string; summary: string; claims: CouncilClaim[]; challenges: CouncilClaim[]; uncertainties: string[] }
 export type CouncilDecision = { action: string; rationale: CouncilClaim[]; disagreements: CouncilClaim[]; nextSteps: CouncilClaim[]; missingEvidence: string[]; confidence: 'low' | 'medium' | 'high'; relevance: 'relevant' | 'not_relevant' | 'insufficient_evidence' }
-export type CouncilJob = { id: string; business: BusinessInput; businessKey: string; question: string; status: 'resolving' | 'running' | 'completed' | 'failed' | 'interrupted'; stage: CouncilRole | null; sources: CouncilEvidence[]; turns: CouncilTurn[]; decision: CouncilDecision | null; message: string | null; createdAt: string; updatedAt: string }
+export type CouncilJob = { id: string; previousJobId: string | null; rootJobId: string; round: number; business: BusinessInput; businessKey: string; question: string; status: 'resolving' | 'running' | 'completed' | 'failed' | 'interrupted'; stage: CouncilRole | null; sources: CouncilEvidence[]; turns: CouncilTurn[]; decision: CouncilDecision | null; message: string | null; createdAt: string; updatedAt: string }
+export type CouncilHistoryRound = Pick<CouncilJob, 'id' | 'question' | 'turns' | 'decision' | 'createdAt'>
+export type CouncilThread = { rootJobId: string; rounds: CouncilJob[] }
 export type CouncilSourceOption = { ref: CouncilSourceRef; title: string; description: string; createdAt: string | null }
 export type CouncilSetup = { available: boolean; message: string | null; roles: { role: AgentRole; name: string; configured: boolean }[] }
-export type CouncilRequest = { requestId: string; business: BusinessInput; question: string; sources: CouncilSourceRef[]; assignToCompany: true }
+export type CouncilRequest = { requestId: string; business: BusinessInput; question: string; sources: CouncilSourceRef[]; assignToCompany: true; previousJobId?: string }
 
 /** Browser/server freshness identity over the entire validated profile; never authorization. */
 export function councilBusinessKey(raw: BusinessInput): string {

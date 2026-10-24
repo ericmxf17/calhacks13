@@ -300,6 +300,26 @@ worker: after process restart, reading unfinished work marks it interrupted and
 never resumes or reruns a potentially executed turn. Inspect it before
 intentionally starting a new council with a new UUID.
 
+Follow-ups are new rounds linked with `previousJobId`. The server reads prior
+questions, public turns and decisions from its own ledger, then sends them to
+each role alongside the current question and current round's turns. Client
+transcripts are never trusted as history. The parent must be completed and its
+full validated company profile must match exactly. Each child inherits the
+root's frozen evidence text, provenance and source IDs; send `sources: []` for
+follow-ups. New evidence or an edited company starts a new thread, so an old
+`S1` citation can never point to newly selected text. Saved excerpts remain the
+record even if their original download URL changes.
+
+Threads allow four rounds, at most 256 KiB of serialized prior public history,
+and at most 2 MiB for each exact serialized role message. Exceeding a limit
+fails explicitly without dropping history or retrying paid work. Every round
+has its own stable request UUID, saved before POST. Replaying an accepted UUID
+recovers its job before rechecking new-submission parent eligibility. Legacy
+jobs read as first rounds without changing their original request hashes.
+`GET /api/council?view=thread&jobId=<leaf UUID>` returns its root-to-leaf branch;
+reads never execute work. Different deliberate children of one completed
+parent form separate branches, rather than a globally serialized chat head.
+
 From `web`, use the real local API with:
 
 ```sh
@@ -308,6 +328,7 @@ node scripts/council.mjs sources brief-writer 0
 node scripts/council.mjs submit saved-council-request.json
 node scripts/council.mjs inspect <job-uuid>
 node scripts/council.mjs read <job-uuid>
+node scripts/council.mjs thread <leaf-job-uuid>
 ```
 
 Set `COUNCIL_URL` for another local port. `submit` reads a request containing
