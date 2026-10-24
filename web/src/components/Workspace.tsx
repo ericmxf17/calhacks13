@@ -1,10 +1,15 @@
 'use client'
 
-import { useEffect, useState, type FormEvent, type InputHTMLAttributes } from 'react'
+import { useEffect, useMemo, useState, type FormEvent, type InputHTMLAttributes } from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { demoCompanies, type DemoCompany } from '@/lib/demo-companies'
 import { validateBusiness, type BusinessInput } from '@/lib/business-input'
+import { parsePartsFile } from '@/lib/parse-parts'
+import BusinessSettings from './BusinessSettings'
+import { profileKey } from '@/lib/scene-profile'
+import { starterDepartments } from '@/lib/starter-rooms'
+import { useSceneDesign } from './business/useSceneDesign'
 
 const Scene = dynamic(() => import('./business/App'), {
   ssr: false,
@@ -76,9 +81,17 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [fileName, setFileName] = useState('')
-  const [editing, setEditing] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [parsing, setParsing] = useState(false)
   const hasWorkspaceAccess = signedIn || view === 'demo'
+  // Demo companies use their saved design and prepared rooms until their details are edited.
+  // Everyone else gets a building from Scene Designer (or a quick keyword design), with rooms filled from setup.
+  const demoPreset = view === 'demo' ? preset : undefined
+  const prepared = demoPreset && JSON.stringify(business) === JSON.stringify(demoPreset.business) ? demoPreset.departments : undefined
+  const savedDesign = demoPreset && profileKey(business) === profileKey(demoPreset.business) ? demoPreset.scene : undefined
+  const design = useSceneDesign(complete ? business : null, savedDesign)
+  const scene = design.spec
+  const rooms = useMemo(() => starterDepartments(scene, business, prepared), [scene, business, prepared])
   useEffect(() => {
     if (view === 'demo') return
     let active = true
@@ -107,7 +120,6 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
     setBusiness(empty)
     setStep(0)
     setComplete(false)
-    setEditing(false)
     setError('')
     setFileName('')
     setLoading(true)
@@ -125,7 +137,6 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       try {
         setBusiness(validateBusiness(business))
         setComplete(true)
-        setEditing(false)
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Please check your business details.')
       }
@@ -149,7 +160,6 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       } else {
         await request({ action: 'setup', business })
         setComplete(true)
-        setEditing(false)
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Please try again.')
@@ -162,46 +172,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
     setError('')
     setParsing(true)
     try {
-      if (file.size > 2 * 1024 * 1024)
-        throw new Error('Please use a spreadsheet smaller than 2 MB.')
-      let rows: unknown[][]
-      if (/\.csv$/i.test(file.name)) {
-        const { default: Papa } = await import('papaparse')
-        const parsed = Papa.parse<string[]>(await file.text(), { skipEmptyLines: true })
-        if (parsed.errors.length)
-          throw new Error('This CSV could not be read. Check its formatting.')
-        rows = parsed.data
-      } else if (/\.xlsx$/i.test(file.name)) {
-        const { readSheet: read } = await import('read-excel-file/browser')
-        rows = await read(file)
-      } else throw new Error('Choose a .csv or .xlsx spreadsheet.')
-      const headers = (rows[0] ?? []).map((v) => String(v).trim().toLowerCase())
-      const columns = ['supplier', 'part', 'cost'].map((name) => headers.indexOf(name))
-      if (columns.some((i) => i < 0))
-        throw new Error('Your spreadsheet needs these column headers: supplier, part, cost.')
-      const parts = rows
-        .slice(1)
-        .filter((row) => row.some((v) => v !== null && v !== ''))
-        .map((row, i) => {
-          const supplier = String(row[columns[0]] ?? '').trim()
-          const part = String(row[columns[1]] ?? '').trim()
-          const rawCost = row[columns[2]]
-          const cost = Number(rawCost)
-          if (
-            !supplier ||
-            !part ||
-            supplier.length > 200 ||
-            part.length > 200 ||
-            rawCost === '' ||
-            rawCost == null ||
-            !Number.isFinite(cost) ||
-            cost < 0
-          )
-            throw new Error(`Check supplier, part, and cost on row ${i + 2}.`)
-          return { supplier, part, cost }
-        })
-      if (!parts.length || parts.length > 1000)
-        throw new Error('Include between 1 and 1,000 supplier parts.')
+      const parts = await parsePartsFile(file)
       setBusiness((b) => ({ ...b, demo: false, parts }))
       setFileName(file.name)
     } catch (e) {
@@ -219,7 +190,6 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       setComplete(false)
       setBusiness(empty)
       setStep(0)
-      setEditing(false)
       setFileName('')
       setMode('login')
     } catch {
@@ -228,21 +198,21 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       setBusy(false)
     }
   }
-  if (complete && !editing)
+  async function saveSettings(next: BusinessInput) {
+    if (view !== 'demo') await request({ action: 'setup', business: next })
+    setBusiness(next)
+  }
+  if (complete)
     return (
       <>
         <Scene
           company={business.company}
-          departments={view === 'demo' ? preset?.departments : undefined}
+          scene={scene}
+          departments={rooms}
+          design={design}
           actions={
             <>
-              <button
-                type="button"
-                onClick={() => {
-                  setEditing(true)
-                  setStep(0)
-                }}
-              >
+              <button type="button" onClick={() => setSettingsOpen(true)}>
                 Business settings
               </button>
               <button type="button" disabled={busy} onClick={view === 'demo' ? exitDemo : logout}>
@@ -251,6 +221,15 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
             </>
           }
         />
+        {settingsOpen && (
+          <BusinessSettings
+            business={business}
+            preview={view === 'demo'}
+            redesignNote="Your rooms update as soon as you save. New names or descriptions also ask Scene Designer to redesign your building."
+            onSave={saveSettings}
+            onClose={() => setSettingsOpen(false)}
+          />
+        )}
         {error && (
           <p
             role="alert"
@@ -618,11 +597,6 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
                 ) : (
                   <button type="button" onClick={view === 'demo' ? exitDemo : logout}>
                     Sign out
-                  </button>
-                )}
-                {editing && (
-                  <button type="button" onClick={() => setEditing(false)}>
-                    Cancel
                   </button>
                 )}
                 <span>{view === 'demo' ? 'Preview only · Changes aren’t saved' : 'Saved securely to your account'}</span>

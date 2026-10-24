@@ -168,8 +168,12 @@ try {
     console.log(JSON.stringify(row))
   }
   for (let run = 0; run < repeat; run++) await sample(`home-${run}`, false, args.includes('--trace') && run === 0)
+  // Pointer parallax on Home redraws the building every frame, so its draw count tracks scene size.
+  for (let run = 0; run < repeat; run++) await sample(`home-pointer-${run}`, true, false)
+  await sleep(2000)
   await dev.evaluate(`document.querySelector('#nav-agents').click()`)
-  await dev.wait(`document.querySelector('.agents-panel') !== null && document.querySelectorAll('.agent-avatar[data-animated="true"]').length === 8`)
+  // Wait until every avatar in the agents grid has switched to its animated version.
+  await dev.wait(`document.querySelector('.agents-panel') !== null && document.querySelectorAll('.agent-avatar').length > 0 && document.querySelectorAll('.agent-avatar[data-animated="true"]').length === document.querySelectorAll('.agent-avatar').length`)
   await sleep(2000)
   for (let run = 0; run < repeat; run++) await sample(`agents-idle-${run}`, false, args.includes('--trace') && run === 0)
   for (let run = 0; run < repeat; run++) await sample(`agents-pointer-${run}`, true, args.includes('--trace') && run === 0)

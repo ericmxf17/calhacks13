@@ -2,12 +2,12 @@ import 'server-only'
 
 import { BackendError, readBody } from './backend'
 import { briefWriterExample, readBriefWriterJob, submitBriefWriter } from './brief-writer'
-import { agentFor, configuredAgents, getRun, listRuns, ProviderError, type Agent, type Run } from './creao'
+import { agentFor, configuredAgents, getRun, listRuns, openArtifact, type Agent, type Run } from './creao'
+import { readSceneDesignerJob, submitSceneDesigner } from './scene-designer'
 import type { AgentConnectionsResponse, AgentRunDetail, AgentRunsResponse, ArtifactPreview } from './agent-run-types'
 
 const textTypes = new Set(['text/plain', 'text/markdown', 'text/csv', 'application/json', 'text/tab-separated-values'])
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const storageHost = 'storage-bucket-creao-user-upload-production.s3.us-west-2.amazonaws.com'
 const previewLimit = 256 * 1024
 export const privateHeaders = { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' }
 
@@ -70,33 +70,14 @@ async function download(agent: Agent, run: Run, index: number, preview: boolean)
   if (!artifact) throw new BackendError(404, 'ARTIFACT_NOT_FOUND', 'This artifact is unavailable.')
   const detail = runDetail(agent.role, run).artifacts[index]
   if (preview && !textTypes.has(detail.mediaType)) throw new BackendError(415, 'PREVIEW_UNAVAILABLE', 'Download this file to view it.')
-  const stableURL = new URL(`https://agent.creao.ai/api/v1/runs/${encodeURIComponent(run.id)}/artifacts/download`)
-  stableURL.searchParams.set('artifactId', artifact.id)
-  // The scoped secret goes only to CREAO. Storage redirects are fetched without credentials.
-  let response = await fetch(stableURL, { headers: { Authorization: `Bearer ${process.env[agent.keyEnv]!.trim()}` },
-    redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(30_000) })
-  if ([301, 302, 303, 307, 308].includes(response.status)) {
-    const location = response.headers.get('location')
-    await response.body?.cancel()
-    let destination: URL
-    try { destination = new URL(location || '') } catch { throw new ProviderError('ARTIFACT_UNAVAILABLE', 'The artifact could not be downloaded.') }
-    // This exact public bucket was verified from an existing CREAO artifact.
-    if (destination.protocol !== 'https:' || destination.hostname !== storageHost || destination.port || destination.username || destination.password) {
-      throw new ProviderError('ARTIFACT_UNAVAILABLE', 'The artifact could not be downloaded.')
-    }
-    response = await fetch(destination, { redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(30_000) })
-  }
-  if (!response.ok || !response.body) {
-    await response.body?.cancel()
-    throw new ProviderError('ARTIFACT_UNAVAILABLE', 'The artifact could not be downloaded.', response.status)
-  }
+  const response = await openArtifact(agent, run.id, artifact.id)
   if (!preview) {
     const filename = (artifact.id.split('/').pop() || 'artifact').replace(/[\x00-\x1f\x7f"\\/]/g, '_').slice(0, 180)
     const encoded = encodeURIComponent(filename).replace(/['()*]/g, char => `%${char.charCodeAt(0).toString(16)}`)
     return new Response(response.body, { headers: { ...privateHeaders, 'Content-Type': 'application/octet-stream',
       'Content-Disposition': `attachment; filename="${filename.replace(/[^\x20-\x7e]/g, '_')}"; filename*=UTF-8''${encoded}` } })
   }
-  const reader = response.body.getReader()
+  const reader = response.body!.getReader()
   const chunks: Uint8Array[] = []
   let size = 0
   let truncated = false
@@ -125,6 +106,9 @@ export async function readAgentRuns(request: Request, path: string[]): Promise<R
   }
   if (role === 'brief-writer' && path.length === 3 && runId === 'jobs') {
     return Response.json(await readBriefWriterJob(section), { headers: privateHeaders })
+  }
+  if (role === 'scene-designer' && path.length === 3 && runId === 'jobs') {
+    return Response.json(await readSceneDesignerJob(section), { headers: privateHeaders })
   }
   if (path.length === 1 && role === 'agents') {
     // Verify each configured key with a read. One agent's failure must not hide the others.
@@ -169,12 +153,13 @@ export async function createAgentRun(request: Request, path: string[]): Promise<
   if (request.headers.get('origin') !== origin || request.headers.get('sec-fetch-site') !== 'same-origin') {
     throw new BackendError(403, 'PREVIEW_UNAVAILABLE', 'Run submission requires the local application.')
   }
-  if (path.length !== 2 || path[0] !== 'brief-writer' || path[1] !== 'jobs') {
-    throw new BackendError(404, 'NOT_FOUND', 'Only Brief Writer can be started here.')
-  }
+  // Only these agents can be started from the browser; each checks its own input.
+  const submit = path.length === 2 && path[1] === 'jobs'
+    ? { 'brief-writer': submitBriefWriter, 'scene-designer': submitSceneDesigner }[path[0]] : undefined
+  if (!submit) throw new BackendError(404, 'NOT_FOUND', 'Only Brief Writer and Scene Designer can be started here.')
   if (request.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
-    throw new BackendError(415, 'INVALID_INPUT', 'Send an analysis pack as JSON.')
+    throw new BackendError(415, 'INVALID_INPUT', 'Send the request as JSON.')
   }
-  const job = await submitBriefWriter(await readBody(request))
+  const job = await submit(await readBody(request))
   return Response.json(job, { status: 202, headers: privateHeaders })
 }

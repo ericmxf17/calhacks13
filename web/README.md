@@ -172,7 +172,31 @@ windows are marked separately because profiling adds overhead. Use untraced wind
 for comparisons. `--chrome` overrides the Chrome executable path. `--width` and
 `--height` select the viewport.
 
-The probe warms the scene before measuring Home idle, Agents idle and Agents pointer
-movement. `--interactions` also exercises camera reversals, room navigation, resize
+The probe warms the scene before measuring Home idle, Home pointer movement, Agents
+idle and Agents pointer movement. `--interactions` also exercises camera reversals, room navigation, resize
 and reduced motion. These are development diagnostics, not production FPS or page
 load benchmarks. Chrome needs to render a real WebGL canvas for a valid capture.
+
+## Building designs (Scene Designer)
+
+Each company's 3D building comes from a small design file, not from code written by AI.
+The file picks one of five building types (storefront, workshop, cafe, studio,
+warehouse), its colors, sign tagline, roof and ground props, and 3 to 6 rooms. Code
+builds the building from it and fills every room number from the setup details.
+
+- `src/lib/scene-spec.ts` lists the allowed values and checks every design. It repairs
+  bad values instead of failing, and falls back to a keyword-picked "quick design".
+- `src/components/business/scene/` holds the building parts, the layout math, and one
+  file per building type in `archetypes/`.
+- `src/lib/starter-rooms.ts` fills rooms from products and supplier parts.
+- `src/lib/demo-scenes.ts` holds the saved designs for the three demo companies.
+- After setup, `useSceneDesign` asks the CREAO Scene Designer agent for a design
+  (through `/api/agent-runs/scene-designer/jobs`) and shows a construction site while it
+  works. The request ID is saved in the browser first, so a reload resumes the same
+  run. Without `ENABLE_LOCAL_AGENT_PREVIEW=true` and the Scene Designer keys, the quick
+  design shows at once.
+
+Preview any building type during development at
+`/demo/scenes?archetype=cafe&rooms=5` (add `&props=chimney;cafe_tables,planters` to
+choose roof and ground props). The page returns 404 outside development.
+

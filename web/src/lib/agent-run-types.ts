@@ -39,3 +39,12 @@ export type BriefWriterJob = {
   runId: string | null
   message: string | null
 }
+
+export type SceneDesignerJob = BriefWriterJob & {
+  /** The checked design in snake_case, once the run has finished. */
+  spec: Record<string, unknown> | null
+  /** What the app had to fix in the agent's design. */
+  repairs: string[]
+  /** Why a finished run's design could not be used. */
+  specError: string | null
+}

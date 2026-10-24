@@ -18,6 +18,7 @@ documents the scoped API and its separate Developer Console API.
 | `researcher` | `CREAO_RESEARCHER_ID` | `CREAO_RESEARCHER_API_KEY` |
 | `impact-planner` | `CREAO_IMPACT_PLANNER_ID` | `CREAO_IMPACT_PLANNER_API_KEY` |
 | `brief-writer` | `CREAO_BRIEF_WRITER_ID` | `CREAO_BRIEF_WRITER_API_KEY` |
+| `scene-designer` | `CREAO_SCENE_DESIGNER_ID` | `CREAO_SCENE_DESIGNER_API_KEY` |
 
 `BACKEND_API_TOKEN` is a separate secret for local backend callers. Never give
 frontend JavaScript a CREAO key or the backend token. Browser access still

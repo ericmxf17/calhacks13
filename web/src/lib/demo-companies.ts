@@ -1,5 +1,7 @@
 import type { BusinessInput } from './business-input'
-import { departments as roomLayout, type Department, type DepartmentId } from '@/components/business/departments'
+import { validateSceneSpec, type SceneSpec } from './scene-spec'
+import { demoSceneDesigns } from './demo-scenes'
+import { departments as roomLayout, type Department, type LegacyRoomId } from '@/components/business/departments'
 
 export type DemoCompany = {
   id: string
@@ -7,18 +9,21 @@ export type DemoCompany = {
   summary: string
   business: BusinessInput
   departments: Department[]
+  /** The saved building design, so demo pages don't wait for Scene Designer. */
+  scene: SceneSpec
 }
 
 type RoomContent = Omit<Department, 'id' | 'floor' | 'number' | 'position' | 'color'>
 
-// Keep the established building geometry; every company supplies all of its room content.
-function rooms(content: Record<DepartmentId, RoomContent>): Department[] {
-  return roomLayout.map(({ id, floor, number, position, color }) => ({
-    id, floor, number, position, color, ...content[id],
+// Keep the four original rooms and their colors; every company supplies all of its room content.
+// The building design places the rooms, so floor, number and position here are only defaults.
+function rooms(content: Record<LegacyRoomId, RoomContent>): Department[] {
+  return roomLayout.map(({ id, floor, number, position, color, kind, furniture, ink, soft, source }) => ({
+    id, floor, number, position, color, kind, furniture, ink, soft, source, ...content[id],
   }))
 }
 
-export const demoCompanies: DemoCompany[] = [
+const companies: Omit<DemoCompany, 'scene'>[] = [
   {
     // Matches company.json and the live H.R. 973 analysis (run 2026-10-24) in the Python pipeline.
     id: 'voltride', industry: 'E-bike manufacturing',
@@ -166,6 +171,10 @@ export const demoCompanies: DemoCompany[] = [
     }),
   },
 ]
+
+export const demoCompanies: DemoCompany[] = companies.map(company => ({
+  ...company, scene: validateSceneSpec(demoSceneDesigns[company.id], company.business).spec,
+}))
 
 export function findDemoCompany(id: string): DemoCompany | undefined {
   return demoCompanies.find((company) => company.id === id)
