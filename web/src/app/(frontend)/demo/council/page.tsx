@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
-import CouncilPanel from '@/components/business/CouncilPanel'
+import CouncilDemoPlayer from './CouncilDemoPlayer'
 import { findDemoCompany } from '@/lib/demo-companies'
-import type { CouncilJob, CouncilThread } from '@/lib/council-types'
+import type { CouncilJob } from '@/lib/council-types'
 import { councilBusinessKey } from '@/lib/council-types'
 
 // Development-only fixture: the production renderer is used without network or storage effects.
@@ -11,7 +11,7 @@ export default async function CouncilDesignPreview({
   searchParams: Promise<{ stage?: string }>
 }) {
   if (process.env.NODE_ENV !== 'development') notFound()
-  const active = (await searchParams).stage === 'skeptic'
+  const stage = (await searchParams).stage
   const business = findDemoCompany('harbor-goods')!.business
   const claim = (text: string) => ({ text, sourceIds: ['profile'] })
   const round: CouncilJob = {
@@ -113,49 +113,5 @@ export default async function CouncilDesignPreview({
       ],
     },
   }
-  if (active) {
-    round.status = 'running'
-    round.stage = 'skeptic'
-    round.turns = round.turns.filter(
-      (turn) => turn.role === 'finance' || turn.role === 'operations',
-    )
-    round.decision = null
-  }
-  const thread: CouncilThread = { rootJobId: round.id, rounds: [round] }
-  return (
-    <main style={{ position: 'fixed', inset: 0, background: '#dcf5fc' }}>
-      <div
-        style={{
-          position: 'absolute',
-          top: 30,
-          left: 34,
-          color: '#243957',
-          fontFamily: 'Trebuchet MS',
-          fontSize: 25,
-        }}
-      >
-        consul <small style={{ fontSize: 11 }}> / council design studio</small>
-      </div>
-      <nav
-        aria-label="Illustrative preview states"
-        style={{
-          position: 'absolute',
-          top: 70,
-          left: 34,
-          display: 'flex',
-          gap: 18,
-          fontSize: 11,
-          color: '#365e88',
-        }}
-      >
-        <a href="/demo/council">Synthesis preview</a>
-        <a href="/demo/council?stage=skeptic">Active council preview</a>
-      </nav>
-      <CouncilPanel
-        key={active ? 'active' : 'completed'}
-        business={business}
-        previewThread={thread}
-      />
-    </main>
-  )
+  return <CouncilDemoPlayer key={stage ?? 'completed'} round={round} initialStep={stage === 'play' ? 0 : stage === 'skeptic' ? 2 : 4} autoplay={stage === 'play'} />
 }

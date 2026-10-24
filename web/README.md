@@ -222,7 +222,10 @@ uses the existing council API; it does not require another model provider.
 
 During development, `/demo/council` shows the production renderer with an
 explicitly illustrative conversation and Chair decision. Use
-`/demo/council?stage=skeptic` to inspect the active-role state. These previews
+`/demo/council?stage=skeptic` to inspect the active-role state. Open
+`/demo/council?stage=play` for an illustrative playback through Finance,
+Operations, Skeptic and Chair at six seconds per role. Pause, advance a turn,
+show the conclusion or replay using the controls above the chat. These previews
 perform no provider calls or browser-storage writes and return 404 outside
 development.
 

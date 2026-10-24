@@ -64,3 +64,18 @@ The council top inset now follows `--world-header-height` at every breakpoint.
 This fixes the near-overlap with Business settings seen during the live check.
 The existing camera-settlement behavior is unchanged. No new Factory run or
 Figma composition was claimed during this visual correction.
+
+## Illustrative playback
+
+Added a development-only `CouncilDemoPlayer` in response to the request for a
+demo in action. It reveals the existing fixture's public turns in order, names
+the active role and ends with its completed Chair decision. Playback uses local
+timers with cleanup, plus pause, next-turn, conclusion and replay controls. The
+page still rejects production access and the production council renderer skips
+provider calls and storage effects when given this preview fixture.
+
+Browser playback visibly advanced from Finance to Operations and reached the
+completed Chair decision. Replay, pause and manual advancement were exercised
+through the playback controls. TypeScript and
+the whitespace diff check pass. This demonstrates interface behavior, not live
+Factory generation.
