@@ -65,8 +65,8 @@
 
   "forecast_adjustments": [
     {
-      "factor": "string, from the allowed list in the instructions",
-      "multiplier": "number between 0.5 and 2.0",
+      "factor": "one of: admin_support | admin_opposition | floor_vote_scheduled | must_pass_package | member_hold | industry_opposition | broad_coalition | competing_bill",
+      "multiplier": "number, inside the range the instructions give for that factor",
       "reason": "string",
       "evidence_url": "string",
       "evidence_date": "YYYY-MM-DD"

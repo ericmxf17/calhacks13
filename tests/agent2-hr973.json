@@ -1,0 +1,295 @@
+{
+  "bill_id": "hr973-119",
+  "expert_analysis": [
+    {
+      "source_type": "committee_report",
+      "organization": "U.S. House Committee on Energy and Commerce",
+      "title": "H. Rept. 119-77, Setting Consumer Standards for Lithium-Ion Batteries Act",
+      "date": "2025-04-24",
+      "url": "https://www.govinfo.gov/content/pkg/CRPT-119hrpt77/html/CRPT-119hrpt77.htm",
+      "stance": "support",
+      "key_points": [
+        "The committee reports the bill favorably without amendment and says there is no federal safety standard for lithium-ion batteries today.",
+        "It cites FDNY data of more than 400 fires, 300 injuries and twelve deaths in New York City from 2019 to 2023.",
+        "It notes consumer advocates and fire professionals have called for strong federal standards and that many uncertified batteries are for sale."
+      ],
+      "short_quote": "Currently, there is no federal safety standard for lithium-ion batteries"
+    },
+    {
+      "source_type": "cbo_estimate",
+      "organization": "Congressional Budget Office (estimate printed in S. Rept. 119-50)",
+      "title": "Cost estimate for S. 389, Setting Consumer Standards for Lithium-Ion Batteries Act",
+      "date": "2025-07-29",
+      "url": "https://www.govinfo.gov/content/pkg/CRPT-119srpt50/pdf/CRPT-119srpt50.pdf",
+      "stance": "neutral",
+      "key_points": [
+        "Implementing the companion Senate bill would cost $8 million over 2025-2030, subject to appropriations.",
+        "CBO treats the bill as a private-sector mandate under UMRA, but estimates the cost would not exceed the $206 million annual threshold.",
+        "CBO's low mandate estimate rests on existing voluntary compliance and state and local laws already requiring the same standards."
+      ],
+      "short_quote": "CBO estimates that implementing S. 389 would cost $8 million over the 2025–2030 period"
+    },
+    {
+      "source_type": "government_agency",
+      "organization": "U.S. Consumer Product Safety Commission",
+      "title": "Safety Standard for Lithium-Ion Batteries Used in Micromobility Products and Electrical Systems of Micromobility Products Containing Such Batteries (NPR, 91 FR 38162)",
+      "date": "2026-06-24",
+      "url": "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of",
+      "stance": "support",
+      "key_points": [
+        "The agency is pursuing the same core requirement by rule: mandatory UL 2849-20, UL 2272-24 and UL 2271-23 compliance with added test and labeling requirements.",
+        "Scope is broader than the bill: it reaches separately sold user-replaceable battery packs, aftermarket chargers and conversion kits, and asserts jurisdiction over rental fleets.",
+        "CPSC finds the UL standards by themselves inadequate and says products as a whole do not substantially comply, so it adds tests rather than adopting the standards unchanged.",
+        "The preamble says compliance cost is expected to exceed CPSC's 1 percent of revenue threshold for some importers, and the agency could set an effective date later than 180 days."
+      ],
+      "short_quote": "micromobility products as a whole do not substantially comply with the applicable voluntary standards"
+    },
+    {
+      "source_type": "law_firm",
+      "organization": "Crowell & Moring LLP",
+      "title": "CPSC's Proposed Micromobility Rule Could Reshape the E-Bike and E-Scooter Industry",
+      "date": "2026-06-29",
+      "url": "https://www.crowelltransportation.com/2026/06/cpscs-proposed-micromobility-rule-could-reshape-the-e-bike-and-e-scooter-industry/",
+      "stance": "neutral",
+      "key_points": [
+        "The rule would cover e-bikes, e-scooters, self-balancing scooters, e-skateboards, e-unicycles and hybrids, plus electrical systems, chargers and conversion kits.",
+        "CPSC cites 227 incidents from 2019-2023, 39 deaths and 181 injuries, with 53 percent occurring while charging.",
+        "Supply-chain companies should map product lines and testing protocols and consider commenting before any final rule."
+      ],
+      "short_quote": "extending to standalone battery packs, aftermarket chargers, and conversion kit components — is notably broad"
+    },
+    {
+      "source_type": "trade_association",
+      "organization": "PeopleForBikes",
+      "title": "Regulatory Update: CPSC Adds Two Commissioners, Considers Battery Safety Rule, and Related News",
+      "date": "2026-09-04",
+      "url": "https://www.peopleforbikes.org/news/regulatory-update-september-2026",
+      "stance": "support",
+      "key_points": [
+        "The bike industry supports a mandatory federal battery standard and filed comments asking CPSC to strengthen it.",
+        "It wants the rule's scope to separate e-bikes from e-motos and asks CPSC to work with NHTSA and CBP on import screening.",
+        "It also asks for mandatory mechanical safety standards for low-speed e-bikes and e-mobility devices, going beyond the bill."
+      ],
+      "short_quote": "Once final, this rule will set mandatory federal battery safety standards for electric bicycles and other e-mobility products sold in the United States."
+    },
+    {
+      "source_type": "advocacy_group",
+      "organization": "Consumer Reports",
+      "title": "Consumer Reports Urges CPSC to Quickly Finalize Strong Safety Standard for Lithium-Ion Batteries in Micromobility Products",
+      "date": "2026-10-21",
+      "url": "https://advocacy.consumerreports.org/press_release/consumer-reports-urges-cpsc-to-quickly-finalize-strong-safety-standard-for-lithium-ion-batteries-in-micromobility-products",
+      "stance": "support",
+      "key_points": [
+        "Supports incorporating UL 2849-20, UL 2272-24 and UL 2271-34 with the proposed post-discharge and reverse-polarity tests.",
+        "Wants added attention to flame retardants in battery enclosures and warning labels on conversion kits.",
+        "Says the voluntary standards and local restrictions have not been enough and urges prompt finalization."
+      ],
+      "short_quote": "we urge the Commission to finalize a strong rule without further delay"
+    },
+    {
+      "source_type": "trade_association",
+      "organization": "UL Standards & Engagement",
+      "title": "Deaths From NYC E-Bike Fires Fell to One in 2025 – Two Years After UL Standards Written Into Law",
+      "date": "2026-04-21",
+      "url": "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/",
+      "stance": "support",
+      "key_points": [
+        "Credits New York City Local Law 39, which mandates UL 2849, UL 2272 and UL 2271, with helping cut e-mobility fire deaths to one in 2025.",
+        "Notes the city paired the mandate with enforcement, a delivery-worker trade-in program and public charging infrastructure.",
+        "Explicitly urges the Senate to pass S. 389 / H.R. 973 to spread the same standards nationwide."
+      ],
+      "short_quote": "ULSE strongly encourages the immediate vote and passage of this bipartisan bill in the Senate"
+    },
+    {
+      "source_type": "news",
+      "organization": "Bicycle Retailer and Industry News (BRAIN)",
+      "title": "Industry now can comment on CPSC proposed e-mobility device, battery testing standards",
+      "date": "2026-07-01",
+      "url": "https://www.bicycleretailer.com/industry-news/2026/07/01/industry-now-can-comment-cpsc-proposed-e-mobility-device-battery-testing",
+      "stance": "mixed",
+      "key_points": [
+        "The proposal would require modified UL testing standards but does not recognize European standards (EN 15194) some brands use.",
+        "A former commissioner warns a final rule issued without a quorum is legally suspect and could be challenged, and the rule was delayed about nine months by OMB review.",
+        "CPSC could set an effective date later than 180 days to give manufacturers time to redesign products and spread R&D costs."
+      ],
+      "short_quote": "while not also recognizing European standards that some brands use"
+    }
+  ],
+  "stakeholders": [
+    {
+      "name": "PeopleForBikes",
+      "type": "industry",
+      "stance": "support",
+      "what_they_want": "A mandatory federal battery standard, with scope that separates e-bikes from e-motos, plus import screening and mechanical safety standards.",
+      "evidence_url": "https://www.peopleforbikes.org/news/regulatory-update-september-2026"
+    },
+    {
+      "name": "UL Standards & Engagement",
+      "type": "industry",
+      "stance": "support",
+      "what_they_want": "Senate passage of the bill so UL 2849, UL 2272 and UL 2271 become mandatory nationwide.",
+      "evidence_url": "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/"
+    },
+    {
+      "name": "Consumer Reports",
+      "type": "consumer",
+      "stance": "support",
+      "what_they_want": "A strong final CPSC rule without delay, including added electrical tests, labeling and coordination with NHTSA.",
+      "evidence_url": "https://advocacy.consumerreports.org/press_release/consumer-reports-urges-cpsc-to-quickly-finalize-strong-safety-standard-for-lithium-ion-batteries-in-micromobility-products"
+    },
+    {
+      "name": "Flex Association (app-based delivery platforms)",
+      "type": "industry",
+      "stance": "support",
+      "what_they_want": "Passage of S. 389 and H.R. 973; its filings state Support Whole Bill.",
+      "evidence_url": "https://lda.gov/filings/public/filing/16c84824-0650-42cf-a4c3-a0603125ba6c/print/"
+    },
+    {
+      "name": "Grubhub Holdings",
+      "type": "industry",
+      "stance": "unknown",
+      "what_they_want": "Lobbied all provisions of H.R. 973 and S. 389 plus the CPSC micromobility rule; no stated position in its filings.",
+      "evidence_url": "https://lda.gov/filings/public/filing/18e8c86f-3cc2-48f7-b601-874b094f832d/print/"
+    },
+    {
+      "name": "International Association of Fire Chiefs",
+      "type": "safety",
+      "stance": "unknown",
+      "what_they_want": "Lobbied the bill's CPSC standard provisions; no stated position in the filing.",
+      "evidence_url": "https://lda.gov/filings/public/filing/63e5eeb0-a04f-42fd-a75a-4072620fc299/print/"
+    },
+    {
+      "name": "National Volunteer Fire Council",
+      "type": "safety",
+      "stance": "unknown",
+      "what_they_want": "Lobbied H.R. 973/S. 389 alongside fire-service funding issues; no stated position in the filing.",
+      "evidence_url": "https://lda.gov/filings/public/filing/707f176c-a356-4d58-b5a6-36d6c84c8484/print/"
+    },
+    {
+      "name": "Samsung SDI America and LG Electronics USA",
+      "type": "industry",
+      "stance": "unknown",
+      "what_they_want": "Battery and EV supply-chain interests; both reported H.R. 973 among lobbied issues without stating a position.",
+      "evidence_url": "https://lda.gov/filings/public/filing/5e476e49-e391-466c-aee2-4386a2bfffa9/print/"
+    },
+    {
+      "name": "U.S. Consumer Product Safety Commission",
+      "type": "government",
+      "stance": "support",
+      "what_they_want": "A mandatory standard, pursued through its own rulemaking with modifications beyond the UL standards.",
+      "evidence_url": "https://www.cpsc.gov/About-CPSC/Chairman/Peter-A-Feldman/Statement/Statement-of-Acting-Chairman-Peter-A-Feldman-on-CPSCs-Proposed-Lithium-ion-Battery-Safety-Standard-for-Micromobility-Products"
+    },
+    {
+      "name": "Sens. Gillibrand and Schumer; Rep. Torres",
+      "type": "government",
+      "stance": "support",
+      "what_they_want": "Either the bill or a completed CPSC rule; they urged CPSC in an Oct. 16, 2026 letter to finish the rulemaking quickly.",
+      "evidence_url": "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/"
+    }
+  ],
+  "lobbying": {
+    "searched": true,
+    "query_used": "LDA API: GET https://lda.gov/api/v1/filings/?filing_specific_lobbying_issues=H.R. 973 (also 'S. 389')&filing_year=2025 and 2026, page_size=100; results filtered to descriptions that literally contain H.R. 973 or S. 389",
+    "filings_found": 47,
+    "clients": [
+      {"client": "Uber Technologies, Inc.", "registrant": "Uber Technologies, Inc.", "year": 2025, "what_they_lobbied_on": "H.R. 973, Setting Consumer Standards for Lithium-Ion Batteries Act."},
+      {"client": "Grubhub Holdings Inc.", "registrant": "Grubhub Holdings Inc.", "year": 2026, "what_they_lobbied_on": "H.R. 973: SETTING CONSUMER STANDARDS FOR LITHIUM-ION BATTERIES ACT; ALL PROVISIONS"},
+      {"client": "Flex Association", "registrant": "Flex Association", "year": 2026, "what_they_lobbied_on": "Issues impacting the app-based industry, including marketplace transparency, micromobility safety, S. 389 & H.R. 973 (Support Whole Bill)"},
+      {"client": "Samsung SDI America, Inc.", "registrant": "Samsung SDI America, Inc.", "year": 2025, "what_they_lobbied_on": "H.R. 973, Setting Consumer Standards for Lithium-Ion Batteries Act."},
+      {"client": "LG Electronics USA, Inc.", "registrant": "Law Offices of Kevin G. Curtin", "year": 2025, "what_they_lobbied_on": "Manufacturing of electric vehicle batteries and lithium-ion batteries (H.R. 973)"},
+      {"client": "International Association of Fire Chiefs", "registrant": "International Association of Fire Chiefs", "year": 2026, "what_they_lobbied_on": "Setting Consumer Standards for Lithium-Ion Batteries Act (H.R. 973/S. 389), provisions to require the Consumer Product Safety Commission to issue safety standards for lithium-ion batteries in micromobility devices."},
+      {"client": "National Volunteer Fire Council", "registrant": "National Volunteer Fire Council", "year": 2026, "what_they_lobbied_on": "H.R.973/S.389, Setting Consumer Standards for Lithium-Ion Batteries Act"},
+      {"client": "DoorDash", "registrant": "Akin Gump Strauss Hauer & Feld", "year": 2025, "what_they_lobbied_on": "S. 389 - Setting Consumer Standards for Lithium-Ion Batteries Act."},
+      {"client": "Consumer Technology Association", "registrant": "Consumer Technology Association", "year": 2026, "what_they_lobbied_on": "H.R. 973, Setting Consumer Standards for Lithium-Ion Batteries Act. S.389, Setting Consumer Standards for Lithium-Ion Batteries Act."},
+      {"client": "American Property Casualty Insurance Association", "registrant": "American Property Casualty Insurance Association", "year": 2026, "what_they_lobbied_on": "S. 389 Lithium-Ion Batterie Safety"}
+    ],
+    "notes": "47 unique filings across 2025 and 2026 (Q1-Q4 plus mid-year and year-end amendments) named H.R. 973 and/or S. 389. Filings show who is lobbying, not which side they are on; only the Flex Association filing states an actual position (Support Whole Bill). Heavy presence of delivery platforms, battery makers and fire-service groups, and no filings found from e-bike manufacturers or importers opposing the bill."
+  },
+  "comparable_past_laws": [
+    {
+      "name": "Local Law 39 of 2023 (e-mobility device and battery certification)",
+      "jurisdiction": "New York City",
+      "year_enacted": 2023,
+      "similarity": "Requires e-bikes, e-scooters and their batteries to be certified to UL 2849, UL 2272 and UL 2271 before sale, lease or rental, the same three standards H.R. 973 would make federally mandatory.",
+      "what_happened": [
+        {"effect": "Deaths from lithium-ion battery fires fell from 18 in 2023 to six in 2024 and one in 2025 (as of mid-December).", "evidence_url": "https://www.nyc.gov/site/fdny/news/69-25/the-fdny-2025-end-of-year-accomplishments"},
+        {"effect": "Total battery fires did not drop immediately: 268 fires in 2023 versus 277 in 2024, though the share occurring outdoors rose (135 non-structural fires in 2024 versus 90 in 2023).", "evidence_url": "https://www.nyc.gov/site/fdny/news/69-25/the-fdny-2025-end-of-year-accomplishments"},
+        {"effect": "The city paired the mandate with inspections, a delivery-worker trade-in program and battery-swap pilots; officials attribute part of the decline to public education.", "evidence_url": "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/"}
+      ],
+      "lessons_for_businesses": "Certification requirements are enforceable and change what can be sold, but fire counts moved slowly while deaths fell, and enforcement plus incentives did much of the work. Sellers should expect inspections and documentation requests, not just a labeling rule.",
+      "confidence": "medium"
+    },
+    {
+      "name": "SB 1271 (electric bicycles, powered mobility devices and storage batteries)",
+      "jurisdiction": "California",
+      "year_enacted": 2024,
+      "similarity": "Bars sale or lease of e-bikes, e-scooters and standalone batteries unless tested by an accredited lab to UL 2849, EN 15194, UL 2272 or UL 2271, and requires labels and test reports on request.",
+      "what_happened": [
+        {"effect": "The sale and lease prohibition has been operative since January 1, 2026; the rental prohibition takes effect January 1, 2028.", "evidence_url": "https://pasadenanow.com/main/pasadena-fire-chief-urges-safe-lithium-ion-battery-charging-as-state-battery-testing-rules-take-hold"},
+        {"effect": "No measured fire, price or compliance outcome is available yet because the requirement is less than a year old.", "evidence_url": "https://pasadenanow.com/main/pasadena-fire-chief-urges-safe-lithium-ion-battery-charging-as-state-battery-testing-rules-take-hold"}
+      ],
+      "lessons_for_businesses": "State mandates are already in force, so national sellers are complying in California regardless of the federal bill. California accepts EN 15194 as an alternative, which the federal bill and the CPSC proposal do not.",
+      "confidence": "low"
+    }
+  ],
+  "alternative_paths": [
+    {
+      "path": "agency_rulemaking",
+      "description": "CPSC proposed a mandatory micromobility battery standard on June 24, 2026 that would require modified UL 2849-20, UL 2272-24 and UL 2271-23 compliance, reaching further than H.R. 973 by covering separately sold battery packs, chargers and conversion kits.",
+      "status": "Proposed rule; written comments closed August 24, 2026; virtual oral-comment hearing held October 21, 2026; final rule pending. CPSC could set an effective date later than 180 days.",
+      "evidence_url": "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of"
+    },
+    {
+      "path": "state_or_local_laws",
+      "description": "New York City Local Law 39 and California SB 1271 already impose UL certification duties, and CPSC's own proposal notes state and local rules plus insurance requirements are pushing the industry toward UL compliance without federal action.",
+      "status": "In force: NYC since 2023; California sales and leases since January 1, 2026; California rentals from January 1, 2028.",
+      "evidence_url": "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240SB1271"
+    }
+  ],
+  "political_context": [
+    {"fact": "The House passed H.R. 973 in April 2025 but the Senate has not passed it; the bill and the CPSC rule are described by the sponsor's office as separate routes to a mandatory standard.", "evidence_url": "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/", "date": "2026-10-17"},
+    {"fact": "The Senate companion S. 389 was reported by the Commerce, Science, and Transportation Committee on July 29, 2025 and placed on the Senate Legislative Calendar (Calendar No. 133), where it has remained.", "evidence_url": "https://www.govinfo.gov/content/pkg/CRPT-119srpt50/pdf/CRPT-119srpt50.pdf", "date": "2025-07-29"},
+    {"fact": "Sens. Gillibrand and Schumer and Rep. Torres sent an October 16, 2026 letter urging CPSC to process comments rapidly and finish the rulemaking.", "evidence_url": "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/", "date": "2026-10-16"},
+    {"fact": "CPSC regained a three-member quorum in early August 2026 after the Senate confirmed Commissioners Karen Sessions and Brien Lorenze, allowing it to resume rulemakings.", "evidence_url": "https://www.peopleforbikes.org/news/regulatory-update-september-2026", "date": "2026-09-04"},
+    {"fact": "CPSC Acting Chairman Peter Feldman framed the proposal as addressing imported, noncompliant batteries and said the agency looks forward to finalizing a strong standard.", "evidence_url": "https://www.cpsc.gov/About-CPSC/Chairman/Peter-A-Feldman/Statement/Statement-of-Acting-Chairman-Peter-A-Feldman-on-CPSCs-Proposed-Lithium-ion-Battery-Safety-Standard-for-Micromobility-Products", "date": "2026-06-22"}
+  ],
+  "forecast_adjustments": [
+    {
+      "factor": "broad_coalition",
+      "multiplier": 1.2,
+      "reason": "Industry (ULSE explicitly urging Senate passage; PeopleForBikes supporting a mandatory standard), consumer groups (Consumer Reports) and fire-service organizations (IAFC, NVFC lobbying) all back the same core requirement, and delivery platforms lobby for the bill. The support is for the UL-standard mandate rather than every bill provision.",
+      "evidence_url": "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/",
+      "evidence_date": "2026-04-21"
+    }
+  ],
+  "key_uncertainties": [
+    "H.R. 973 and the CPSC's own rulemaking are substitutes: a final CPSC rule would deliver most of the bill's substance without enactment, which may reduce Senate urgency even as it validates the policy.",
+    "CPSC said in the NPR that it could set an effective date later than 180 days, so the compliance date businesses actually face is unknown and may differ from the bill's 180-day clock.",
+    "The CPSC proposal goes further than the bill (user-replaceable packs, aftermarket chargers, conversion kits, rental fleets) and adds tests the UL standards lack, so the two are not identical and industry may prefer the narrower bill or the broader rule depending on product line.",
+    "No organized opposition surfaced in lobbying filings or public comments, but importers and e-moto sellers who would bear compliance costs were not visibly represented, so latent opposition is untested.",
+    "New York City's decline in deaths coincides with inspections, trade-in incentives and education, so the share attributable to mandatory UL standards alone is not established.",
+    "Litigation risk surrounds a CPSC final rule issued before the quorum was restored, and a court challenge could delay or vacate the rule and revive the case for legislation.",
+    "Whether the bill's frozen 'as in effect on the date of enactment' standard versions would create a compliance gap for products certified to newer UL editions was not addressed by any source found."
+  ],
+  "sources": [
+    "https://www.govinfo.gov/content/pkg/CRPT-119hrpt77/html/CRPT-119hrpt77.htm",
+    "https://www.govinfo.gov/content/pkg/CRPT-119srpt50/pdf/CRPT-119srpt50.pdf",
+    "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of",
+    "https://www.cpsc.gov/About-CPSC/Chairman/Peter-A-Feldman/Statement/Statement-of-Acting-Chairman-Peter-A-Feldman-on-CPSCs-Proposed-Lithium-ion-Battery-Safety-Standard-for-Micromobility-Products",
+    "https://www.crowelltransportation.com/2026/06/cpscs-proposed-micromobility-rule-could-reshape-the-e-bike-and-e-scooter-industry/",
+    "https://www.peopleforbikes.org/news/regulatory-update-september-2026",
+    "https://advocacy.consumerreports.org/press_release/consumer-reports-urges-cpsc-to-quickly-finalize-strong-safety-standard-for-lithium-ion-batteries-in-micromobility-products",
+    "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/",
+    "https://www.bicycleretailer.com/industry-news/2026/07/01/industry-now-can-comment-cpsc-proposed-e-mobility-device-battery-testing",
+    "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/",
+    "https://www.nyc.gov/site/fdny/news/69-25/the-fdny-2025-end-of-year-accomplishments",
+    "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240SB1271",
+    "https://pasadenanow.com/main/pasadena-fire-chief-urges-safe-lithium-ion-battery-charging-as-state-battery-testing-rules-take-hold",
+    "https://lda.gov/filings/public/filing/16c84824-0650-42cf-a4c3-a0603125ba6c/print/",
+    "https://lda.gov/filings/public/filing/18e8c86f-3cc2-48f7-b601-874b094f832d/print/",
+    "https://lda.gov/filings/public/filing/63e5eeb0-a04f-42fd-a75a-4072620fc299/print/",
+    "https://lda.gov/filings/public/filing/707f176c-a356-4d58-b5a6-36d6c84c8484/print/",
+    "https://lda.gov/filings/public/filing/5e476e49-e391-466c-aee2-4386a2bfffa9/print/"
+  ],
+  "generated_at": "2026-10-24"
+}

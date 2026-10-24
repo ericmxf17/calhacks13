@@ -99,10 +99,10 @@
   "suppliers": [
     {
       "id": "SUP-BAT-01", "name": "Shenzhen PowerCell", "country": "China",
-      "supplies": "lithium-ion battery packs", "certifications": [],
+      "supplies": "lithium-ion battery packs", "certifications": ["EN 15194"],
       "lead_time_weeks": 10, "available_capacity_units_per_year": 20000,
       "contract": {"ends": "2027-03-31", "min_annual_units": 5000, "early_exit_penalty": 75000},
-      "notes": "Cheapest option. Says it could get UL 2271 certified in about 26 weeks, raising its price about 15%."
+      "notes": "Cheapest option. Tested to the European standard EN 15194, which California accepts but the federal bill and the CPSC proposal do not. Says it could get UL 2271 certified in about 26 weeks, raising its price about 15%."
     },
     {
       "id": "SUP-BAT-02", "name": "Hanbit Energy", "country": "South Korea",
@@ -149,7 +149,7 @@
       {"channel": "independent bike shops", "share_of_units": 0.40}
     ],
     "regions": [
-      {"region": "California", "share_of_units": 0.40},
+      {"region": "California", "share_of_units": 0.40, "notes": "California SB 1271 has required tested e-bike batteries since January 1, 2026, and accepts UL 2849 or EN 15194. All VoltRide batteries meet one of these."},
       {"region": "New York City", "share_of_units": 0.20, "notes": "NYC already requires certified e-bikes and batteries (Local Law 39 of 2023, verify). VoltRide ships only certified batteries here."},
       {"region": "Rest of US", "share_of_units": 0.40}
     ]

@@ -15,6 +15,14 @@ CONGRESSES = json.load(open(os.path.join(HERE, "congresses.json")))
 # Research can move the odds, but only within these limits.
 MIN_ADJUSTMENT, MAX_ADJUSTMENT = 0.5, 2.0
 
+# Allowed research factors and their multiplier ranges (same table as researcher-instructions.md).
+FACTORS = {
+    "admin_support": (1.3, 1.5), "admin_opposition": (0.5, 0.7),
+    "floor_vote_scheduled": (1.5, 2.0), "must_pass_package": (1.5, 2.0),
+    "member_hold": (0.6, 0.8), "industry_opposition": (0.7, 0.9),
+    "broad_coalition": (1.1, 1.3), "competing_bill": (0.7, 0.9),
+}
+
 STAGE_MAP = {
     "introduced": "introduced", "in_committee": "introduced",
     "reported_by_committee": "reported",
@@ -65,7 +73,11 @@ def build_features(analysis):
 def apply_adjustments(probability, adjustments):
     applied, product = [], 1.0
     for a in adjustments:
-        m = min(max(float(a["multiplier"]), MIN_ADJUSTMENT), MAX_ADJUSTMENT)
+        if a.get("factor") not in FACTORS:
+            applied.append({**a, "multiplier_used": 1.0, "ignored": "unknown factor"})
+            continue
+        lo, hi = FACTORS[a["factor"]]
+        m = min(max(float(a["multiplier"]), lo), hi)
         product *= m
         applied.append({**a, "multiplier_used": round(m, 2)})
     total = min(max(product, MIN_ADJUSTMENT), MAX_ADJUSTMENT)

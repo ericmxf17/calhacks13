@@ -39,7 +39,7 @@ def fetch(url):
         return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
     except Exception:
         # Some Mac Python installs lack SSL certificates; curl uses the system ones.
-        r = subprocess.run(["curl", "-sf", "-A", "Mozilla/5.0", url], capture_output=True, text=True)
+        r = subprocess.run(["curl", "-sf", "-A", "Mozilla/5.0", url], capture_output=True, text=True, errors="ignore")
         return r.stdout if r.returncode == 0 else None
 
 
