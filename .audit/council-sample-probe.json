@@ -1,0 +1,17 @@
+{
+  "message": "Set FACTORY_API_KEY in web/.env, then restart the local server. Council requires a Factory API key; CREAO keys are used only to read selected evidence.",
+  "sourceTitles": [
+    "VoltRide current profile",
+    "Saved VoltRide sample · agent1-hr973.json",
+    "Saved VoltRide sample · agent2-hr973.json",
+    "Saved VoltRide sample · agent3-hr973.json",
+    "Saved VoltRide sample · agent3-hr973-results.json",
+    "Saved VoltRide sample · agent4-hr973-brief.json"
+  ],
+  "sourceCount": 6,
+  "status": "failed",
+  "turnCount": 0,
+  "decision": null,
+  "replayStatus": "failed",
+  "changedPayloadStatus": 409
+}

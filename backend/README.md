@@ -239,3 +239,81 @@ before dispatch. No additional agent executions were needed for these checks.
 
 The popup layout is recorded in the
 [editable Figma design](https://www.figma.com/design/mD2dLj2EvZDrdfv6wpAfLK?node-id=1-2).
+
+## Consul council
+
+The local council runs four actual Factory SDK sessions in order: Finance,
+Operations responding to Finance, Skeptic responding to Operations, and Chair
+responding to Skeptic. The Chair publishes a cited decision only after all four
+complete and pass output validation. Opening the council, reading a saved job,
+and discovering sources never start a Droid session.
+
+Set `FACTORY_API_KEY` in `web/.env` and install the official Factory CLI. On
+Windows, set `DROID_EXECUTABLE` to the absolute native `droid.exe` path, rather
+than a shell shim. Restart the local server after changing environment values.
+`GET /api/council?view=setup` checks local configuration and executable presence;
+it does not verify a paid remote request or claim the credentials are valid.
+The existing development-only `ENABLE_LOCAL_AGENT_PREVIEW=true` loopback gate
+applies to every endpoint. POST also requires the application's explicit Origin,
+`Sec-Fetch-Site: same-origin`, and JSON content type.
+
+Source discovery uses existing app-scoped CREAO API Trigger credentials only,
+never an account credential. Choose an agent and page through completed API run
+conversations and text artifacts. Website chat sessions are not included. The
+server re-fetches each selected run, checks artifact membership, downloads only
+the selected known artifact, and snapshots its UTF-8 text. Client source text and
+download URLs are never used. Source bounds are eight selections, 128 KiB per
+source and 512 KiB total; the request body limit is 1 MiB. Explicit assignment to
+the active company is required. A structured conflicting company identity is
+rejected; unidentified general bill analysis remains visibly unidentified.
+
+`S0` is the full current company profile. With no selected run evidence, the
+council may discuss that profile but cannot establish bill impact. The optional
+saved sample is restricted to VoltRide at `voltride.example`. It loads the
+coherent `tests/agent1-hr973.json`, `agent2-hr973.json`, `agent3-hr973.json`,
+`agent3-hr973-results.json`, and `agent4-hr973-brief.json` fixtures. These are
+fictional saved analyses, not a live or latest legislative update.
+
+Each session uses an empty isolated temporary working directory and isolated
+Factory home, a replacement role prompt, no configured MCP servers, disabled
+builtin skills, autonomy Off, cancelled permissions and cancelled user prompts.
+The SDK's complete available tool list is disabled before the first message.
+Inherited environment values are shadowed with empty strings, restoring only OS
+plumbing and the Factory API key. CREAO, Figma and backend credentials are not
+passed to the child. Only complete structured results are saved; partial text,
+private reasoning and provider error bodies are not exposed.
+
+Output is checked against the JSON contract at runtime. Every claim needs known
+source IDs; numeric statements additionally need literal supporting excerpts
+from a cited source. Later roles must include an inspectable response to a prior
+claim. These checks establish shape, citation membership and excerpt presence,
+not semantic truth or current legislative status. The UI exposes saved source
+text so the user can assess the actual reasoning and evidence.
+
+Council jobs live in `web/.backend/council/<UUID>/job.json` by default; override
+with `COUNCIL_DATA_DIR`. A UUID directory is reserved before provider work, and
+state is published by atomic rename. Repeating the same normalized request ID
+and payload returns the same job; changing the payload returns HTTP 409. Keep a
+saved request's UUID after timeouts or unknown outcomes. Completed turns and
+session IDs survive a later failure. This is a local ledger, not a durable
+worker: after process restart, reading unfinished work marks it interrupted and
+never resumes or reruns a potentially executed turn. Inspect it before
+intentionally starting a new council with a new UUID.
+
+From `web`, use the real local API with:
+
+```sh
+node scripts/council.mjs setup
+node scripts/council.mjs sources brief-writer 0
+node scripts/council.mjs submit saved-council-request.json
+node scripts/council.mjs inspect <job-uuid>
+node scripts/council.mjs read <job-uuid>
+```
+
+Set `COUNCIL_URL` for another local port. `submit` reads a request containing
+`requestId` (stable UUID), `business` (the complete BusinessInput), `question`,
+`assignToCompany: true`, and `sources`. Source references are
+`{kind:"conversation",role,runId}`, `{kind:"artifact",role,runId,index}`, or
+`{kind:"sample",id:"voltride-hr973"}`. An empty sources array is allowed for a
+clearly limited profile-only council. `read` includes the saved source text,
+complete turns, citations and decision; `inspect` omits source bodies.

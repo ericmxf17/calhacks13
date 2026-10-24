@@ -1,0 +1,16 @@
+ts	phase	decision	why	evidence	result
+2026-10-24	frame	Created a separate council branch	Keep the feature reviewable without changing main	git branch codex/agent-council	verified
+2026-10-24	ground	Use explicit CREAO source assignment	Existing run history does not establish company ownership	web/src/lib/creao.ts; web/src/lib/agent-run-reader.ts	verified
+2026-10-24	design	Selected serial four-role discussion	Later speakers can respond to prior positions rather than inventing a debate	Design A and independent cross-judge in chat	selected
+2026-10-24	design	Retained localStorage request recovery	Reload should inspect the same billed request	Design B browser recovery graft	selected
+2026-10-24	design	Rejected new account-wide CREAO connector	Existing scoped run and artifact reads satisfy the requested first version	web/src/lib/creao.ts	out of scope
+2026-10-24	figma	Created editable council concept	Keep decisions, discussion and evidence visible together	https://www.figma.com/design/mD2dLj2EvZDrdfv6wpAfLK?node-id=7-9	inspected screenshot
+2026-10-24	runtime	Installed Factory SDK and externalized it from Next bundling	The SDK launches a native process on the server	web/package.json; web/next.config.ts	SDK installed
+2026-10-24T18:46:34.9785096Z	runtime	Retried CLI installation with official global npm package	pnpm timed out fetching cross-platform native packages	droid --version; web/.env DROID_EXECUTABLE	native CLI 0.249.0 verified
+2026-10-24T18:46:34.9921901Z	implementation	Added the council API, typed records and company panel	Explicit evidence and serial roles keep the discussion inspectable	web/src/lib/council.ts; web/src/components/business/CouncilPanel.tsx	implemented
+2026-10-24T18:46:35.0144414Z	verification	Read real CREAO source and coherent saved sample packet	Verify actual evidence resolution without a generation key	.audit/council-source-probes.json; .audit/council-sample-probe.json	sources saved; zero SDK turns
+2026-10-24T18:46:35.0361676Z	verification	Verified same-request replay and changed-input conflict	A retry must not dispatch a second billed council	.audit/council-sample-probe.json	same failed record; HTTP 409 on changed payload
+2026-10-24T18:46:35.0643055Z	browser	Moved mobile question above evidence and hid scene while council is open	Keep the task input visible on a phone	web/src/components/business/council-panel.css	screenshots inspected
+2026-10-24T18:46:35.0880156Z	review	Fixed numeric substring and nested company ownership defects	Exact source tokens and subject identity must govern validation	web/src/lib/council-droid.ts; web/src/lib/council-sources.ts	direct function probes; TypeScript passes
+2026-10-24T18:46:35.1180314Z	limit	Left live Factory generation unverified	No Factory API key is configured locally	.audit/council-verification.md	blocked on credentials
+2026-10-24T18:48:37.5196819Z	review	Closed numeric-format and company-name coverage gaps	Every digit-bearing claim requires quoted support and company names keep Unicode identity	web/src/lib/council-droid.ts; web/src/lib/council-sources.ts	direct probes and TypeScript pass

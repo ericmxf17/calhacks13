@@ -1,0 +1,31 @@
+[
+  {
+    "Probe": "wrong-company.json",
+    "Status": "failed",
+    "Message": "The saved VoltRide sample is available only for the VoltRide profile at voltride.example.",
+    "Sources": [],
+    "Turns": 0,
+    "Decision": null
+  },
+  {
+    "Probe": "creao-artifact.json",
+    "Status": "failed",
+    "Message": "Set FACTORY_API_KEY in web/.env, then restart the local server. Council requires a Factory API key; CREAO keys are used only to read selected evidence.",
+    "Sources": [
+      {
+        "Title": "VoltRide current profile",
+        "Kind": "profile",
+        "Identity": "explicit",
+        "TextLength": 534
+      },
+      {
+        "Title": "bill-analysis.json",
+        "Kind": "artifact",
+        "Identity": "unidentified",
+        "TextLength": 15685
+      }
+    ],
+    "Turns": 0,
+    "Decision": null
+  }
+]
