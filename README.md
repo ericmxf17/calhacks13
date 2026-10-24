@@ -42,7 +42,12 @@ In the real app, the `*-expected-output.json`, `*-impact-plan.json`, and `*-brie
 | `agents/brief-schema.json` | Agent 4's output format (what the front end shows) |
 | `agents/hr973-expected-output.json` | A known-correct Agent 1 answer, for testing |
 | `impact/impact.py` | Calculates every option under every scenario. No packages needed |
+| `impact/slim_inputs.py` | Shrinks Agent 1 and 2 outputs into Agent 3's inputs |
+| `impact/brief_inputs.py` | Bundles everything into Agent 4's single input |
 | `impact/verify_brief.py` | Flags any number in a brief that didn't come from the inputs |
+| `agents/*-first-message.txt` | Ready-to-paste first chat message for each agent in CREAO |
+| `tests/check_bill_analysis.py`, `check_research.py`, `check_impact_plan.py` | Grade each agent's real output |
+| `tests/agent1-*`, `agent2-*`, `agent3-*`, `agent4-*` | Real outputs from the CREAO agents, all passing |
 | `forecast/forecast.py` | Scores any bill. No packages needed |
 | `forecast/forecast-model.json` | The trained model |
 | `forecast/train_forecast.py` | Retrains the model and backtests it |

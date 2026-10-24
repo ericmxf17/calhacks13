@@ -16,10 +16,10 @@ IGNORE = [
     r"\b(?:19|20)\d{2}\b",                         # years
     r"\b[A-Z]{1,4}-?\d+\b",                        # IDs like P1, S0, A4
 ]
-MONEY = re.compile(r"\$\s?(\d[\d,]*(?:\.\d+)?)\s?([KMB])?\b", re.I)
+MONEY = re.compile(r"\$\s?(\d[\d,]*(?:\.\d+)?)\s?(thousand|million|billion|K|M|B)?\b", re.I)
 PERCENT = re.compile(r"(\d+(?:\.\d+)?)\s?%")
 NUMBER = re.compile(r"(?<![\w.])(\d[\d,]*(?:\.\d+)?)(?![\w%])")
-SCALE = {"K": 1e3, "M": 1e6, "B": 1e9}
+SCALE = {"K": 1e3, "M": 1e6, "B": 1e9, "THOUSAND": 1e3, "MILLION": 1e6, "BILLION": 1e9}
 
 
 def strings(obj):

@@ -245,16 +245,23 @@ def evaluate(company, plan, option, scenario, as_of):
         for inv in state.get("inventory", []):
             if inv["supplier_id"] not in at_risk_suppliers:
                 continue
-            monthly = 0.0
+            # Stock is used at the supplier's old share until a sourcing shift starts, then at its new share
+            # (zero if the company stops buying from it), unless the plan says to use stock first.
+            used = 0.0
             for cid in inv["usable_in_components"]:
                 p, comp = index(base)[1][cid]
-                demand = p["annual_units"] * comp["qty"]
-                share = 1.0 if cid in inventory_first else next((s["share"] for s in comp["sourcing"] if s["supplier_id"] == inv["supplier_id"]), 0)
-                monthly += demand * share / 12
-            left = max(0.0, inv["units"] - monthly * months_left)
+                per_month = p["annual_units"] * comp["qty"] / 12
+                if cid in inventory_first:
+                    used += per_month * months_left
+                    continue
+                share_of = lambda c: next((s["share"] for s in c["sourcing"] if s["supplier_id"] == inv["supplier_id"]), 0)
+                old_share, new_share = share_of(comp), share_of(components[cid][1])
+                switch = min(shift_start.get(cid, months_left), months_left)
+                used += per_month * (old_share * switch + new_share * (months_left - switch))
+            left = max(0.0, inv["units"] - used)
             if left > 0:
                 writeoffs.append({"item": f"Unsellable stock: {inv['item']}", "amount": money(left * inv["unit_cost"]),
-                                  "how": f"{inv['units']} units - {monthly:.0f}/month x {months_left} months = {left:.0f} left x ${inv['unit_cost']}"})
+                                  "how": f"{inv['units']} units - {used:.0f} used in the {months_left} months before the rule = {left:.0f} left x ${inv['unit_cost']}"})
 
     # 5. Supplier contracts and capacity
     penalties = []
@@ -351,6 +358,8 @@ def run(company, plan, forecast):
         "bill_id": plan["bill_id"],
         "as_of": plan["as_of"],
         "pass_probability": p_pass,
+        "probability_any_rule_applies": round(sum(probs[s["id"]] for s in plan["scenarios"]
+                                                  if s.get("months_until_rule_applies") is not None), 4),
         "baseline": pnl(company),
         "scenarios": [{"id": s["id"], "name": s["name"], "branch": s["branch"], "probability": round(probs[s["id"]], 4),
                        "months_until_rule_applies": s.get("months_until_rule_applies")} for s in plan["scenarios"]],

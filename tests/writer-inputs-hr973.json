@@ -1,0 +1,982 @@
+{
+ "bill": {
+  "id": "hr973-119",
+  "title": "Setting Consumer Standards for Lithium-Ion Batteries Act",
+  "url": "https://www.congress.gov/bill/119th-congress/house-bill/973",
+  "stage": "passed_one_chamber",
+  "latest_action": {
+   "date": "2025-04-29",
+   "text": "Received in the Senate."
+  },
+  "chamber_votes": [
+   {
+    "chamber": "House",
+    "date": "2025-04-28",
+    "yeas": 365,
+    "nays": 42,
+    "method": "roll call, suspension of the rules (2/3 required), Roll no. 103"
+   }
+  ],
+  "companion_bills": [
+   "s389-119"
+  ],
+  "congress_ends": "2027-01-03",
+  "days_until_congress_ends": 71,
+  "plain_summary": "The bill requires the Consumer Product Safety Commission to turn three existing voluntary safety standards for rechargeable lithium-ion batteries and the e-bikes and e-scooters that use them into mandatory federal consumer product safety rules within 180 days of enactment. Once in force, manufacturers and distributors of those micromobility products would have to comply with the UL 2271, UL 2849 and UL 2272 standards, and later revisions to those standards would automatically become mandatory unless the Commission objects. The bill also requires a report to Congress within five years on lithium-ion battery fires and explosions in micromobility products.",
+  "provisions": [
+   {
+    "id": "P1",
+    "section": "Sec. 2(a)",
+    "plain_english": "Within 180 days of enactment, the CPSC must adopt the ANSI/CAN/UL 2271, ANSI/CAN/UL 2849 and ANSI/CAN/UL 2272 standards (as they read on the date of enactment) as final mandatory consumer product safety standards for lithium-ion batteries and the electrical systems of e-bikes and other personal e-mobility devices.",
+    "business_relevance": "high"
+   },
+   {
+    "id": "P2",
+    "section": "Sec. 2(b)",
+    "plain_english": "The Commission must limit the standards to products that meet the Consumer Product Safety Act definition of a \"consumer product\", so the rule's reach depends on that definition rather than covering every battery or vehicle type.",
+    "business_relevance": "medium"
+   },
+   {
+    "id": "P3",
+    "section": "Sec. 2(c)",
+    "plain_english": "If the standards bodies revise any of the three standards after enactment, they must notify the CPSC, and the revision automatically becomes a mandatory CPSC standard 180 days after that notice unless the Commission objects within 90 days as not improving safety.",
+    "business_relevance": "high"
+   },
+   {
+    "id": "P4",
+    "section": "Sec. 2(d)",
+    "plain_english": "The resulting standard, including any adopted revision, has the legal force of a consumer product safety rule issued under section 9 of the Consumer Product Safety Act, which is the provision that carries the CPSC's enforcement and penalty machinery.",
+    "business_relevance": "high"
+   },
+   {
+    "id": "P5",
+    "section": "Sec. 2(e)",
+    "plain_english": "Within five years the CPSC must report to Congress on lithium-ion battery fires, explosions and other hazards in micromobility products, including make and model, whether the product complied with the new standard, and the manufacturer and country of manufacture where known.",
+    "business_relevance": "low"
+   }
+  ],
+  "open_questions": [
+   "The bill sets a 180-day deadline for the CPSC to issue the standards but never states the date by which manufacturers, importers or sellers must actually comply with them, so business compliance dates are unknown until the final rule is published.",
+   "Sec. 2(a) refers to \"ANSI/CA/UL 2272\" while Sec. 2(c)(1) refers to \"ANSI/CAN/UL 2272\"; the \"CA\" appears to be a drafting error for \"CAN\" but the intended standard should be confirmed.",
+   "The standards are frozen \"as in effect on the date of enactment,\" so it is unclear what happens to products certified to a standard version adopted between enactment and the CPSC's final rule.",
+   "Sec. 2(b) limits scope to \"consumer products\" under 15 U.S.C. 2052(a)(5), leaving unclear whether commercial or rental fleet micromobility devices, and separately sold replacement battery packs, are covered.",
+   "The bill does not specify certification, testing, labeling or third-party lab requirements, or whether existing products already in the stream of commerce must be recalled or retrofitted.",
+   "Whether the CPSC will specify a later effective date in the Federal Register for revisions under Sec. 2(c)(2), and how the 90-day objection window interacts with the 180-day effective date, is left to the agency.",
+   "The bill cites enforcement via section 9 of the Consumer Product Safety Act but does not state penalty amounts, which would come from existing CPSA penalty provisions."
+  ]
+ },
+ "forecast": {
+  "probability": 0.257,
+  "model_probability": 0.224,
+  "starting_point": {
+   "stage": "passed_one",
+   "days_left": 71,
+   "probability": 0.093,
+   "explanation": "A typical bill at this stage with 71 days left, before looking at its other signals."
+  },
+  "factors_that_apply": [
+   {
+    "factor": "Has cosponsors from both parties",
+    "applies": true,
+    "effect_on_odds": "x1.52"
+   },
+   {
+    "factor": "Has a matching bill in the other chamber",
+    "applies": true,
+    "effect_on_odds": "x2.02"
+   },
+   {
+    "factor": "Has many cosponsors (20+ House, 5+ Senate)",
+    "applies": true,
+    "effect_on_odds": "x0.91"
+   }
+  ],
+  "research_adjustments": [
+   {
+    "factor": "broad_coalition",
+    "multiplier_used": 1.2,
+    "reason": "Industry (ULSE explicitly urging Senate passage; PeopleForBikes supporting a mandatory standard), consumer groups (Consumer Reports) and fire-service organizations (IAFC, NVFC lobbying) all back the same core requirement, and delivery platforms lobby for the bill. The support is for the UL-standard mandate rather than every bill provision."
+   }
+  ],
+  "notes": [
+   "Only 71 days are left in this Congress. If it doesn't pass both chambers by then, the bill dies and must be reintroduced."
+  ]
+ },
+ "research": {
+  "stakeholders": [
+   {
+    "name": "PeopleForBikes",
+    "type": "industry",
+    "stance": "support"
+   },
+   {
+    "name": "UL Standards & Engagement",
+    "type": "industry",
+    "stance": "support"
+   },
+   {
+    "name": "Consumer Reports",
+    "type": "consumer",
+    "stance": "support"
+   },
+   {
+    "name": "Flex Association (app-based delivery platforms)",
+    "type": "industry",
+    "stance": "support"
+   },
+   {
+    "name": "Grubhub Holdings",
+    "type": "industry",
+    "stance": "unknown"
+   },
+   {
+    "name": "International Association of Fire Chiefs",
+    "type": "safety",
+    "stance": "unknown"
+   },
+   {
+    "name": "National Volunteer Fire Council",
+    "type": "safety",
+    "stance": "unknown"
+   },
+   {
+    "name": "Samsung SDI America and LG Electronics USA",
+    "type": "industry",
+    "stance": "unknown"
+   },
+   {
+    "name": "U.S. Consumer Product Safety Commission",
+    "type": "government",
+    "stance": "support"
+   },
+   {
+    "name": "Sens. Gillibrand and Schumer; Rep. Torres",
+    "type": "government",
+    "stance": "support"
+   }
+  ],
+  "comparable_past_laws": [
+   {
+    "name": "Local Law 39 of 2023 (e-mobility device and battery certification)",
+    "jurisdiction": "New York City",
+    "year_enacted": 2023,
+    "lessons_for_businesses": "Certification requirements are enforceable and change what can be sold, but fire counts moved slowly while deaths fell, and enforcement plus incentives did much of the work. Sellers should expect inspections and documentation requests, not just a labeling rule."
+   },
+   {
+    "name": "SB 1271 (electric bicycles, powered mobility devices and storage batteries)",
+    "jurisdiction": "California",
+    "year_enacted": 2024,
+    "lessons_for_businesses": "State mandates are already in force, so national sellers are complying in California regardless of the federal bill. California accepts EN 15194 as an alternative, which the federal bill and the CPSC proposal do not."
+   }
+  ],
+  "alternative_paths": [
+   {
+    "path": "agency_rulemaking",
+    "description": "CPSC proposed a mandatory micromobility battery standard on June 24, 2026 that would require modified UL 2849-20, UL 2272-24 and UL 2271-23 compliance, reaching further than H.R. 973 by covering separately sold battery packs, chargers and conversion kits.",
+    "status": "Proposed rule; written comments closed August 24, 2026; virtual oral-comment hearing held October 21, 2026; final rule pending. CPSC could set an effective date later than 180 days.",
+    "evidence_url": "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of"
+   },
+   {
+    "path": "state_or_local_laws",
+    "description": "New York City Local Law 39 and California SB 1271 already impose UL certification duties, and CPSC's own proposal notes state and local rules plus insurance requirements are pushing the industry toward UL compliance without federal action.",
+    "status": "In force: NYC since 2023; California sales and leases since January 1, 2026; California rentals from January 1, 2028.",
+    "evidence_url": "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240SB1271"
+   }
+  ],
+  "political_context": [
+   {
+    "fact": "The House passed H.R. 973 in April 2025 but the Senate has not passed it; the bill and the CPSC rule are described by the sponsor's office as separate routes to a mandatory standard.",
+    "evidence_url": "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/",
+    "date": "2026-10-17"
+   },
+   {
+    "fact": "The Senate companion S. 389 was reported by the Commerce, Science, and Transportation Committee on July 29, 2025 and placed on the Senate Legislative Calendar (Calendar No. 133), where it has remained.",
+    "evidence_url": "https://www.govinfo.gov/content/pkg/CRPT-119srpt50/pdf/CRPT-119srpt50.pdf",
+    "date": "2025-07-29"
+   },
+   {
+    "fact": "Sens. Gillibrand and Schumer and Rep. Torres sent an October 16, 2026 letter urging CPSC to process comments rapidly and finish the rulemaking.",
+    "evidence_url": "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/",
+    "date": "2026-10-16"
+   },
+   {
+    "fact": "CPSC regained a three-member quorum in early August 2026 after the Senate confirmed Commissioners Karen Sessions and Brien Lorenze, allowing it to resume rulemakings.",
+    "evidence_url": "https://www.peopleforbikes.org/news/regulatory-update-september-2026",
+    "date": "2026-09-04"
+   },
+   {
+    "fact": "CPSC Acting Chairman Peter Feldman framed the proposal as addressing imported, noncompliant batteries and said the agency looks forward to finalizing a strong standard.",
+    "evidence_url": "https://www.cpsc.gov/About-CPSC/Chairman/Peter-A-Feldman/Statement/Statement-of-Acting-Chairman-Peter-A-Feldman-on-CPSCs-Proposed-Lithium-ion-Battery-Safety-Standard-for-Micromobility-Products",
+    "date": "2026-06-22"
+   }
+  ],
+  "key_uncertainties": [
+   "H.R. 973 and the CPSC's own rulemaking are substitutes: a final CPSC rule would deliver most of the bill's substance without enactment, which may reduce Senate urgency even as it validates the policy.",
+   "CPSC said in the NPR that it could set an effective date later than 180 days, so the compliance date businesses actually face is unknown and may differ from the bill's 180-day clock.",
+   "The CPSC proposal goes further than the bill (user-replaceable packs, aftermarket chargers, conversion kits, rental fleets) and adds tests the UL standards lack, so the two are not identical and industry may prefer the narrower bill or the broader rule depending on product line.",
+   "No organized opposition surfaced in lobbying filings or public comments, but importers and e-moto sellers who would bear compliance costs were not visibly represented, so latent opposition is untested.",
+   "New York City's decline in deaths coincides with inspections, trade-in incentives and education, so the share attributable to mandatory UL standards alone is not established.",
+   "Litigation risk surrounds a CPSC final rule issued before the quorum was restored, and a court challenge could delay or vacate the rule and revive the case for legislation.",
+   "Whether the bill's frozen 'as in effect on the date of enactment' standard versions would create a compliance gap for products certified to newer UL editions was not addressed by any source found."
+  ],
+  "sources": [
+   "https://www.govinfo.gov/content/pkg/CRPT-119hrpt77/html/CRPT-119hrpt77.htm",
+   "https://www.govinfo.gov/content/pkg/CRPT-119srpt50/pdf/CRPT-119srpt50.pdf",
+   "https://www.federalregister.gov/documents/2026/06/24/2026-12749/safety-standard-for-lithium-ion-batteries-used-in-micromobility-products-and-electrical-systems-of",
+   "https://www.cpsc.gov/About-CPSC/Chairman/Peter-A-Feldman/Statement/Statement-of-Acting-Chairman-Peter-A-Feldman-on-CPSCs-Proposed-Lithium-ion-Battery-Safety-Standard-for-Micromobility-Products",
+   "https://www.crowelltransportation.com/2026/06/cpscs-proposed-micromobility-rule-could-reshape-the-e-bike-and-e-scooter-industry/",
+   "https://www.peopleforbikes.org/news/regulatory-update-september-2026",
+   "https://advocacy.consumerreports.org/press_release/consumer-reports-urges-cpsc-to-quickly-finalize-strong-safety-standard-for-lithium-ion-batteries-in-micromobility-products",
+   "https://ulse.org/news/deaths-from-nyc-e-bike-fires-fell-to-one-in-2025-two-years-after-ul-standards-written-into-law/",
+   "https://www.bicycleretailer.com/industry-news/2026/07/01/industry-now-can-comment-cpsc-proposed-e-mobility-device-battery-testing",
+   "https://www.fingerlakes1.com/2026/10/17/new-york-lawmakers-press-federal-agency-on-e-bike-battery-safety-rule/",
+   "https://www.nyc.gov/site/fdny/news/69-25/the-fdny-2025-end-of-year-accomplishments",
+   "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202320240SB1271"
+  ]
+ },
+ "plan": {
+  "assumptions": [
+   {
+    "id": "A1",
+    "statement": "SUP-BAT-01 supplies 70% of every battery-pack component VoltRide buys and its packs are tested only to EN 15194, not UL 2271.",
+    "basis": "company_data",
+    "confidence": "high"
+   },
+   {
+    "id": "A2",
+    "statement": "SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.",
+    "basis": "company_data",
+    "confidence": "medium"
+   },
+   {
+    "id": "A3",
+    "statement": "Certifying the VoltRide Cargo electrical system to UL 2849 costs $60,000 and takes 16 weeks; the City is already certified.",
+    "basis": "company_data",
+    "confidence": "high"
+   },
+   {
+    "id": "A4",
+    "statement": "Because the bill orders the CPSC to adopt the standards within 180 days of enactment, the earliest binding compliance point is about 6 months after enactment. This figure runs from enactment, not from today; scenario timings add A18's passage lag.",
+    "basis": "bill_text",
+    "confidence": "high"
+   },
+   {
+    "id": "A5",
+    "statement": "A middle-case compliance date of about 18 months after enactment reflects CPSC's statement that it could set an effective date later than 180 days. This figure runs from enactment, not from today.",
+    "basis": "research",
+    "confidence": "medium"
+   },
+   {
+    "id": "A6",
+    "statement": "A slow case of about 30 months after enactment covers a rule delayed by OMB review, quorum problems or litigation over a final rule. This figure runs from enactment, not from today.",
+    "basis": "research",
+    "confidence": "low"
+   },
+   {
+    "id": "A7",
+    "statement": "In the fail branch I assign 55% to a binding CPSC micromobility battery rule within about 12 months: the proposal was published 2026-06-24, comments closed 2026-08-24, an oral hearing was held 2026-10-21, the final rule is pending and the agency regained a quorum in August 2026.",
+    "basis": "research",
+    "confidence": "medium"
+   },
+   {
+    "id": "A8",
+    "statement": "The CPSC rule covers more than the bill: it reaches separately sold user-replaceable battery packs, so PRD-SPARE and CMP-SPARE-BAT are also in scope in the agency-rule scenario.",
+    "basis": "research",
+    "confidence": "medium"
+   },
+   {
+    "id": "A9",
+    "statement": "CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.",
+    "basis": "estimate",
+    "confidence": "low"
+   },
+   {
+    "id": "A10",
+    "statement": "Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.",
+    "basis": "estimate",
+    "confidence": "low"
+   },
+   {
+    "id": "A11",
+    "statement": "Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.",
+    "basis": "estimate",
+    "confidence": "low"
+   },
+   {
+    "id": "A12",
+    "statement": "Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.",
+    "basis": "estimate",
+    "confidence": "low"
+   },
+   {
+    "id": "A13",
+    "statement": "VoltRide needs about 9,000 battery packs a year (5,500 City + 2,000 Cargo + 1,500 spare), and the certified suppliers SUP-BAT-02 (4,000/yr) and SUP-BAT-03 (6,000/yr) together have enough capacity to cover all of it.",
+    "basis": "company_data",
+    "confidence": "high"
+   },
+   {
+    "id": "A14",
+    "statement": "The 2,800 standard packs in inventory came from SUP-BAT-01 and are already built to EN 15194 only, so they stay uncertified and unsellable once a UL 2271 mandate applies even if SUP-BAT-01 later gets its packs certified.",
+    "basis": "company_data",
+    "confidence": "high"
+   },
+   {
+    "id": "A15",
+    "statement": "Leaving SUP-BAT-01 before its contract ends on 2027-03-31 (about 5 months away) triggers a $75,000 early-exit penalty and breaches its 5,000-unit annual minimum, and a full exit strands the 2,800-pack inventory.",
+    "basis": "company_data",
+    "confidence": "high"
+   },
+   {
+    "id": "A16",
+    "statement": "California SB 1271 accepts EN 15194 but the federal bill and the CPSC proposal do not, so the standard VoltRide relies on for 40% of its units is not a federal substitute.",
+    "basis": "research",
+    "confidence": "high"
+   },
+   {
+    "id": "A17",
+    "statement": "A fast pass scenario keeps the existing supplier mix, so the uncertified 70% share from SUP-BAT-01 is a stop-sale exposure from the compliance date unless the supplier certifies.",
+    "basis": "company_data",
+    "confidence": "high"
+   },
+   {
+    "id": "A18",
+    "statement": "The earliest realistic passage is about 2 months from today (the bill is in the Senate with 71 days left in the Congress), so every pass-branch compliance date counted from today adds 2 months to the post-enactment lag, and 2 months is also when the company would learn a rule is coming if the bill passes.",
+    "basis": "estimate",
+    "confidence": "medium"
+   }
+  ]
+ },
+ "impact_results": {
+  "pass_probability": 0.257,
+  "probability_any_rule_applies": 0.6657,
+  "baseline": {
+   "revenue": 13470000.0,
+   "gross_profit": 5591500.0,
+   "gross_margin": 0.4151
+  },
+  "scenarios": [
+   {
+    "id": "S1",
+    "name": "Pass - fast compliance (about 8 months from today: 2-month passage + 6-month post-enactment lag)",
+    "branch": "pass",
+    "probability": 0.09,
+    "months_until_rule_applies": 8
+   },
+   {
+    "id": "S2",
+    "name": "Pass - middle compliance (about 20 months from today: 2-month passage + 18-month lag)",
+    "branch": "pass",
+    "probability": 0.1157,
+    "months_until_rule_applies": 20
+   },
+   {
+    "id": "S3",
+    "name": "Pass - slow compliance (about 32 months from today: 2-month passage + 30-month lag, rule delayed or litigated)",
+    "branch": "pass",
+    "probability": 0.0514,
+    "months_until_rule_applies": 32
+   },
+   {
+    "id": "S4",
+    "name": "Fail - bill dies, nothing changes",
+    "branch": "fail",
+    "probability": 0.3343,
+    "months_until_rule_applies": null
+   },
+   {
+    "id": "S5",
+    "name": "Fail - CPSC finalizes its broader micromobility battery rule (about 12 months)",
+    "branch": "fail",
+    "probability": 0.4087,
+    "months_until_rule_applies": 12
+   }
+  ],
+  "options": [
+   {
+    "option_id": "do_nothing",
+    "option_name": "Do nothing",
+    "description": "Keep the current supplier mix, sell the EN 15194-only packs and the uncertified Cargo, and deal with any rule after it lands.",
+    "expected_first_year_impact": -3774272.7,
+    "worst_case": -5676500.0,
+    "best_case": 0.0,
+    "compliant_in_every_pass_scenario": false,
+    "feasible": true,
+    "by_scenario": [
+     {
+      "scenario_id": "S1",
+      "probability": 0.09,
+      "annual_profit_change": -5616500.0,
+      "one_time_total": 50000,
+      "first_year_impact": -5666500.0,
+      "gross_margin_after": 0.0,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [
+       "VoltRide City",
+       "VoltRide Cargo",
+       "Replacement battery pack"
+      ],
+      "one_time_costs": [
+       {
+        "item": "Early exit penalty, Hanbit Energy contract",
+        "amount": 50000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S2",
+      "probability": 0.1157,
+      "annual_profit_change": -5616500.0,
+      "one_time_total": 50000,
+      "first_year_impact": -5666500.0,
+      "gross_margin_after": 0.0,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [
+       "VoltRide City",
+       "VoltRide Cargo",
+       "Replacement battery pack"
+      ],
+      "one_time_costs": [
+       {
+        "item": "Early exit penalty, Hanbit Energy contract",
+        "amount": 50000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S3",
+      "probability": 0.0514,
+      "annual_profit_change": -5616500.0,
+      "one_time_total": 0,
+      "first_year_impact": -5616500.0,
+      "gross_margin_after": 0.0,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [
+       "VoltRide City",
+       "VoltRide Cargo",
+       "Replacement battery pack"
+      ],
+      "one_time_costs": []
+     },
+     {
+      "scenario_id": "S4",
+      "probability": 0.3343,
+      "annual_profit_change": 0.0,
+      "one_time_total": 0,
+      "first_year_impact": 0.0,
+      "gross_margin_after": 0.4151,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": []
+     },
+     {
+      "scenario_id": "S5",
+      "probability": 0.4087,
+      "annual_profit_change": -5591500.0,
+      "one_time_total": 85000,
+      "first_year_impact": -5676500.0,
+      "gross_margin_after": 0.0,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [
+       "VoltRide City",
+       "VoltRide Cargo",
+       "Replacement battery pack"
+      ],
+      "one_time_costs": [
+       {
+        "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+        "amount": 35000
+       },
+       {
+        "item": "Early exit penalty, Hanbit Energy contract",
+        "amount": 50000
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "option_id": "certify_incumbent_and_cargo",
+    "option_name": "Prepare now: certify SUP-BAT-01 and the Cargo e-bike",
+    "description": "Pay for SUP-BAT-01 to reach UL 2271 (about 26 weeks, +15% pack price) and certify the Cargo electrical system to UL 2849 now ($60,000, 16 weeks). This keeps the 5,000-unit contract minimum and avoids the exit penalty, but it does not rescue the 2,800 packs already built, which stay uncertified and must be written down or sold before a rule bites.",
+    "expected_first_year_impact": -226418.28,
+    "worst_case": -266325.0,
+    "best_case": -200208.52,
+    "compliant_in_every_pass_scenario": true,
+    "feasible": true,
+    "by_scenario": [
+     {
+      "scenario_id": "S1",
+      "probability": 0.09,
+      "annual_profit_change": -140208.52,
+      "one_time_total": 60000,
+      "first_year_impact": -200208.52,
+      "gross_margin_after": 0.3953,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S2",
+      "probability": 0.1157,
+      "annual_profit_change": -140208.52,
+      "one_time_total": 60000,
+      "first_year_impact": -200208.52,
+      "gross_margin_after": 0.3953,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S3",
+      "probability": 0.0514,
+      "annual_profit_change": -140208.52,
+      "one_time_total": 60000,
+      "first_year_impact": -200208.52,
+      "gross_margin_after": 0.3953,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S4",
+      "probability": 0.3343,
+      "annual_profit_change": -206325.0,
+      "one_time_total": 60000,
+      "first_year_impact": -266325.0,
+      "gross_margin_after": 0.3998,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S5",
+      "probability": 0.4087,
+      "annual_profit_change": -115208.52,
+      "one_time_total": 95000,
+      "first_year_impact": -210208.52,
+      "gross_margin_after": 0.3953,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+        "amount": 35000
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "option_id": "shift_to_certified_suppliers",
+    "option_name": "Prepare now: move battery volume to SUP-BAT-02 and SUP-BAT-03",
+    "description": "Switch all three battery components to the already-certified suppliers (40% Hanbit, 60% SafeCell, which fits 3,690 and 5,535 of the roughly 9,225 needed units inside their 4,000 and 6,000 unit capacities), certify Cargo, and accept the SUP-BAT-01 exit consequences the calculator already prices.",
+    "expected_first_year_impact": -915354.95,
+    "worst_case": -1139178.2,
+    "best_case": -477000.0,
+    "compliant_in_every_pass_scenario": true,
+    "feasible": true,
+    "by_scenario": [
+     {
+      "scenario_id": "S1",
+      "probability": 0.09,
+      "annual_profit_change": -420178.2,
+      "one_time_total": 709000.0,
+      "first_year_impact": -1129178.2,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 574000.0
+       }
+      ]
+     },
+     {
+      "scenario_id": "S2",
+      "probability": 0.1157,
+      "annual_profit_change": -420178.2,
+      "one_time_total": 709000.0,
+      "first_year_impact": -1129178.2,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 574000.0
+       }
+      ]
+     },
+     {
+      "scenario_id": "S3",
+      "probability": 0.0514,
+      "annual_profit_change": -420178.2,
+      "one_time_total": 709000.0,
+      "first_year_impact": -1129178.2,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 574000.0
+       }
+      ]
+     },
+     {
+      "scenario_id": "S4",
+      "probability": 0.3343,
+      "annual_profit_change": -342000.0,
+      "one_time_total": 135000,
+      "first_year_impact": -477000.0,
+      "gross_margin_after": 0.3897,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S5",
+      "probability": 0.4087,
+      "annual_profit_change": -395178.2,
+      "one_time_total": 744000.0,
+      "first_year_impact": -1139178.2,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+        "amount": 35000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 574000.0
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "option_id": "wait_and_react",
+    "option_name": "Wait and react: move only when a rule is final",
+    "description": "Hold the current mix and inventory, watch the CPSC docket, and about 2 months out - when a passing bill signals a rule is coming - certify Cargo and shift battery volume to SUP-BAT-02/03, ahead of the earliest compliance date.",
+    "expected_first_year_impact": -644427.83,
+    "worst_case": -971761.53,
+    "best_case": 0.0,
+    "compliant_in_every_pass_scenario": true,
+    "feasible": true,
+    "by_scenario": [
+     {
+      "scenario_id": "S1",
+      "probability": 0.09,
+      "annual_profit_change": -420178.2,
+      "one_time_total": 541583.33,
+      "first_year_impact": -961761.53,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 406583.33
+       }
+      ]
+     },
+     {
+      "scenario_id": "S2",
+      "probability": 0.1157,
+      "annual_profit_change": -420178.2,
+      "one_time_total": 541583.33,
+      "first_year_impact": -961761.53,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 406583.33
+       }
+      ]
+     },
+     {
+      "scenario_id": "S3",
+      "probability": 0.0514,
+      "annual_profit_change": -420178.2,
+      "one_time_total": 541583.33,
+      "first_year_impact": -961761.53,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 406583.33
+       }
+      ]
+     },
+     {
+      "scenario_id": "S4",
+      "probability": 0.3343,
+      "annual_profit_change": 0.0,
+      "one_time_total": 0,
+      "first_year_impact": 0.0,
+      "gross_margin_after": 0.4151,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": []
+     },
+     {
+      "scenario_id": "S5",
+      "probability": 0.4087,
+      "annual_profit_change": -395178.2,
+      "one_time_total": 576583.33,
+      "first_year_impact": -971761.53,
+      "gross_margin_after": 0.375,
+      "below_target_margin": true,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "UL 2849 for VoltRide Cargo",
+        "amount": 60000
+       },
+       {
+        "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+        "amount": 35000
+       },
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       },
+       {
+        "item": "Unsellable stock: standard battery pack",
+        "amount": 406583.33
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "option_id": "trim_to_city_and_spare",
+    "option_name": "Prepare now: drop Cargo, keep City and spare packs, certify SUP-BAT-01",
+    "description": "Shelve the Cargo line (it has no certification and a $60,000, 16-week path) and protect the 5,500-unit City line and 1,500 spare packs by certifying SUP-BAT-01 and keeping the contract minimum; the 2,800 packs already built stay uncertified either way.",
+    "expected_first_year_impact": -1898180.28,
+    "worst_case": -1965675.0,
+    "best_case": -1857867.42,
+    "compliant_in_every_pass_scenario": true,
+    "feasible": true,
+    "by_scenario": [
+     {
+      "scenario_id": "S1",
+      "probability": 0.09,
+      "annual_profit_change": -1857867.42,
+      "one_time_total": 0,
+      "first_year_impact": -1857867.42,
+      "gross_margin_after": 0.4067,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": []
+     },
+     {
+      "scenario_id": "S2",
+      "probability": 0.1157,
+      "annual_profit_change": -1857867.42,
+      "one_time_total": 0,
+      "first_year_impact": -1857867.42,
+      "gross_margin_after": 0.4067,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": []
+     },
+     {
+      "scenario_id": "S3",
+      "probability": 0.0514,
+      "annual_profit_change": -1857867.42,
+      "one_time_total": 0,
+      "first_year_impact": -1857867.42,
+      "gross_margin_after": 0.4067,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": []
+     },
+     {
+      "scenario_id": "S4",
+      "probability": 0.3343,
+      "annual_profit_change": -1890675.0,
+      "one_time_total": 75000,
+      "first_year_impact": -1965675.0,
+      "gross_margin_after": 0.4117,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "Early exit penalty, Shenzhen PowerCell contract",
+        "amount": 75000
+       }
+      ]
+     },
+     {
+      "scenario_id": "S5",
+      "probability": 0.4087,
+      "annual_profit_change": -1832867.42,
+      "one_time_total": 35000,
+      "first_year_impact": -1867867.42,
+      "gross_margin_after": 0.4067,
+      "below_target_margin": false,
+      "timing_problems": [],
+      "not_compliant": [],
+      "one_time_costs": [
+       {
+        "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+        "amount": 35000
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "ranking_by_expected_impact": [
+   "certify_incumbent_and_cargo",
+   "wait_and_react",
+   "shift_to_certified_suppliers",
+   "trim_to_city_and_spare",
+   "do_nothing"
+  ],
+  "method_notes": [
+   "Annual profit change is the yearly gross profit change once the rule applies, minus any added yearly costs.",
+   "First-year impact = annual profit change - one-time costs (certifications, penalties, unsellable stock, lost sales while fixes finish).",
+   "Expected impact weights each scenario by its probability. Pass probability comes from forecast.py.",
+   "Products that break a rule are treated as unsellable once the rule applies.",
+   "While fixes are still finishing, the whole product is treated as unsellable (no partial sales from already-compliant suppliers), so gap losses are a worst case.",
+   "Costs before the rule applies (for example, paying more for certified parts early) are not counted."
+  ]
+ },
+ "names": {
+  "company": "VoltRide",
+  "PRD-CITY": "VoltRide City",
+  "PRD-CARGO": "VoltRide Cargo",
+  "PRD-SPARE": "Replacement battery pack",
+  "SUP-BAT-01": "Shenzhen PowerCell",
+  "SUP-BAT-02": "Hanbit Energy",
+  "SUP-BAT-03": "Dongguan SafeCell",
+  "SUP-MOT-01": "Changzhou Drive Systems",
+  "SUP-FRM-01": "Taichung Alloy Works",
+  "SUP-CTL-01": "Shenzhen Logic Electronics",
+  "SUP-DRV-01": "Kaneda Components",
+  "SUP-WHL-01": "Saigon Wheelworks",
+  "SUP-MSC-01": "Ningbo Parts Co."
+ }
+}

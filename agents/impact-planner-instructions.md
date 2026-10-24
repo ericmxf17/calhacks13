@@ -16,7 +16,7 @@ Same process as Agents 1 and 2: **run the task once in a chat**, check the outpu
 
 Choose **Markdown** as the output format and paste this into the instructions field:
 
-> Inputs: `bill_analysis`, `research`, and `forecast` (long text fields, each holding JSON). The company data is the file company.json on the Files tab. Follow the steps from this session exactly for whatever bill is given. Never reuse assumptions about H.R. 973 for another bill. Only use the rule, effect, and action types listed in impact-plan-schema.json, and only IDs that exist in company.json. Never calculate totals. Your final reply must be only the JSON object matching impact-plan-schema.json, inside one json code block, and also save it as a file named impact-plan.json.
+> Inputs: `bill_analysis`, `research`, and `forecast` (long text fields, each holding JSON), and `as_of` (today's date, YYYY-MM-DD). The company data is the file company.json on the Files tab. Follow the steps from this session exactly for whatever bill is given. Never reuse assumptions about H.R. 973 for another bill. Only use the rule, effect, and action types listed in impact-plan-schema.json, and only IDs that exist in company.json. Never calculate totals. Your final reply must be only the JSON object matching impact-plan-schema.json, inside one json code block, and also save it as a file named impact-plan.json.
 
 ---
 

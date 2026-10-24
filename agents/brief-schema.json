@@ -6,7 +6,7 @@
   "bill_in_plain_english": "string, 1 to 2 sentences",
 
   "odds": {
-    "probability_text": "string, e.g. '22.5% chance of becoming law this Congress'",
+    "probability_text": "string, e.g. 'NN% chance of becoming law this Congress'",
     "why": ["string, the 2 or 3 biggest reasons from the forecast"],
     "what_would_change_it": ["string, events that would raise or lower the odds"]
   },

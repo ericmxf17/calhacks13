@@ -1,0 +1,1700 @@
+{
+  "bill_id": "hr973-119",
+  "as_of": "2026-10-24",
+  "pass_probability": 0.257,
+  "probability_any_rule_applies": 0.6657,
+  "baseline": {
+    "products": [
+      {
+        "id": "PRD-CITY",
+        "name": "VoltRide City",
+        "units": 5500,
+        "net_price": 1520,
+        "unit_cost": 865.0,
+        "gross_profit": 3602500.0
+      },
+      {
+        "id": "PRD-CARGO",
+        "name": "VoltRide Cargo",
+        "units": 2000,
+        "net_price": 2240,
+        "unit_cost": 1370.0,
+        "gross_profit": 1740000.0
+      },
+      {
+        "id": "PRD-SPARE",
+        "name": "Replacement battery pack",
+        "units": 1500,
+        "net_price": 420,
+        "unit_cost": 254.0,
+        "gross_profit": 249000.0
+      }
+    ],
+    "revenue": 13470000.0,
+    "gross_profit": 5591500.0,
+    "gross_margin": 0.4151
+  },
+  "scenarios": [
+    {
+      "id": "S1",
+      "name": "Pass - fast compliance (about 8 months from today: 2-month passage + 6-month post-enactment lag)",
+      "branch": "pass",
+      "probability": 0.09,
+      "months_until_rule_applies": 8
+    },
+    {
+      "id": "S2",
+      "name": "Pass - middle compliance (about 20 months from today: 2-month passage + 18-month lag)",
+      "branch": "pass",
+      "probability": 0.1157,
+      "months_until_rule_applies": 20
+    },
+    {
+      "id": "S3",
+      "name": "Pass - slow compliance (about 32 months from today: 2-month passage + 30-month lag, rule delayed or litigated)",
+      "branch": "pass",
+      "probability": 0.0514,
+      "months_until_rule_applies": 32
+    },
+    {
+      "id": "S4",
+      "name": "Fail - bill dies, nothing changes",
+      "branch": "fail",
+      "probability": 0.3343,
+      "months_until_rule_applies": null
+    },
+    {
+      "id": "S5",
+      "name": "Fail - CPSC finalizes its broader micromobility battery rule (about 12 months)",
+      "branch": "fail",
+      "probability": 0.4087,
+      "months_until_rule_applies": 12
+    }
+  ],
+  "options": [
+    {
+      "option_id": "do_nothing",
+      "option_name": "Do nothing",
+      "description": "Keep the current supplier mix, sell the EN 15194-only packs and the uncertified Cargo, and deal with any rule after it lands.",
+      "expected_first_year_impact": -3774272.7,
+      "worst_case": -5676500.0,
+      "best_case": 0.0,
+      "compliant_in_every_pass_scenario": false,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": false,
+          "compliance_issues": [
+            {
+              "product": "VoltRide City",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "VoltRide Cargo",
+              "problem": "battery pack, large 960Wh from Shenzhen PowerCell lacks UL 2271; VoltRide Cargo lacks UL 2849",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "Replacement battery pack",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            }
+          ],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -5616500.0,
+          "gross_margin_after": 0.0,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "Early exit penalty, Hanbit Energy contract",
+              "amount": 50000,
+              "how": "Volume drops below the 1000-unit minimum in month 8, before the contract ends in month 20. Check for a change-in-law clause."
+            }
+          ],
+          "one_time_total": 50000,
+          "first_year_impact": -5666500.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 0,
+              "net_price": 1520,
+              "unit_cost": 871.52,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1378.36,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 0,
+              "net_price": 420,
+              "unit_cost": 260.52,
+              "gross_profit": 0.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.09
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": false,
+          "compliance_issues": [
+            {
+              "product": "VoltRide City",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "VoltRide Cargo",
+              "problem": "battery pack, large 960Wh from Shenzhen PowerCell lacks UL 2271; VoltRide Cargo lacks UL 2849",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "Replacement battery pack",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            }
+          ],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -5616500.0,
+          "gross_margin_after": 0.0,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "Early exit penalty, Hanbit Energy contract",
+              "amount": 50000,
+              "how": "Volume drops below the 1000-unit minimum in month 20, before the contract ends in month 20. Check for a change-in-law clause."
+            }
+          ],
+          "one_time_total": 50000,
+          "first_year_impact": -5666500.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 0,
+              "net_price": 1520,
+              "unit_cost": 871.52,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1378.36,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 0,
+              "net_price": 420,
+              "unit_cost": 260.52,
+              "gross_profit": 0.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.1157
+        },
+        {
+          "scenario_id": "S3",
+          "compliant": false,
+          "compliance_issues": [
+            {
+              "product": "VoltRide City",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "VoltRide Cargo",
+              "problem": "battery pack, large 960Wh from Shenzhen PowerCell lacks UL 2271; VoltRide Cargo lacks UL 2849",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "Replacement battery pack",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            }
+          ],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -5616500.0,
+          "gross_margin_after": 0.0,
+          "below_target_margin": true,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": -5616500.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 0,
+              "net_price": 1520,
+              "unit_cost": 871.52,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1378.36,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 0,
+              "net_price": 420,
+              "unit_cost": 260.52,
+              "gross_profit": 0.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.0514
+        },
+        {
+          "scenario_id": "S4",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": 0.0,
+          "gross_margin_after": 0.4151,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": 0.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5500,
+              "net_price": 1520,
+              "unit_cost": 865.0,
+              "gross_profit": 3602500.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1370.0,
+              "gross_profit": 1740000.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 254.0,
+              "gross_profit": 249000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [],
+          "probability": 0.3343
+        },
+        {
+          "scenario_id": "S5",
+          "compliant": false,
+          "compliance_issues": [
+            {
+              "product": "VoltRide City",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "VoltRide Cargo",
+              "problem": "battery pack, large 960Wh from Shenzhen PowerCell lacks UL 2271; VoltRide Cargo lacks UL 2849",
+              "result": "Cannot be sold once the rule applies"
+            },
+            {
+              "product": "Replacement battery pack",
+              "problem": "battery pack, standard 672Wh from Shenzhen PowerCell lacks UL 2271",
+              "result": "Cannot be sold once the rule applies"
+            }
+          ],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -5591500.0,
+          "gross_margin_after": 0.0,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+              "amount": 35000,
+              "how": "Given in plan [assumption A9: CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.]"
+            },
+            {
+              "item": "Early exit penalty, Hanbit Energy contract",
+              "amount": 50000,
+              "how": "Volume drops below the 1000-unit minimum in month 12, before the contract ends in month 20. Check for a change-in-law clause."
+            }
+          ],
+          "one_time_total": 85000,
+          "first_year_impact": -5676500.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 0,
+              "net_price": 1520,
+              "unit_cost": 871.52,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1378.36,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 0,
+              "net_price": 420,
+              "unit_cost": 260.52,
+              "gross_profit": 0.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.4087
+        }
+      ]
+    },
+    {
+      "option_id": "certify_incumbent_and_cargo",
+      "option_name": "Prepare now: certify SUP-BAT-01 and the Cargo e-bike",
+      "description": "Pay for SUP-BAT-01 to reach UL 2271 (about 26 weeks, +15% pack price) and certify the Cargo electrical system to UL 2849 now ($60,000, 16 weeks). This keeps the 5,000-unit contract minimum and avoids the exit penalty, but it does not rescue the 2,800 packs already built, which stay uncertified and must be written down or sold before a rule bites.",
+      "expected_first_year_impact": -226418.28,
+      "worst_case": -266325.0,
+      "best_case": -200208.52,
+      "compliant_in_every_pass_scenario": true,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -140208.52,
+          "gross_margin_after": 0.3953,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            }
+          ],
+          "one_time_total": 60000,
+          "first_year_impact": -200208.52,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 1717658.9
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.09
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -140208.52,
+          "gross_margin_after": 0.3953,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            }
+          ],
+          "one_time_total": 60000,
+          "first_year_impact": -200208.52,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 1717658.9
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.1157
+        },
+        {
+          "scenario_id": "S3",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -140208.52,
+          "gross_margin_after": 0.3953,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            }
+          ],
+          "one_time_total": 60000,
+          "first_year_impact": -200208.52,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 1717658.9
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.0514
+        },
+        {
+          "scenario_id": "S4",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -206325.0,
+          "gross_margin_after": 0.3998,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            }
+          ],
+          "one_time_total": 60000,
+          "first_year_impact": -266325.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5500,
+              "net_price": 1520,
+              "unit_cost": 886.52,
+              "gross_profit": 3484112.5
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1397.83,
+              "gross_profit": 1684350.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 275.52,
+              "gross_profit": 216712.5
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)"
+          ],
+          "probability": 0.3343
+        },
+        {
+          "scenario_id": "S5",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -115208.52,
+          "gross_margin_after": 0.3953,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+              "amount": 35000,
+              "how": "Given in plan [assumption A9: CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.]"
+            }
+          ],
+          "one_time_total": 95000,
+          "first_year_impact": -210208.52,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 1717658.9
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.4087
+        }
+      ]
+    },
+    {
+      "option_id": "shift_to_certified_suppliers",
+      "option_name": "Prepare now: move battery volume to SUP-BAT-02 and SUP-BAT-03",
+      "description": "Switch all three battery components to the already-certified suppliers (40% Hanbit, 60% SafeCell, which fits 3,690 and 5,535 of the roughly 9,225 needed units inside their 4,000 and 6,000 unit capacities), certify Cargo, and accept the SUP-BAT-01 exit consequences the calculator already prices.",
+      "expected_first_year_impact": -915354.95,
+      "worst_case": -1139178.2,
+      "best_case": -477000.0,
+      "compliant_in_every_pass_scenario": true,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -420178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 0, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 574000.0,
+              "how": "2800 units - 0 used in the 8 months before the rule = 2800 left x $205"
+            }
+          ],
+          "one_time_total": 709000.0,
+          "first_year_impact": -1129178.2,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 0 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.09
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -420178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 0, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 574000.0,
+              "how": "2800 units - 0 used in the 20 months before the rule = 2800 left x $205"
+            }
+          ],
+          "one_time_total": 709000.0,
+          "first_year_impact": -1129178.2,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 0 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.1157
+        },
+        {
+          "scenario_id": "S3",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -420178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 0, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 574000.0,
+              "how": "2800 units - 0 used in the 32 months before the rule = 2800 left x $205"
+            }
+          ],
+          "one_time_total": 709000.0,
+          "first_year_impact": -1129178.2,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 0 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.0514
+        },
+        {
+          "scenario_id": "S4",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -342000.0,
+          "gross_margin_after": 0.3897,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 0, before the contract ends in month 5. Check for a change-in-law clause."
+            }
+          ],
+          "one_time_total": 135000,
+          "first_year_impact": -477000.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5500,
+              "net_price": 1520,
+              "unit_cost": 901.0,
+              "gross_profit": 3404500.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1415.0,
+              "gross_profit": 1650000.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 290.0,
+              "gross_profit": 195000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 0 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)"
+          ],
+          "probability": 0.3343
+        },
+        {
+          "scenario_id": "S5",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -395178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+              "amount": 35000,
+              "how": "Given in plan [assumption A9: CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.]"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 0, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 574000.0,
+              "how": "2800 units - 0 used in the 12 months before the rule = 2800 left x $205"
+            }
+          ],
+          "one_time_total": 744000.0,
+          "first_year_impact": -1139178.2,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 0 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.4087
+        }
+      ]
+    },
+    {
+      "option_id": "wait_and_react",
+      "option_name": "Wait and react: move only when a rule is final",
+      "description": "Hold the current mix and inventory, watch the CPSC docket, and about 2 months out - when a passing bill signals a rule is coming - certify Cargo and shift battery volume to SUP-BAT-02/03, ahead of the earliest compliance date.",
+      "expected_first_year_impact": -644427.83,
+      "worst_case": -971761.53,
+      "best_case": 0.0,
+      "compliant_in_every_pass_scenario": true,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -420178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 2, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 406583.33,
+              "how": "2800 units - 817 used in the 8 months before the rule = 1983 left x $205"
+            }
+          ],
+          "one_time_total": 541583.33,
+          "first_year_impact": -961761.53,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 2 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.09
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -420178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 2, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 406583.33,
+              "how": "2800 units - 817 used in the 20 months before the rule = 1983 left x $205"
+            }
+          ],
+          "one_time_total": 541583.33,
+          "first_year_impact": -961761.53,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 2 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.1157
+        },
+        {
+          "scenario_id": "S3",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -420178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 2, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 406583.33,
+              "how": "2800 units - 817 used in the 32 months before the rule = 1983 left x $205"
+            }
+          ],
+          "one_time_total": 541583.33,
+          "first_year_impact": -961761.53,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 2 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.0514
+        },
+        {
+          "scenario_id": "S4",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": 0.0,
+          "gross_margin_after": 0.4151,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": 0.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5500,
+              "net_price": 1520,
+              "unit_cost": 865.0,
+              "gross_profit": 3602500.0
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2000,
+              "net_price": 2240,
+              "unit_cost": 1370.0,
+              "gross_profit": 1740000.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 254.0,
+              "gross_profit": 249000.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [],
+          "probability": 0.3343
+        },
+        {
+          "scenario_id": "S5",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -395178.2,
+          "gross_margin_after": 0.375,
+          "below_target_margin": true,
+          "one_time_costs": [
+            {
+              "item": "UL 2849 for VoltRide Cargo",
+              "amount": 60000,
+              "how": "Given in plan"
+            },
+            {
+              "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+              "amount": 35000,
+              "how": "Given in plan [assumption A9: CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.]"
+            },
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 2, before the contract ends in month 5. Check for a change-in-law clause."
+            },
+            {
+              "item": "Unsellable stock: standard battery pack",
+              "amount": 406583.33,
+              "how": "2800 units - 817 used in the 12 months before the rule = 1983 left x $205"
+            }
+          ],
+          "one_time_total": 576583.33,
+          "first_year_impact": -971761.53,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 921.88,
+              "gross_profit": 3388349.8
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 2060,
+              "net_price": 2240,
+              "unit_cost": 1441.8,
+              "gross_profit": 1644292.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 310.88,
+              "gross_profit": 163680.0
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Certify VoltRide Cargo to UL 2849 (16 weeks)",
+            "Shift sourcing of CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT in 2 months: Hanbit Energy 40%, Dongguan SafeCell 60%",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.4087
+        }
+      ]
+    },
+    {
+      "option_id": "trim_to_city_and_spare",
+      "option_name": "Prepare now: drop Cargo, keep City and spare packs, certify SUP-BAT-01",
+      "description": "Shelve the Cargo line (it has no certification and a $60,000, 16-week path) and protect the 5,500-unit City line and 1,500 spare packs by certifying SUP-BAT-01 and keeping the contract minimum; the 2,800 packs already built stay uncertified either way.",
+      "expected_first_year_impact": -1898180.28,
+      "worst_case": -1965675.0,
+      "best_case": -1857867.42,
+      "compliant_in_every_pass_scenario": true,
+      "feasible": true,
+      "by_scenario": [
+        {
+          "scenario_id": "S1",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -1857867.42,
+          "gross_margin_after": 0.4067,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": -1857867.42,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Stop selling VoltRide Cargo",
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.09
+        },
+        {
+          "scenario_id": "S2",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -1857867.42,
+          "gross_margin_after": 0.4067,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": -1857867.42,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Stop selling VoltRide Cargo",
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.1157
+        },
+        {
+          "scenario_id": "S3",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -1857867.42,
+          "gross_margin_after": 0.4067,
+          "below_target_margin": false,
+          "one_time_costs": [],
+          "one_time_total": 0,
+          "first_year_impact": -1857867.42,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [
+            {
+              "item": "Ongoing tracking and re-testing against rolling UL 2271/2849 revisions",
+              "amount": 25000,
+              "how": "Given in plan [assumption A12: Tracking and re-testing against rolling UL revisions under the bill's auto-update clause costs about $25,000 a year in testing and compliance staff.]"
+            }
+          ],
+          "changes_applied": [
+            "Stop selling VoltRide Cargo",
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.0514
+        },
+        {
+          "scenario_id": "S4",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -1890675.0,
+          "gross_margin_after": 0.4117,
+          "below_target_margin": false,
+          "one_time_costs": [
+            {
+              "item": "Early exit penalty, Shenzhen PowerCell contract",
+              "amount": 75000,
+              "how": "Volume drops below the 5000-unit minimum in month 0, before the contract ends in month 5. Check for a change-in-law clause."
+            }
+          ],
+          "one_time_total": 75000,
+          "first_year_impact": -1965675.0,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5500,
+              "net_price": 1520,
+              "unit_cost": 886.52,
+              "gross_profit": 3484112.5
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1397.83,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 275.52,
+              "gross_profit": 216712.5
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Stop selling VoltRide Cargo",
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]"
+          ],
+          "probability": 0.3343
+        },
+        {
+          "scenario_id": "S5",
+          "compliant": true,
+          "compliance_issues": [],
+          "feasible": true,
+          "warnings": [],
+          "timing_problems": [],
+          "annual_profit_change": -1832867.42,
+          "gross_margin_after": 0.4067,
+          "below_target_margin": false,
+          "one_time_costs": [
+            {
+              "item": "Re-testing and relabeling to CPSC's added post-discharge, reverse-polarity and labeling requirements",
+              "amount": 35000,
+              "how": "Given in plan [assumption A9: CPSC's added post-discharge, reverse-polarity and labeling requirements force re-testing and relabeling that I estimate at about $35,000 one time per product family.]"
+            }
+          ],
+          "one_time_total": 35000,
+          "first_year_impact": -1867867.42,
+          "products_after": [
+            {
+              "id": "PRD-CITY",
+              "name": "VoltRide City",
+              "units": 5665,
+              "net_price": 1520,
+              "unit_cost": 893.04,
+              "gross_profit": 3551700.08
+            },
+            {
+              "id": "PRD-CARGO",
+              "name": "VoltRide Cargo",
+              "units": 0,
+              "net_price": 2240,
+              "unit_cost": 1406.18,
+              "gross_profit": 0.0
+            },
+            {
+              "id": "PRD-SPARE",
+              "name": "Replacement battery pack",
+              "units": 1500,
+              "net_price": 420,
+              "unit_cost": 282.04,
+              "gross_profit": 206932.5
+            }
+          ],
+          "added_annual_costs": [],
+          "changes_applied": [
+            "Stop selling VoltRide Cargo",
+            "Shenzhen PowerCell gets UL 2271 in 26 weeks, price +15% [assumption A2: SUP-BAT-01 can obtain UL 2271 certification in about 26 weeks and would raise its unit price about 15% to pay for it.]",
+            "+8% unit cost on CMP-CITY-BAT, CMP-CARGO-BAT, CMP-SPARE-BAT [assumption A10: Once a federal standard is in force, the already-certified pack suppliers SUP-BAT-02 and SUP-BAT-03 pass through roughly 8% in certification and testing cost.]",
+            "+3% units on PRD-CITY, PRD-CARGO [assumption A11: Zoomly's mostly uncertified low-cost line loses share once certification is mandatory, giving VoltRide about a 3% unit volume lift in the City and Cargo lines.]"
+          ],
+          "probability": 0.4087
+        }
+      ]
+    }
+  ],
+  "ranking_by_expected_impact": [
+    "certify_incumbent_and_cargo",
+    "wait_and_react",
+    "shift_to_certified_suppliers",
+    "trim_to_city_and_spare",
+    "do_nothing"
+  ],
+  "method_notes": [
+    "Annual profit change is the yearly gross profit change once the rule applies, minus any added yearly costs.",
+    "First-year impact = annual profit change - one-time costs (certifications, penalties, unsellable stock, lost sales while fixes finish).",
+    "Expected impact weights each scenario by its probability. Pass probability comes from forecast.py.",
+    "Products that break a rule are treated as unsellable once the rule applies.",
+    "While fixes are still finishing, the whole product is treated as unsellable (no partial sales from already-compliant suppliers), so gap losses are a worst case.",
+    "Costs before the rule applies (for example, paying more for certified parts early) are not counted."
+  ]
+}
