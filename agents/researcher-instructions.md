@@ -41,8 +41,12 @@ Search for the bill's short title **and** its number (for example "H.R. 973"), p
 
 Aim for 4 to 8 sources. Prefer primary sources over news. Open every page before you cite it, and only cite pages that loaded. For each one, record the stance, key points, and one short exact quote.
 
+Quotes must be copied **character for character** from the page. Never change, swap, or drop a word, even a small one like changing "America's" to "our." If you want to shorten a quote, pick a shorter continuous passage instead.
+
 ### Step 2: Map the stakeholders
 List the groups that support or oppose the bill and what they want. Only mark a stance if a source says it. Otherwise use "unknown."
+
+Each stakeholder's `type` must be exactly one of: industry, consumer, labor, safety, environmental, government, other. Companies and trade associations are "industry." Environmental groups are "environmental." Law firms and think tanks are "other."
 
 ### Step 3: Search lobbying records
 Search the federal lobbying disclosure database. No key is needed:
@@ -88,6 +92,8 @@ Only use these factor IDs, only with a source dated within the last 12 months, a
 | `competing_bill` | A competing bill on the same issue has leadership support | 0.7 to 0.9 |
 
 Use at most 4 adjustments. If none apply, return an empty list. That's a normal result.
+
+**Votes in Congress never justify an adjustment**, including committee votes, floor votes, and voice votes. The script already counts how far the bill has moved. `broad_coalition` needs public support from **outside groups** in at least two of these categories: industry, consumer, safety, environmental, labor. Don't use it if a major group publicly opposes the bill.
 
 ### Step 7: Output
 Your final reply must be **only** the JSON object matching the output format, inside one json code block, with no other text. Also save it as a file named `research.json`. Before you finish, check that:

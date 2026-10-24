@@ -1,0 +1,341 @@
+{
+  "bill_id": "hr9615-119",
+  "expert_analysis": [
+    {
+      "source_type": "committee_report",
+      "organization": "U.S. House Committee on Energy and Commerce",
+      "title": "H. Rept. 119-818, Battery Recycling for America's Competitive Economy Act",
+      "date": "2026-09-14",
+      "url": "https://www.govinfo.gov/content/pkg/CRPT-119hrpt818/html/CRPT-119hrpt818.htm",
+      "stance": "support",
+      "key_points": [
+        "The RCRA framework predates widespread lithium-ion battery use: handlers may store batteries as universal waste, but destination facilities that recycle them may not store without hazardous waste requirements.",
+        "Companies therefore build a separate storage facility, which the committee calls unnecessary handling and transport.",
+        "EPA announced lithium-battery universal waste rulemaking in 2023 but had proposed no rule when the committee reported the bill.",
+        "The committee ordered the bill reported 46-0 and states that no provision is known to duplicate another federal program."
+      ],
+      "short_quote": "companies that want to recycle batteries often set up a separate storage facility, requiring unnecessary handling and transport"
+    },
+    {
+      "source_type": "law_firm",
+      "organization": "Beveridge & Diamond (Aaron H. Goldberg)",
+      "title": "U.S. House of Representatives Passes Three Bipartisan Bills to Promote Recovery and Recycling of Critical Minerals from Lithium-Ion Batteries and Other Wastes",
+      "date": "2026-09-16",
+      "url": "https://www.bdlaw.com/publications/u-s-house-of-representatives-passes-three-bipartisan-bills-to-promote-recovery-and-recycling-of-critical-minerals-from-lithium-ion-batteries-and-other-wastes",
+      "stance": "mixed",
+      "key_points": [
+        "The interim fix lets recycling facilities store lithium-ion batteries onsite if they meet the same universal waste requirements as storage-only facilities.",
+        "The mandated EPA rule could make the fix permanent and tailor storage rules, but could also impose stricter fire-safety requirements.",
+        "Section 3 updates the 1996 Act's preemption language because the current citation to the 1995 rule casts doubt on EPA's ability to amend it and on adoption by the 49 authorized states.",
+        "EPA had not sent a proposal to OMB, suggesting a proposal for comment is unlikely before early 2027."
+      ],
+      "short_quote": "generally viewed as compromise legislation that would provide some helpful relief, at least on an interim basis"
+    },
+    {
+      "source_type": "trade_association",
+      "organization": "American Critical Minerals Association (Sarah Venuto)",
+      "title": "Statement quoted in House-passed BRACE Act press release",
+      "date": "2026-09-15",
+      "url": "https://millermeeks.house.gov/media/press-releases/house-passes-miller-meeks-brace-act-strengthen-domestic-battery-recycling",
+      "stance": "support",
+      "key_points": [
+        "The group says the bill would expand domestic recovery pathways and reduce reliance on foreign adversaries.",
+        "It frames EPA modernization of battery recycling standards as supply-chain resilience policy.",
+        "The statement offers no compliance cost, permit timeline or facility-level estimate."
+      ],
+      "short_quote": "expand domestic recovery pathways, reduce reliance on foreign adversaries, and strengthen America's supply chain resilience"
+    },
+    {
+      "source_type": "advocacy_group",
+      "organization": "Union of Concerned Scientists (Dr. Jessica Dunn)",
+      "title": "Testimony before the House Energy and Commerce Subcommittee on Environment, June 24, 2026",
+      "date": "2026-06-24",
+      "url": "https://www.congress.gov/119/meeting/house/119392/witnesses/HHRG-119-IF18-Wstate-DunnJ-20260624.pdf",
+      "stance": "oppose",
+      "key_points": [
+        "Says the bill removes RCRA requirements for recycling facilities including fire and spill control, manifests, financial assurance, air emissions limits and public notice.",
+        "Notes recyclers could store batteries onsite up to one year without a hazardous waste storage permit.",
+        "Cites lead-acid battery recycling harm as evidence that lighter oversight carries health risks.",
+        "Wants fire-risk mitigation built into EPA's lithium universal waste standards rather than deregulation."
+      ],
+      "short_quote": "The proposed BRACE Act would create loopholes in necessary environmental laws"
+    },
+    {
+      "source_type": "government_agency",
+      "organization": "U.S. Environmental Protection Agency",
+      "title": "Improving Recycling and Management of Renewable Energy Wastes: Universal Waste Regulations for Solar Panels and Lithium Batteries",
+      "date": "2026-07-31",
+      "url": "https://www.epa.gov/hw/improving-recycling-and-management-renewable-energy-wastes-universal-waste-regulations-solar",
+      "stance": "neutral",
+      "key_points": [
+        "EPA is already working on a separate universal waste category tailored to lithium batteries.",
+        "The stated rationale is reducing fires from mismanaged end-of-life lithium batteries while promoting recycling.",
+        "The effort responds to a 2021 EPA report on lithium battery fires in the waste stream, not to this bill."
+      ],
+      "short_quote": "EPA is working on a proposal for universal waste standards specially tailored for lithium batteries"
+    },
+    {
+      "source_type": "news",
+      "organization": "Resource Recycling",
+      "title": "House passes bill to ease lithium-ion battery storage rules",
+      "date": "2026-09-24",
+      "url": "https://resource-recycling.com/policy-now/2026/09/24/house-passes-bill-to-ease-lithium-ion-battery-storage-rules",
+      "stance": "neutral",
+      "key_points": [
+        "The House-passed bill includes four of the five universal waste sections witness Aaron Goldberg recommended, omitting the 40 CFR 273.34 labeling requirement.",
+        "Goldberg testified that obtaining a permit is slow and costly, which pushes recyclers into split just-in-time sites.",
+        "The bill does not address state battery extended producer responsibility programs; California expanded its law via SB 501.",
+        "The Senate was scheduled to adjourn for the year Dec. 18, and bills not enacted before January 2027 die."
+      ],
+      "short_quote": "obtaining a storage permit is an expensive, multi-year process"
+    },
+    {
+      "source_type": "news",
+      "organization": "Waste Dive",
+      "title": "House passes trio of waste bills, including lithium-ion battery updates",
+      "date": "2026-09-16",
+      "url": "https://www.wastedive.com/news/us-house-representatives-waste-battery-critical-minerals/830539/",
+      "stance": "neutral",
+      "key_points": [
+        "The bill passed the House alongside the CHARM Act (H.R. 9617) and the EMRTAI Authorization Act (H.R. 9616).",
+        "Coverage ties all three bills to the administration's focus on critical minerals and domestic supply for defense and manufacturing.",
+        "The sponsor's office claims the bill reduces costs and permitting by letting destination facilities store batteries where they recycle."
+      ],
+      "short_quote": "The bill would direct the U.S. EPA to conduct rulemaking to recognize lithium-ion batteries as universal waste"
+    }
+  ],
+  "stakeholders": [
+    {
+      "name": "Rep. Mariannette Miller-Meeks (R-IA), sponsor",
+      "type": "government",
+      "stance": "support",
+      "what_they_want": "Cut duplicative permitting so U.S. recyclers can recover lithium, cobalt, nickel and copper onshore instead of losing material to Chinese processors.",
+      "evidence_url": "https://millermeeks.house.gov/media/press-releases/house-passes-miller-meeks-brace-act-strengthen-domestic-battery-recycling"
+    },
+    {
+      "name": "American Critical Minerals Association",
+      "type": "industry",
+      "stance": "support",
+      "what_they_want": "EPA modernization and clarification of battery recycling standards as part of a broader U.S. critical minerals framework.",
+      "evidence_url": "https://millermeeks.house.gov/media/press-releases/house-passes-miller-meeks-brace-act-strengthen-domestic-battery-recycling"
+    },
+    {
+      "name": "Cirba Solutions (David Klanecky, CEO)",
+      "type": "industry",
+      "stance": "support",
+      "what_they_want": "Relief from long permitting timelines and operational restrictions, plus clarity that batteries moving to licensed recyclers are not fully manifested hazardous waste.",
+      "evidence_url": "https://www.govinfo.gov/content/pkg/CRPT-119hrpt818/html/CRPT-119hrpt818.htm"
+    },
+    {
+      "name": "Redwood Materials (Josh Gubkin, Associate General Counsel)",
+      "type": "industry",
+      "stance": "support",
+      "what_they_want": "Onsite storage at recycling facilities and assurance that new EPA rules do not duplicate OSHA, DOT or state and local fire code requirements.",
+      "evidence_url": "https://www.govinfo.gov/content/pkg/CRPT-119hrpt818/html/CRPT-119hrpt818.htm"
+    },
+    {
+      "name": "Union of Concerned Scientists",
+      "type": "environmental",
+      "stance": "oppose",
+      "what_they_want": "Keep RCRA storage requirements intact, require fire-risk mitigation in EPA's lithium rule, and shift end-of-life costs to producers through extended producer responsibility.",
+      "evidence_url": "https://www.congress.gov/119/meeting/house/119392/witnesses/HHRG-119-IF18-Wstate-DunnJ-20260624.pdf"
+    },
+    {
+      "name": "Beveridge & Diamond",
+      "type": "other",
+      "stance": "neutral",
+      "what_they_want": "A narrow interim storage fix plus an EPA rulemaking, with the 1996 Act preemption cross-reference corrected so federal and state programs can actually adopt changes.",
+      "evidence_url": "https://www.bdlaw.com/publications/u-s-house-of-representatives-passes-three-bipartisan-bills-to-promote-recovery-and-recycling-of-critical-minerals-from-lithium-ion-batteries-and-other-wastes"
+    },
+    {
+      "name": "Earthjustice Action",
+      "type": "environmental",
+      "stance": "unknown",
+      "what_they_want": "Lobbied on H.R. 9615 among a slate of environmental and transportation bills; the filing states no position on this bill.",
+      "evidence_url": "https://lda.gov/filings/public/filing/6b2a8238-a12d-4cce-bc5f-27d434297b98/print/"
+    },
+    {
+      "name": "LG Electronics USA",
+      "type": "industry",
+      "stance": "unknown",
+      "what_they_want": "Lobbied on proposals related to lithium batteries (H.R. 9615); the filing states no position.",
+      "evidence_url": "https://lda.gov/filings/public/filing/258d4564-ff13-4be5-a63b-cb648c33a8fc/print/"
+    },
+    {
+      "name": "Zero Emission Transportation Association",
+      "type": "industry",
+      "stance": "unknown",
+      "what_they_want": "Lists H.R. 9615 among bills it tracks in a broad transportation-electrification agenda; no bill-specific position is stated.",
+      "evidence_url": "https://lda.gov/filings/public/filing/e8819227-14fc-45f6-9455-6672cd427076/print/"
+    },
+    {
+      "name": "Center for Climate and Energy Solutions",
+      "type": "other",
+      "stance": "unknown",
+      "what_they_want": "Lobbied on issues related to H.R. 9615 alongside permitting and industrial decarbonization items; no position stated in the filing.",
+      "evidence_url": "https://lda.gov/filings/public/filing/d3ad2fdc-86f4-480b-b8b2-f7ea2da0dad3/print/"
+    },
+    {
+      "name": "Americans for Prosperity",
+      "type": "other",
+      "stance": "unknown",
+      "what_they_want": "Lobbied on provisions related to beneficial use of used batteries; the filing does not state a support or oppose position.",
+      "evidence_url": "https://lda.gov/filings/public/filing/43ec0d1a-11ba-40cf-b00f-51ecec0c68a2/print/"
+    }
+  ],
+  "lobbying": {
+    "searched": true,
+    "query_used": "https://lda.gov/api/v1/filings/?filing_specific_lobbying_issues=H.R.%209615&filing_year=2026&page_size=100 (also filing_year=2025); results re-filtered for the literal pattern H.R. 9615",
+    "filings_found": 6,
+    "clients": [
+      {
+        "client": "Americans for Prosperity",
+        "registrant": "Americans for Prosperity",
+        "year": 2026,
+        "what_they_lobbied_on": "H.R. 9615, Battery Recycling for America's Competitive Economy Act or the BRACE Act, spoke on provisions related to beneficial use of used batteries."
+      },
+      {
+        "client": "Center for Climate and Energy Solutions",
+        "registrant": "Center for Climate and Energy Solutions",
+        "year": 2026,
+        "what_they_lobbied_on": "issues related to H.R. 9615, the BRACE Act"
+      },
+      {
+        "client": "LG Electronics USA, Inc.",
+        "registrant": "Law Offices of Kevin G. Curtin",
+        "year": 2026,
+        "what_they_lobbied_on": "Proposals related to lithium batteries (H.R. 9615)"
+      },
+      {
+        "client": "Zero Emission Transportation Association",
+        "registrant": "Zero Emission Transportation Association",
+        "year": 2026,
+        "what_they_lobbied_on": "H.R. 9615 BRACE Act"
+      },
+      {
+        "client": "Zero Emission Transportation Association",
+        "registrant": "Zero Emission Transportation Association",
+        "year": 2026,
+        "what_they_lobbied_on": "H.R. 9615 BRACE Act"
+      },
+      {
+        "client": "Earthjustice Action",
+        "registrant": "Earthjustice Action",
+        "year": 2026,
+        "what_they_lobbied_on": "H.R. 9615 - BRACE Act"
+      }
+    ],
+    "notes": "Six unique filings after deduplication by filing_uuid (18 raw API hits; the 2025 query returned none). Filings show who is lobbying, not which side they are on: no filing states support or opposition, and Americans for Prosperity's reference to 'beneficial use of used batteries' is not a stated position. Two Zero Emission Transportation Association entries are amendment filings of the same quarterly report."
+  },
+  "comparable_past_laws": [
+    {
+      "name": "Universal Waste Rule (60 Fed. Reg. 25492)",
+      "jurisdiction": "US federal",
+      "year_enacted": 1995,
+      "similarity": "Same mechanism as the BRACE Act: replace full RCRA Subtitle C storage requirements with the lighter part 273 universal waste standards for battery handlers, removing permits, manifests and contingency plans.",
+      "what_happened": [
+        {
+          "effect": "EPA's cost analysis put Subtitle C costs for battery and thermostat waste at $46.2 million versus $13.4 million under part 273, an annual saving of $32.9 million, and $76 million annualized across all covered wastes.",
+          "evidence_url": "https://www.govinfo.gov/content/pkg/FR-1995-05-11/pdf/95-11143.pdf"
+        },
+        {
+          "effect": "EPA stated that states were not required to adopt the rule and could only be strongly encouraged to do so, so relief depended on state adoption.",
+          "evidence_url": "https://www.govinfo.gov/content/pkg/FR-1995-05-11/pdf/95-11143.pdf"
+        },
+        {
+          "effect": "Beveridge & Diamond notes that 49 states are now authorized to implement their own hazardous waste programs in lieu of the federal RCRA program, which is the fragmentation risk the bill's Section 3 addresses.",
+          "evidence_url": "https://www.bdlaw.com/publications/u-s-house-of-representatives-passes-three-bipartisan-bills-to-promote-recovery-and-recycling-of-critical-minerals-from-lithium-ion-batteries-and-other-wastes"
+        }
+      ],
+      "lessons_for_businesses": "The savings from swapping Subtitle C for part 273 are projections from EPA's preamble, not audited outcomes, and they only materialize where the state program adopts the federal change; a facility in a stricter state may see no relief.",
+      "confidence": "medium"
+    },
+    {
+      "name": "EU Batteries Regulation (EU) 2023/1542",
+      "jurisdiction": "European Union",
+      "year_enacted": 2023,
+      "similarity": "Also lets treatment and recycling facilities store waste batteries on site under prescribed storage standards instead of a separate permitting track, while imposing recycling-efficiency duties on those same facilities.",
+      "what_happened": [
+        {
+          "effect": "Recyclers had to reach 65% recycling efficiency for lithium-based batteries by 31 December 2025, rising to 70% by 2030, with material recovery targets applying from 2027.",
+          "evidence_url": "https://eur-lex.europa.eu/EN/legal-content/summary/sustainability-rules-for-batteries-and-waste-batteries.html"
+        },
+        {
+          "effect": "The Commission's September 2026 review found the targets remain fit for purpose and should not be revised, concluding they support recycling investment without overburdening a developing and growing industry.",
+          "evidence_url": "https://environment.ec.europa.eu/news/waste-batteries-recycling-targets-remain-fit-purpose-2026-09-11_en"
+        }
+      ],
+      "lessons_for_businesses": "Storage relief in the EU came bundled with mandatory recovery performance, so the U.S. interim relief may prove temporary: EPA's rule could add efficiency or fire-safety duties as the price of making it permanent.",
+      "confidence": "medium"
+    }
+  ],
+  "alternative_paths": [
+    {
+      "path": "agency_rulemaking",
+      "description": "EPA's RIN 2050-AH32 rulemaking would add solar panels to part 273 and create a separate universal waste category for lithium batteries, potentially delivering part of the same relief without legislation.",
+      "status": "In pre-proposal stage: the Unified Agenda listed an NPRM for August 2026 and a final rule for August 2027, but EPA had not sent a proposal to OMB as of mid-September 2026, so a proposal is unlikely before early 2027.",
+      "evidence_url": "https://www.epa.gov/hw/improving-recycling-and-management-renewable-energy-wastes-universal-waste-regulations-solar"
+    },
+    {
+      "path": "state_or_local_laws",
+      "description": "States run authorized RCRA programs and set their own battery rules; California's SB 501 expanded the state's battery extended producer responsibility law to medium-format batteries in 2026, and stricter states can impose requirements the federal interim fix does not reach.",
+      "status": "Enacted: California SB 501 chaptered August 27, 2026. No state program identified in this research grants recyclers the same unpermitted on-site storage relief this bill would create.",
+      "evidence_url": "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260SB501"
+    }
+  ],
+  "political_context": [
+    {
+      "fact": "The House Energy and Commerce Committee ordered H.R. 9615 reported favorably by a record vote of 46 yeas and 0 nays on September 2, 2026.",
+      "evidence_url": "https://www.govinfo.gov/content/pkg/CRPT-119hrpt818/html/CRPT-119hrpt818.htm",
+      "date": "2026-09-14"
+    },
+    {
+      "fact": "The House passed the bill by voice vote on September 15, 2026 under suspension of the rules, a procedure requiring a two-thirds majority.",
+      "evidence_url": "https://resource-recycling.com/policy-now/2026/09/24/house-passes-bill-to-ease-lithium-ion-battery-storage-rules",
+      "date": "2026-09-24"
+    },
+    {
+      "fact": "The Senate received the bill September 16 and referred it to the Environment and Public Works Committee; the Senate was scheduled to adjourn for the year December 18, 2026, and the 119th Congress ends in January 2027.",
+      "evidence_url": "https://resource-recycling.com/policy-now/2026/09/24/house-passes-bill-to-ease-lithium-ion-battery-storage-rules",
+      "date": "2026-09-24"
+    },
+    {
+      "fact": "The bill passed as one of three Energy and Commerce waste bills that coverage links to the administration's critical minerals and domestic supply-chain agenda.",
+      "evidence_url": "https://www.wastedive.com/news/us-house-representatives-waste-battery-critical-minerals/830539/",
+      "date": "2026-09-16"
+    }
+  ],
+  "forecast_adjustments": [],
+  "key_uncertainties": [
+    "No Senate companion bill exists and no Senate action is scheduled; the Senate Environment and Public Works Committee has not acted, and the chamber's December 18 adjournment leaves a narrow window.",
+    "No CBO cost estimate has been published for H.R. 9615; congress.gov lists zero CBO cost estimates and the committee report says the estimate was not available when filed.",
+    "EPA's own lithium universal waste rulemaking is behind its August 2026 NPRM target and had not reached OMB as of September 2026, so the interim relief's start and end dates both depend on enactment timing.",
+    "The interim relief does not take effect until enactment, and the bill sets no business compliance date; the 18-month deadline binds EPA, not facilities.",
+    "Whether states with authorized hazardous waste programs must or will apply the interim storage approach is unaddressed by the bill.",
+    "EPA's final rule could make the relief permanent or add stricter requirements such as fire-risk standards, so the long-term compliance picture cannot be read from the bill.",
+    "The House-passed text omits the 40 CFR 273.34 container labeling requirement that witness Goldberg recommended, which could leave labeling duties to state law.",
+    "Only industry groups are on record supporting the bill while a national environmental group is on record opposing it, so outside-group support is narrow rather than cross-category."
+  ],
+  "sources": [
+    "https://www.govinfo.gov/content/pkg/CRPT-119hrpt818/html/CRPT-119hrpt818.htm",
+    "https://www.bdlaw.com/publications/u-s-house-of-representatives-passes-three-bipartisan-bills-to-promote-recovery-and-recycling-of-critical-minerals-from-lithium-ion-batteries-and-other-wastes",
+    "https://millermeeks.house.gov/media/press-releases/house-passes-miller-meeks-brace-act-strengthen-domestic-battery-recycling",
+    "https://www.congress.gov/119/meeting/house/119392/witnesses/HHRG-119-IF18-Wstate-DunnJ-20260624.pdf",
+    "https://www.epa.gov/hw/improving-recycling-and-management-renewable-energy-wastes-universal-waste-regulations-solar",
+    "https://resource-recycling.com/policy-now/2026/09/24/house-passes-bill-to-ease-lithium-ion-battery-storage-rules",
+    "https://www.wastedive.com/news/us-house-representatives-waste-battery-critical-minerals/830539/",
+    "https://www.govinfo.gov/content/pkg/FR-1995-05-11/pdf/95-11143.pdf",
+    "https://eur-lex.europa.eu/EN/legal-content/summary/sustainability-rules-for-batteries-and-waste-batteries.html",
+    "https://environment.ec.europa.eu/news/waste-batteries-recycling-targets-remain-fit-purpose-2026-09-11_en",
+    "https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260SB501",
+    "https://www.lion.com/lion-news/august-2026/rcra-rules-to-watch-in-2026%E2%80%9327",
+    "https://lda.gov/filings/public/filing/43ec0d1a-11ba-40cf-b00f-51ecec0c68a2/print/",
+    "https://lda.gov/filings/public/filing/d3ad2fdc-86f4-480b-b8b2-f7ea2da0dad3/print/",
+    "https://lda.gov/filings/public/filing/258d4564-ff13-4be5-a63b-cb648c33a8fc/print/",
+    "https://lda.gov/filings/public/filing/e8819227-14fc-45f6-9455-6672cd427076/print/",
+    "https://lda.gov/filings/public/filing/762b3eec-231d-468f-af3b-cad7a806f715/print/",
+    "https://lda.gov/filings/public/filing/6b2a8238-a12d-4cce-bc5f-27d434297b98/print/",
+    "https://www.congress.gov/bill/119th-congress/house-bill/9615"
+  ],
+  "generated_at": "2026-10-24"
+}
