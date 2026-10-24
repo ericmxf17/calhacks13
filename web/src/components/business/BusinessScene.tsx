@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, type MutableRefObject, type ReactNode } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { MathUtils, OrthographicCamera, Quaternion, Vector3 } from 'three'
+import { MathUtils, OrthographicCamera, Quaternion, Vector3, type Group } from 'three'
 import type { SceneSpec } from '@/lib/scene-spec'
 import { type Department, type DepartmentId } from './departments'
 import type { BuildingLayout } from './scene/layout'
@@ -9,9 +9,10 @@ import { BlankWindow, DepartmentRoom, settleEpsilon } from './scene/Room'
 import { GroundProps, Lot, RoofProps } from './scene/props'
 import Building from './scene/archetypes'
 import Construction from './scene/archetypes/Construction'
+import Assemble, { type AssembleStage } from './scene/assemble'
 
 export type BusinessView = 'home' | 'agents' | 'council'
-type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
+type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; assembling?: boolean; onAssembled?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 
 function CameraRig({ layout, departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'layout' | 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
   const { camera, size, gl, invalidate } = useThree()
@@ -128,12 +129,19 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
 export default function BusinessScene(props: Props) {
   const portal = useRef<HTMLDivElement>(null!)
   const interactive = useRef(false)
+  const structure = useRef<Group>(null), roof = useRef<Group>(null), ground = useRef<Group>(null)
+  // When the construction site gives way, the building goes up floor by floor, then roof props, then ground props.
+  const stages = useMemo<AssembleStage[]>(() => [
+    { root: structure, from: 0, to: .55, length: .35 },
+    { root: roof, from: .6, to: .72, length: .2 },
+    { root: ground, from: .66, to: .78, length: .2 },
+  ], [])
   const { scene, layout } = props
   const theme = useMemo(() => sceneTheme(scene.archetype, scene.palette), [scene.archetype, scene.palette])
   const open = (id: DepartmentId) => { if (props.view === 'home' && interactive.current) props.open(id) }
   const s = layout.scale
   // offsetSize measures the layout size, ignoring the scene layer's fade-in scale, so the canvas renders at full resolution.
-  return <><div ref={portal} className="hotspot-layer"/><Canvas resize={{ offsetSize: true }} frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 1.6]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
+  return <><div ref={portal} className="hotspot-layer" style={props.assembling ? { visibility: 'hidden' } : undefined}/><Canvas resize={{ offsetSize: true }} frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 1.6]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
     <color attach="background" args={['#dcf5fc']}/>
     <fog attach="fog" args={['#dcf5fc', 28, 65]}/>
     <ambientLight intensity={1.1}/>
@@ -142,12 +150,15 @@ export default function BusinessScene(props: Props) {
     <directionalLight key={layout.key} position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10 * s} shadow-camera-right={10 * s} shadow-camera-top={12 * s} shadow-camera-bottom={-8 * s} shadow-normalBias={.025}/>
     <directionalLight position={[7, 6, -3]} intensity={1.2} color="#d3e0dc"/>
     <ThemeProvider value={theme}>
-      {props.constructing ? <Construction company={props.company}/> : <>
-        <Building layout={layout} company={props.company} sign={scene.sign}/>
-        {props.departments.map((d, i) => <DepartmentRoom key={d.id} department={d} active={props.active} open={open} index={i} portal={portal}/>)}
-        {layout.blanks.map(at => <BlankWindow key={at.join()} at={at}/>)}
-        <RoofProps layout={layout} props={scene.roofProps}/>
-        <GroundProps layout={layout} props={scene.groundProps}/>
+      {props.constructing ? <Construction company={props.company} reducedMotion={props.reducedMotion}/> : <>
+        <group ref={structure}>
+          <Building layout={layout} company={props.company} sign={scene.sign}/>
+          {props.departments.map((d, i) => <DepartmentRoom key={d.id} department={d} active={props.active} open={open} index={i} portal={portal}/>)}
+          {layout.blanks.map(at => <BlankWindow key={at.join()} at={at}/>)}
+        </group>
+        <group ref={roof}><RoofProps layout={layout} props={scene.roofProps}/></group>
+        <group ref={ground}><GroundProps layout={layout} props={scene.groundProps}/></group>
+        {props.assembling && <Assemble stages={stages} onDone={props.onAssembled}/>}
       </>}
       <Lot layout={layout} ground={props.constructing ? 'gravel' : scene.ground}/>
     </ThemeProvider>

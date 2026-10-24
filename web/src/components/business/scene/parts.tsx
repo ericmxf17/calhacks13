@@ -50,7 +50,8 @@ export function Sign({ text, tagline = '', background, color, at, width, height 
     return new CanvasTexture(c)
   }, [text, tagline, background, color, width, height])
   useEffect(() => () => texture.dispose(), [texture])
-  return <mesh position={at}><planeGeometry args={[width, height]}/><meshStandardMaterial map={texture} roughness={1}/></mesh>
+  // The sign goes up last when the building assembles.
+  return <mesh position={at} userData={{ build: 'late' }}><planeGeometry args={[width, height]}/><meshStandardMaterial map={texture} roughness={1}/></mesh>
 }
 
 export function Plant({ x, z, scale = 1 }: { x: number; z: number; scale?: number }) {

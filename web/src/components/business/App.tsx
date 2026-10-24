@@ -1,5 +1,5 @@
 'use client'
-import { Component, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { defaultSceneSpec, type SceneSpec } from '@/lib/scene-spec'
 import BusinessScene, { type BusinessView } from './BusinessScene'
 import AgentsPanel from './AgentsPanel'
@@ -10,6 +10,7 @@ import { councilBusinessKey } from '@/lib/council-types'
 import { departments as defaultDepartments, type Department, type DepartmentId } from './departments'
 import { layoutBuilding, placeRooms, type BuildingLayout } from './scene/layout'
 import { drawnArchetype } from './scene/archetypes'
+import { assembleSeconds } from './scene/assemble'
 import { sceneTheme } from './scene/parts'
 import type { DesignState } from './useSceneDesign'
 
@@ -117,7 +118,25 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     pointer.current = { x: 0, y: 0 }
     setSceneView({ view, settled: false })
   }
-  const homeReady = sceneView.view === 'home' && sceneView.settled
+  // The finished building assembles once, right after the construction site was on screen.
+  // A layout effect sets this before the new scene draws its first frame, so the whole building never flashes.
+  const [assembling, setAssembling] = useState(false)
+  const siteShownAt = useRef<number | null>(null)
+  useLayoutEffect(() => {
+    if (constructing) { siteShownAt.current ??= Date.now(); return }
+    const since = siteShownAt.current
+    siteShownAt.current = null
+    // A site that only flickered (a saved or instant quick design) doesn't count.
+    if (since !== null && !reducedMotion && Date.now() - since > 1200) setAssembling(true)
+  }, [constructing, reducedMotion])
+  const assembled = useCallback(() => setAssembling(false), [])
+  useEffect(() => {
+    if (!assembling) return
+    // In case the scene can't draw (no WebGL), don't hold the page back.
+    const timer = window.setTimeout(assembled, (assembleSeconds + 2) * 1000)
+    return () => window.clearTimeout(timer)
+  }, [assembling, assembled])
+  const homeReady = sceneView.view === 'home' && sceneView.settled && !assembling
   const councilReady = sceneView.view === 'council' && sceneView.settled
   const activeDepartment = departments.find(department => department.id === active)
   const panelSide = activeDepartment?.side === 'left' ? 'left' : 'right'
@@ -156,7 +175,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
       if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
-    <div className="scene-layer" inert={!homeReady}><SceneBoundary key={layout.key} fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
+    <div className="scene-layer" inert={!homeReady}><SceneBoundary key={layout.key} fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} assembling={assembling} onAssembled={assembled} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="world-header-content">

@@ -1,15 +1,28 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { demoCompanies } from '@/lib/demo-companies'
 import { ARCHETYPES, KIND_DEFAULTS, ROOM_KINDS, defaultSceneSpec, validateSceneSpec, type Archetype } from '@/lib/scene-spec'
 import { starterDepartments } from '@/lib/starter-rooms'
+import type { DesignState } from './business/useSceneDesign'
 
 const Scene = dynamic(() => import('./business/App'), { ssr: false })
 
-/** Development preview of one building type with a chosen number of rooms. */
-export default function ScenePreview({ archetype, rooms, props }: { archetype: string; rooms: number; props?: string }) {
+/**
+ * Development preview of one building type with a chosen number of rooms.
+ * With `build` (seconds), the construction site shows first, as if Scene Designer were working,
+ * then the building assembles. Infinity keeps the site up.
+ */
+export default function ScenePreview({ archetype, rooms, props, build }: { archetype: string; rooms: number; props?: string; build?: number }) {
+  const [state, setState] = useState<DesignState>('designing')
+  useEffect(() => {
+    if (build === undefined || !Number.isFinite(build)) return
+    const timer = window.setTimeout(() => setState(s => s === 'designing' ? 'agent' : s), build * 1000)
+    return () => window.clearTimeout(timer)
+  }, [build])
+  const design = build === undefined ? undefined
+    : { state, message: '', ready: false, chooseQuickDesign: () => setState('quick'), showDesign: () => {} }
   const business = demoCompanies[0].business
   const scene = useMemo(() => {
     const type: Archetype = (ARCHETYPES as readonly string[]).includes(archetype) ? archetype as Archetype : 'storefront'
@@ -30,5 +43,5 @@ export default function ScenePreview({ archetype, rooms, props }: { archetype: s
     return validateSceneSpec({ ...spec, roof_props: spec.roofProps, ground_props: spec.groundProps, rooms: spec.rooms.map(r => ({ ...r, short_name: r.shortName })) }, business).spec
   }, [archetype, rooms, props, business])
   const departments = useMemo(() => starterDepartments(scene, business), [scene, business])
-  return <Scene company={business.company} scene={scene} departments={departments}/>
+  return <Scene company={business.company} scene={scene} departments={departments} design={design}/>
 }
