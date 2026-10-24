@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import AgentAvatar from './AgentAvatar'
+import BriefWriterRunForm from './BriefWriterRunForm'
 import type { AgentRunDetail, AgentRunsResponse, ArtifactPreview, BrowserAgentRole } from '@/lib/agent-run-types'
 import './agent-run-dialog.css'
 
@@ -123,6 +124,7 @@ function ArtifactCard({ artifact }: { artifact: AgentRunDetail['artifacts'][numb
 export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentRunDialogProps) {
   const dialog = useRef<HTMLDialogElement>(null)
   const selectedRunRef = useRef<string | null>(null)
+  const submittedRun = useRef<string | null>(null)
   const [runs, setRuns] = useState<AgentRunDetail[] | null>(null)
   const [connection, setConnection] = useState<AgentRunsResponse['agent']['connection'] | null>(null)
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
@@ -133,6 +135,13 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
   const [detailLoading, setDetailLoading] = useState(false)
   const [listError, setListError] = useState<string | null>(null)
   const [detailError, setDetailError] = useState<string | null>(null)
+  const showSubmittedRun = useCallback((id: string) => {
+    submittedRun.current = id
+    selectedRunRef.current = id
+    setSelectedRunId(id)
+    setOffset(0)
+    setRefreshKey(key => key + 1)
+  }, [])
 
   useEffect(() => {
     const element = dialog.current
@@ -168,7 +177,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
         setRuns(body.runs)
         setConnection(body.agent.connection)
         const current = selectedRunRef.current
-        const next = current && body.runs.some(run => run.id === current) ? current : body.runs[0]?.id ?? null
+        const next = current && (body.runs.some(run => run.id === current) || (offset === 0 && current === submittedRun.current)) ? current : body.runs[0]?.id ?? null
         selectedRunRef.current = next
         setSelectedRunId(next)
       } catch (error) {
@@ -230,6 +239,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
 
   const hasNextPage = (runs?.length ?? 0) === pageSize
   const visibleDetail = detail?.id === selectedRunId ? detail : null
+  const runInProgress = visibleDetail?.status === 'pending' || visibleDetail?.status === 'running'
 
   return <dialog ref={dialog} className="agent-run-dialog" aria-label={`${agent.name} run history`}
     data-reduced-motion={reducedMotion || undefined}
@@ -269,6 +279,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
       </aside>
 
       <div className="agent-run-content">
+        {agent.role === 'brief-writer' && <BriefWriterRunForm enabled={connection === 'connected'} onRunUpdate={showSubmittedRun}/>}
         <div className="agent-run-toolbar">
           <label className="agent-run-mobile-select">Select a run
             <select aria-label="Select a recent run" value={selectedRunId ?? ''} onChange={event => selectRun(event.target.value)} disabled={!runs?.length}>
@@ -317,7 +328,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
             <section className="agent-run-artifacts">
               <h3>Artifacts <span>· {visibleDetail.artifacts.length}</span></h3>
               {visibleDetail.artifacts.map(artifact => <ArtifactCard key={`${visibleDetail.id}-${artifact.index}`} artifact={artifact} />)}
-              {visibleDetail.artifacts.length === 0 && <p className="agent-run-muted">No files were returned by this run.</p>}
+              {visibleDetail.artifacts.length === 0 && <p className="agent-run-muted">{runInProgress ? 'Files will appear here when the run returns them.' : 'No files were returned by this run.'}</p>}
               <p className="agent-run-footnote">Files belong to the selected run.</p>
             </section>
           </div>

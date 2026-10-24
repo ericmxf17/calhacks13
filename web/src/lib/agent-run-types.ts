@@ -32,3 +32,10 @@ export type AgentRunsResponse = {
 }
 
 export type ArtifactPreview = { title: string; mediaType: string; content: string; truncated: boolean }
+
+export type BriefWriterJob = {
+  id: string
+  status: AgentRunDetail['status'] | 'dispatching' | 'dispatch_unknown' | 'rejected'
+  runId: string | null
+  message: string | null
+}

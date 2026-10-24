@@ -1,6 +1,7 @@
 import 'server-only'
 
-import { BackendError } from './backend'
+import { BackendError, readBody } from './backend'
+import { briefWriterExample, readBriefWriterJob, submitBriefWriter } from './brief-writer'
 import { agentFor, configuredAgents, getRun, listRuns, ProviderError, type Agent, type Run } from './creao'
 import type { AgentConnectionsResponse, AgentRunDetail, AgentRunsResponse, ArtifactPreview } from './agent-run-types'
 
@@ -119,6 +120,12 @@ async function download(agent: Agent, run: Run, index: number, preview: boolean)
 export async function readAgentRuns(request: Request, path: string[]): Promise<Response> {
   requireLocalAgentPreview(request)
   const [role, runId, section, index] = path
+  if (role === 'brief-writer' && path.length === 2 && runId === 'example') {
+    return Response.json(await briefWriterExample(), { headers: privateHeaders })
+  }
+  if (role === 'brief-writer' && path.length === 3 && runId === 'jobs') {
+    return Response.json(await readBriefWriterJob(section), { headers: privateHeaders })
+  }
   if (path.length === 1 && role === 'agents') {
     // Verify each configured key with a read. One agent's failure must not hide the others.
     const agents = await Promise.all(configuredAgents().map(async agent => {
@@ -152,4 +159,22 @@ export async function readAgentRuns(request: Request, path: string[]): Promise<R
   const run = await getRun(agent, runId)
   if (path.length === 2) return Response.json(runDetail(role, run), { headers: privateHeaders })
   return download(agent, run, Number(index), url.searchParams.get('preview') === '1')
+}
+
+export async function createAgentRun(request: Request, path: string[]): Promise<Response> {
+  requireLocalAgentPreview(request)
+  // Writes require an explicit browser origin, in addition to the local preview gate.
+  const url = new URL(request.url)
+  const origin = `${url.protocol}//${request.headers.get('host')}`
+  if (request.headers.get('origin') !== origin || request.headers.get('sec-fetch-site') !== 'same-origin') {
+    throw new BackendError(403, 'PREVIEW_UNAVAILABLE', 'Run submission requires the local application.')
+  }
+  if (path.length !== 2 || path[0] !== 'brief-writer' || path[1] !== 'jobs') {
+    throw new BackendError(404, 'NOT_FOUND', 'Only Brief Writer can be started here.')
+  }
+  if (request.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
+    throw new BackendError(415, 'INVALID_INPUT', 'Send an analysis pack as JSON.')
+  }
+  const job = await submitBriefWriter(await readBody(request))
+  return Response.json(job, { status: 202, headers: privateHeaders })
 }
