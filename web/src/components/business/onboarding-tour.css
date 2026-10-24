@@ -1,15 +1,17 @@
-/* The onboarding tour: a dimmed screen, a spotlight on one control, and a card in the Consul theme. */
-.tour { position: fixed; inset: 0; z-index: 1000; width: auto; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #243957; overflow: visible; }
+/* The onboarding tour: a dimmed screen, a spotlight on one control, and a card in the Consul theme.
+   Motion matches the workspace panels: the same easing, rising in from below, fading out. */
+.tour { --tour-ease: cubic-bezier(.2, .75, .25, 1); position: fixed; inset: 0; z-index: 1000; width: auto; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #243957; overflow: visible; animation: tour-fade-in .3s ease both; transition: opacity .2s ease; }
+.tour[data-closing] { opacity: 0; pointer-events: none; }
 .tour-blocker { position: fixed; inset: 0; }
-.tour-dim { position: fixed; inset: 0; background: rgba(18, 32, 52, .55); pointer-events: none; }
-.tour-spotlight { position: fixed; border-radius: 10px; box-shadow: 0 0 0 9999px rgba(18, 32, 52, .55), 0 0 0 3px #ffd447; pointer-events: none; transition: top .35s ease, left .35s ease, width .35s ease, height .35s ease; }
-.tour-card { position: fixed; width: 340px; max-width: calc(100vw - 32px); padding: 16px 18px 14px; display: grid; gap: 8px; background: #fffdf4; border: 2px solid #243957; border-radius: 6px; box-shadow: 4px 4px 0 #243957; transition: top .35s ease, left .35s ease, bottom .35s ease; }
-.tour-card-centered { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+/* One element does the dimming and the highlight, so it can glide from target to target. Closed, it's a point. */
+.tour-spotlight { position: fixed; border-radius: 10px; box-shadow: 0 0 0 9999px rgba(18, 32, 52, .55), 0 0 0 0 #ffd447; pointer-events: none; transition: top .45s var(--tour-ease), left .45s var(--tour-ease), width .45s var(--tour-ease), height .45s var(--tour-ease), box-shadow .3s ease; }
+.tour-spotlight[data-open] { box-shadow: 0 0 0 9999px rgba(18, 32, 52, .55), 0 0 0 3px #ffd447; }
+.tour-card { position: fixed; width: 340px; max-width: calc(100vw - 32px); padding: 16px 18px 14px; display: grid; gap: 8px; background: #fffdf4; border: 2px solid #243957; border-radius: 6px; box-shadow: 4px 4px 0 #243957; transition: top .45s var(--tour-ease), left .45s var(--tour-ease); animation: tour-card-enter .35s var(--tour-ease) .1s both; }
 .tour-kicker { font-size: 10px; font-weight: 800; letter-spacing: .14em; color: #46647b; }
 .tour-card h2 { margin: 0; font-size: 18px; line-height: 1.25; font-weight: 900; }
 .tour-card p { margin: 0; font-size: 13px; line-height: 1.6; color: #45617a; }
 .tour-progress { display: flex; gap: 5px; margin-top: 2px; }
-.tour-progress i { width: 7px; height: 7px; border-radius: 50%; background: #bdd7e7; }
+.tour-progress i { width: 7px; height: 7px; border-radius: 50%; background: #bdd7e7; transition: background .2s ease; }
 .tour-progress i[data-on] { background: #2468d2; }
 .tour-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .tour-actions span { flex: 1; }
@@ -20,4 +22,6 @@
 .tour-actions .tour-next:hover { background: #1d57b3; }
 .tour-actions .tour-skip { border-color: transparent; background: transparent; padding-inline: 4px; color: #45617a; text-decoration: underline; text-underline-offset: 3px; }
 .tour-actions .tour-skip:hover { background: transparent; color: #243957; }
-.tour-still .tour-spotlight, .tour-still .tour-card { transition: none; }
+@keyframes tour-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tour-card-enter { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.tour-still, .tour-still .tour-spotlight, .tour-still .tour-card, .tour-still .tour-progress i { animation: none; transition: none; }

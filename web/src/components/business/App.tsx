@@ -186,7 +186,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
       if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
-    <div className="scene-layer" inert={!homeReady}><SceneBoundary key={layout.key} fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} assembling={assembling} onAssembled={assembled} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
+    <div className="scene-layer" inert={!homeReady}><SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} assembling={assembling} onAssembled={assembled} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="world-header-content">

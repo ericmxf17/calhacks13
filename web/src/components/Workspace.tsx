@@ -377,7 +377,8 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
               <>
                 <button
                   type="button"
-                  className="rounded-lg border border-dashed border-accent p-4 text-left text-sm hover:bg-white/50"
+                  aria-pressed={business.company === sampleBusiness.company && fileName === sampleFileName}
+                  className={`rounded-lg border p-4 text-left text-sm ${business.company === sampleBusiness.company && fileName === sampleFileName ? 'border-accent bg-accent/10' : 'border-line'}`}
                   onClick={() => {
                     setBusiness(structuredClone(sampleBusiness))
                     setFileName(sampleFileName)

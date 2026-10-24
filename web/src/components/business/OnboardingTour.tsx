@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { BusinessView } from './BusinessScene'
 import './onboarding-tour.css'
 
@@ -30,14 +30,16 @@ export function markTourSeen() {
 }
 
 type Box = { top: number; left: number; width: number; height: number }
-const pad = 8, gap = 14, cardWidth = 340, margin = 16, navClearance = 96
+const pad = 8, gap = 14, cardWidth = 340, margin = 16, navClearance = 96, closeMs = 200
 
-/** The highlighted target's box, or null while it's missing or hidden (a panel still sliding in, say). */
+/** The element's highlighted box, or null while it's missing or hidden (a panel still sliding in, say). */
 function measure(element: HTMLElement | null): Box | null {
   if (!element || (element.checkVisibility && !element.checkVisibility({ visibilityProperty: true }))) return null
   const r = element.getBoundingClientRect()
   return r.width || r.height ? { top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 } : null
 }
+/** A closed spotlight in the middle of the screen: everything dimmed, nothing highlighted. */
+const closed = (): Box => ({ top: window.innerHeight / 2, left: window.innerWidth / 2, width: 0, height: 0 })
 /**
  * Scrolls only the target's own scrolling list (the agents panel, say) to center it above the bottom navigation.
  * scrollIntoView would also scroll the page's hidden-overflow layers and shift the whole workspace.
@@ -53,10 +55,15 @@ function reveal(element: HTMLElement, smooth: boolean) {
 }
 const same = (a: Box | null, b: Box | null) => a === b || (!!a && !!b && ['top', 'left', 'width', 'height'].every(k => Math.abs(a[k as keyof Box] - b[k as keyof Box]) < .5))
 
-/** A spotlight tour of the workspace. It switches screens when a step needs another one. */
+/**
+ * A spotlight tour of the workspace. It switches screens when a step needs another one.
+ * The spotlight moves on one continuous path: it opens from the middle of the screen, and while a new screen
+ * loads it rests on that screen's tab, then glides to the target. The card always rides along with it.
+ */
 export default function OnboardingTour({ steps, view, onView, onClose, reducedMotion }: { steps: TourStep[]; view: BusinessView; onView: (view: BusinessView) => void; onClose: () => void; reducedMotion: boolean }) {
   const [index, setIndex] = useState(0)
-  const [box, setBox] = useState<Box | null>(null)
+  const [box, setBox] = useState<Box>(closed)
+  const [closing, setClosing] = useState(false)
   const primary = useRef<HTMLButtonElement>(null)
   const dialog = useRef<HTMLDialogElement>(null)
   const cardRef = useRef<HTMLElement>(null)
@@ -67,24 +74,25 @@ export default function OnboardingTour({ steps, view, onView, onClose, reducedMo
   useEffect(() => { if (step.view !== view) onView(step.view) }, [step.view, view, onView])
   // Follow the target every frame: the camera eases and panels slide in after a screen change.
   useLayoutEffect(() => {
-    let frame = 0, scrolled = false, still = 0, last: Box | null = null
+    let frame = 0, scrolled = false, still = 0, previous: Box | null = null
     const follow = () => {
       const element = step.target ? document.querySelector<HTMLElement>(step.target) : null
-      const next = measure(element)
+      const found = measure(element)
       // Once the target stops moving (panels slide in first), bring it into view if it's off screen
       // or behind the bottom navigation. A lower agent card, for example. Once per step.
-      still = next && same(next, last) ? still + 1 : 0
-      last = next
-      if (next && !scrolled && still > 8) {
+      still = found && same(found, previous) ? still + 1 : 0
+      previous = found
+      if (found && !scrolled && still > 8) {
         scrolled = true
-        if (next.top < 0 || next.top + next.height > window.innerHeight - navClearance) reveal(element!, !reducedMotion)
+        if (found.top < 0 || found.top + found.height > window.innerHeight - navClearance) reveal(element!, !reducedMotion)
       }
-      setBox(current => same(current, next) ? current : next)
+      const next = !step.target ? closed() : found ?? measure(document.querySelector<HTMLElement>(`[data-tour="${step.view}"]`))
+      if (next) setBox(current => same(current, next) ? current : next)
       frame = requestAnimationFrame(follow)
     }
     follow()
     return () => cancelAnimationFrame(frame)
-  }, [step.target, reducedMotion])
+  }, [step.target, step.view, reducedMotion])
   useEffect(() => { primary.current?.focus() }, [index])
   // Keep keyboard focus in the card. Panels that open behind it (Agents) move focus to themselves.
   useEffect(() => {
@@ -92,7 +100,13 @@ export default function OnboardingTour({ steps, view, onView, onClose, reducedMo
     document.addEventListener('focusin', keep)
     return () => document.removeEventListener('focusin', keep)
   }, [])
-  const finish = () => { onClose(); if (view !== 'home') onView('home') }
+  // Fade out, then hand back the workspace (on Home).
+  const finish = () => {
+    if (closing) return
+    setClosing(true)
+    if (view !== 'home') onView('home')
+    window.setTimeout(onClose, reducedMotion ? 0 : closeMs)
+  }
   const next = () => last ? finish() : setIndex(i => i + 1)
   const back = () => setIndex(i => Math.max(0, i - 1))
   useEffect(() => {
@@ -105,26 +119,21 @@ export default function OnboardingTour({ steps, view, onView, onClose, reducedMo
     return () => window.removeEventListener('keydown', keys)
   })
 
-  // The card sits below the target, or above it when there's no room below; centered when nothing is highlighted.
-  let card: CSSProperties = {}
-  if (step.target && box) {
-    const width = Math.min(cardWidth, window.innerWidth - margin * 2)
-    const left = Math.min(Math.max(box.left + box.width / 2 - width / 2, margin), window.innerWidth - width - margin)
-    // Below the target if it fits above the bottom navigation, else above it, else as low as fits.
-    const below = box.top + box.height + gap, room = window.innerHeight - navClearance
-    card = below + cardHeight < room ? { left, width, top: below }
-      : box.top - gap - cardHeight > margin ? { left, width, bottom: window.innerHeight - box.top + gap }
-        : { left, width, top: Math.max(margin, room - cardHeight) }
-  }
-  const centered = !step.target || !box
-  return <dialog ref={dialog} open className={`tour${reducedMotion ? ' tour-still' : ''}`} aria-labelledby="tour-title" aria-describedby="tour-body">
+  // The card is always placed by its top-left corner, so every move between steps is one smooth glide.
+  // Below the spotlight if it fits above the bottom navigation, else above it, else as low as fits; centered while closed.
+  const width = Math.min(cardWidth, window.innerWidth - margin * 2), room = window.innerHeight - navClearance
+  const open = box.width > 0
+  const left = Math.min(Math.max(box.left + box.width / 2 - width / 2, margin), window.innerWidth - width - margin)
+  const below = box.top + box.height + gap, above = box.top - gap - cardHeight
+  const top = !open ? (window.innerHeight - cardHeight) / 2 : below + cardHeight < room ? below : above > margin ? above : Math.max(margin, room - cardHeight)
+  return <dialog ref={dialog} open className={`tour${reducedMotion ? ' tour-still' : ''}`} data-closing={closing || undefined} aria-labelledby="tour-title" aria-describedby="tour-body">
     <div className="tour-blocker" onClick={event => event.stopPropagation()}/>
-    {box && step.target ? <div className="tour-spotlight" style={box}/> : <div className="tour-dim"/>}
-    <section ref={cardRef} className={`tour-card${centered ? ' tour-card-centered' : ''}`} style={card}>
+    <div className="tour-spotlight" data-open={open || undefined} style={box}/>
+    <section ref={cardRef} className="tour-card" style={{ left, top, width }}>
       <span className="tour-kicker">{index === 0 ? 'QUICK TOUR' : `STEP ${index} OF ${steps.length - 1}`}</span>
       <h2 id="tour-title">{step.title}</h2>
       <p id="tour-body">{step.body}</p>
-      <div className="tour-progress" aria-hidden="true">{steps.map((_, i) => <i key={i} data-on={i === index || undefined}/>)}</div>
+      {index > 0 && <div className="tour-progress" aria-hidden="true">{steps.slice(1).map((_, i) => <i key={i} data-on={i + 1 === index || undefined}/>)}</div>}
       <div className="tour-actions">
         {!last && <button type="button" className="tour-skip" onClick={finish}>{index === 0 ? 'Not now' : 'Skip tour'}</button>}
         <span/>
