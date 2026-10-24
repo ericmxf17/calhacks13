@@ -1,0 +1,23 @@
+/* The camera completes its swing before App mounts the council panel. */
+.world[data-view=council] .hotspot-layer,
+.world[data-view=council] .flat-scene {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.world[data-view=council][data-view-settled=true] .council-panel {
+  animation: council-panel-enter .35s cubic-bezier(.2,.75,.25,1) both;
+}
+
+@keyframes council-panel-enter {
+  from { opacity: 0; transform: translateY(12px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.world.reduce-motion .council-panel {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world[data-view=council] .council-panel { animation: none; }
+}
