@@ -36,10 +36,11 @@ function DepartmentView({ department: d, departments, close, select }: { departm
   const heading = useRef<HTMLHeadingElement>(null)
   useEffect(() => { heading.current?.focus() }, [id])
   return <section className="department-view" aria-labelledby="room-title" key={id}>
-    <div className="room-topline"><span className="section-kicker">{d.floor} / {d.number}</span><span className="period">This month · May 2025</span></div>
+    <div className="room-topline"><span className="section-kicker">{d.floor} / {d.number}</span><span className="period">{d.period ?? 'This month · May 2025'}</span></div>
     <nav className="room-switcher" aria-label="Explore another room"><span className="room-switcher-label">Explore rooms</span><div>{departments.map(item => <Button aria-pressed={item.id === id} key={item.id} onClick={() => select(item.id)}>{item.shortName}{item.id !== id && <Arrow />}</Button>)}</div></nav>
     <h1 id="room-title" ref={heading} tabIndex={-1}>{d.name}<span>.</span></h1>
     <p className="room-description">{d.description}</p>
+    {d.callout && <aside className="room-callout"><strong>{d.callout.title}</strong><p>{d.callout.body}</p></aside>}
     <div className="metrics">{d.metrics.map(m => <div className="metric" key={m.label}><span>{m.label}</span><strong>{m.value}</strong><small>{m.change}</small></div>)}</div>
     <div className="chart-heading"><h2>{d.chartTitle}</h2><span>{d.chartNote}</span></div>
     <div className="room-chart" role="img" aria-label={`${d.chartTitle}: ${d.chartLabels.map((l, i) => `${l}: ${d.chartValues[i]}${d.unit}`).join(', ')}`}>
