@@ -23,6 +23,20 @@ supplier details already filled in. Edit the defaults or select **Continue**
 to keep them and reach the sample dashboard. The demo does not save a real
 workspace. **Sign out** returns to the account screen.
 
+Three company shortcuts below **Explore demo** open a populated workspace
+immediately, without signup or setup:
+
+| Company | Sample business | Route |
+| --- | --- | --- |
+| VoltRide | E-bike manufacturing | `/demo/voltride` |
+| Harbor Goods | Retail | `/demo/harbor-goods` |
+| Beacon Studio | Agency and services | `/demo/beacon-studio` |
+
+Each fictional company has its own room metrics, charts, and lists in
+`src/lib/demo-companies.ts`. **Business settings** edits the preview locally.
+The building sign follows the current company name in both rendering paths.
+The original `/demo` still opens the three setup steps.
+
 To build and serve production output:
 
 ```sh
@@ -118,8 +132,11 @@ The original configuration reads `FIGMA_EID`, `FIGMA_PUBLIC_URL`,
 `FIGMA_CONTENT_API_ACCESS_KEY` from the environment. Keep credentials in a
 local `.env` file; never commit them.
 
-The website has not yet been connected to the repository's Python forecast,
-impact calculator, or CREAO agents. Dashboard figures remain design/demo data.
+The web server exposes the Python forecast and impact calculator and has a
+server-side CREAO connector with persistent local jobs. See
+[backend setup](../backend/README.md). Each agent uses its own scoped `capi_`
+key. Trusted backend callers use a separate `BACKEND_API_TOKEN`.
+Dashboard figures remain design/demo data; these endpoints have not changed the UI.
 
 Figma's agent instructions, sandbox scripts, and build caches were omitted
 from the import. The small `.figma/make/site.json` file is retained because

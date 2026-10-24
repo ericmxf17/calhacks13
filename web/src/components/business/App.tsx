@@ -1,7 +1,8 @@
 'use client'
-import { Component, useEffect, useRef, useState, type ReactNode } from 'react'
-import BusinessScene from './BusinessScene'
-import { departments, type DepartmentId } from './departments'
+import { Component, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import BusinessScene, { type BusinessView } from './BusinessScene'
+import AgentsPanel from './AgentsPanel'
+import { departments as defaultDepartments, type Department, type DepartmentId } from './departments'
 
 export function Button({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return <button type="button" className={className} {...props}>{children}</button>
@@ -17,15 +18,21 @@ class SceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode
   render() { return this.state.failed ? this.props.fallback : this.props.children }
 }
 
-function FlatStorefront({ open }: { open: (id: DepartmentId) => void }) {
+function SceneFallback({ children, view, settled, onViewSettled }: { children: ReactNode; view: BusinessView; settled: boolean; onViewSettled: (view: BusinessView) => void }) {
+  // Only the error boundary uses this signal. Canvas mounts its fallback children even with working WebGL.
+  useEffect(() => { if (!settled) onViewSettled(view) }, [view, settled, onViewSettled])
+  return children
+}
+
+function FlatStorefront({ open, company, departments }: { open: (id: DepartmentId) => void; company: string; departments: Department[] }) {
   return <div className="flat-scene"><div className="flat-building"><div className="flat-cornice" />
     <div className="flat-windows">{departments.map(d => <Button id={`room-${d.id}`} key={d.id} className="flat-window" onClick={() => open(d.id)}><span />{d.name}<Arrow /></Button>)}</div>
-    <div className="flat-sign">CONSUL</div><div className="flat-shop"><span/><span/><span/></div>
+    <div className="flat-sign"><svg viewBox="0 0 600 60" role="img" aria-label={company}><text x="300" y="42" textAnchor="middle" fontSize="40" textLength={Math.min(560, company.length * 29)} lengthAdjust="spacingAndGlyphs">{company.toUpperCase()}</text></svg></div><div className="flat-shop"><span/><span/><span/></div>
   </div><p className="fallback-note">Simplified view · 3D isn’t available on this device</p></div>
 }
 
-function DepartmentView({ id, close, select }: { id: DepartmentId; close: () => void; select: (id: DepartmentId) => void }) {
-  const d = departments.find(item => item.id === id)!
+function DepartmentView({ department: d, departments, close, select }: { department: Department; departments: Department[]; close: () => void; select: (id: DepartmentId) => void }) {
+  const id = d.id
   const heading = useRef<HTMLHeadingElement>(null)
   useEffect(() => { heading.current?.focus() }, [id])
   return <section className="department-view" aria-labelledby="room-title" key={id}>
@@ -46,12 +53,24 @@ function DepartmentView({ id, close, select }: { id: DepartmentId; close: () => 
   </section>
 }
 
-export default function App({ company = 'Consul Goods' }: { company?: string }) {
+export default function App({ company = 'Consul Goods', departments = defaultDepartments }: { company?: string; departments?: Department[] }) {
+  const [sceneView, setSceneView] = useState<{ view: BusinessView; settled: boolean }>({ view: 'home', settled: true })
   const [active, setActive] = useState<DepartmentId | null>(null)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [ready, setReady] = useState(false)
   const lastRoom = useRef<DepartmentId | null>(null)
   const pointer = useRef({ x: 0, y: 0 })
+  const settleView = useCallback((view: BusinessView) => {
+    setSceneView(current => current.view === view && !current.settled ? { view, settled: true } : current)
+  }, [])
+  const selectView = (view: BusinessView) => {
+    if (sceneView.view === view) return
+    setActive(null)
+    setReady(false)
+    pointer.current = { x: 0, y: 0 }
+    setSceneView({ view, settled: false })
+  }
+  const homeReady = sceneView.view === 'home' && sceneView.settled
   const activeDepartment = departments.find(department => department.id === active)
   const panelSide = activeDepartment && activeDepartment.position[0] < 0 ? 'left' : 'right'
   useEffect(() => {
@@ -71,25 +90,41 @@ export default function App({ company = 'Consul Goods' }: { company?: string }) 
     return () => window.clearTimeout(timer)
   }, [active, reducedMotion])
   useEffect(() => {
-    const escape = (event: KeyboardEvent) => { if (event.key === 'Escape' && active) close() }
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      if (document.querySelector('dialog[open]')) return
+      if (sceneView.view === 'agents') { selectView('home'); document.getElementById('nav-agents')?.focus() }
+      else if (active) close()
+    }
     window.addEventListener('keydown', escape)
     return () => window.removeEventListener('keydown', escape)
-  }, [active, reducedMotion])
-  const fallback = <FlatStorefront open={open}/>
+  }, [active, reducedMotion, sceneView.view])
+  const fallback = homeReady ? <FlatStorefront open={open} company={company} departments={departments}/> : null
 
-  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-panel-side={panelSide} data-department={active || undefined}
+  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-department={active || undefined}
     onPointerMove={event => {
-      if (event.pointerType === 'touch' || active || reducedMotion) return
+      if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
-    <div className="scene-layer"><SceneBoundary fallback={fallback}><BusinessScene active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} fallback={fallback}/></SceneBoundary></div>
+    <div className="scene-layer"><SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="workspace-status"><i/> {company}<span className="status-divider"/><span className="established">Illustrative room data</span></div>
     </header>
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}
-    <div className={`intro ${active ? 'intro-hidden' : ''}`}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>Step closer. Every room tells a story.</p></div>
-    {active && ready && <DepartmentView id={active} close={close} select={open}/>}
-    {!active && <footer className="world-footer"><div className="coordinate"><span>01 — THE WHOLE PICTURE</span><small>{company} · Your business, connected</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">A little closer to everything.</span></footer>}
+    <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>Step closer. Every room tells a story.</p></div>
+    {activeDepartment && ready && <DepartmentView department={activeDepartment} departments={departments} close={close} select={open}/>}
+    {!active && homeReady && <footer className="world-footer"><div className="coordinate"><span>01 — THE WHOLE PICTURE</span><small>{company} · Your business, connected</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">A little closer to everything.</span></footer>}
+    {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
+    <nav className="bottom-navigation" aria-label="Main navigation">
+      <Button className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => sceneView.view === 'home' ? close() : selectView('home')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>
+        <span>Home</span>
+      </Button>
+      <Button id="nav-agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4M2 12v4m20-4v4M9 16h6"/><circle cx="9" cy="12" r=".8" fill="currentColor"/><circle cx="15" cy="12" r=".8" fill="currentColor"/></svg>
+        <span>Agents</span>
+      </Button>
+    </nav>
   </main>
 }
