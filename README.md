@@ -17,6 +17,14 @@ bill number
 
 Rule: **AI reads and writes, code calculates.** Agents never invent probabilities or dollar figures, and `verify_brief.py` checks that they didn't.
 
+## Frontend design prototype
+
+Install and build the React/shadcn frontend with `cd prototypes/bill-impact`,
+`npm ci`, and `npm run build`, then run `python3 preview.py` and open the printed
+local URL. Read the bill overview, then inspect the five strategies and their
+scenario outcomes. This is a design prototype with saved fictional data.
+See [the prototype guide](prototypes/bill-impact/README.md) for the data sources and scope.
+
 ## Run the whole pipeline on the sample files
 
 ```bash

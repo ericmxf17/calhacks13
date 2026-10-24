@@ -77,3 +77,16 @@ The data tests cover conditional exposure versus weighted impact and rejection
 of inconsistent forecasts or missing scenario outcomes. Also check overview →
 strategies → back, option selection, scenario changes, expanded breakdowns,
 keyboard navigation, and narrow-screen layout in the browser.
+
+## Earlier prototype verification
+
+The preceding vanilla-JavaScript prototype was browser-checked on 2026-10-24:
+its two layouts, all 25 strategy/scenario combinations (75 financial readouts),
+route restoration, keyboard controls, and 1280/390/320px layouts were checked.
+Those observations describe the earlier implementation, not the React rewrite.
+Local evidence was stored in ignored `.preview/` files.
+
+The React rewrite was checked separately for overview/detail navigation, strategy
+selection, scenario changes, expandable source context, and 1280/375/320px
+layouts without page-wide overflow. The accessible finding-source disclosure
+from the earlier prototype is retained inside the overview's context accordion.

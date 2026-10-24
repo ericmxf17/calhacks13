@@ -66,7 +66,7 @@ function Overview({ data, route }) {
     </section>
     <Verdict data={data} route={route} />
     <p className="interpretation"><Info size={14} /><span><strong>How to read this:</strong> risks show what could happen; the verdict weighs the modeled scenarios to suggest what to do.</span></p>
-    <Accordion type="single" collapsible className="overview-details"><Disclosure value="context" title="Bill context, assumptions & sources"><p className="detail-intro">{data.bill.bill.title}</p><p>{data.brief.bill_in_plain_english}</p><h3>Assumptions to verify</h3><Bullets items={data.brief.assumptions_to_verify} /><Sources data={data} /></Disclosure></Accordion>
+    <Accordion type="single" collapsible className="overview-details"><Disclosure value="context" title="Bill context, assumptions & sources"><p className="detail-intro">{data.bill.bill.title}</p><p>{data.brief.bill_in_plain_english}</p><h3>Where these findings come from</h3><ul className="detail-list">{[...data.findings.opportunities, ...data.findings.risks].map(finding => <li key={finding.title}><strong>{finding.title}.</strong> {finding.source}</li>)}</ul><h3>Assumptions to verify</h3><Bullets items={data.brief.assumptions_to_verify} /><Sources data={data} /></Disclosure></Accordion>
   </>;
 }
 function Sources({ data }) { return <><h3>Sources</h3><ul className="detail-list sources">{data.brief.sources.map(source => <li key={source}><a href={source} target="_blank" rel="noreferrer">{source}<ArrowUpRight size={12} /></a></li>)}</ul><p className="muted">{data.verification.numbers_trace_to_inputs ? 'Brief numbers trace to the saved inputs.' : 'Some brief numbers could not be traced to the saved inputs.'} Numeric traceability does not verify factual accuracy or legal validity.</p></>; }
