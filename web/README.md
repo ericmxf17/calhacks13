@@ -23,6 +23,20 @@ supplier details already filled in. Edit the defaults or select **Continue**
 to keep them and reach the sample dashboard. The demo does not save a real
 workspace. **Sign out** returns to the account screen.
 
+Three company shortcuts below **Explore demo** open a populated workspace
+immediately, without signup or setup:
+
+| Company | Sample business | Route |
+| --- | --- | --- |
+| VoltRide | E-bike manufacturing | `/demo/voltride` |
+| Harbor Goods | Retail | `/demo/harbor-goods` |
+| Beacon Studio | Agency and services | `/demo/beacon-studio` |
+
+Each fictional company has its own room metrics, charts, and lists in
+`src/lib/demo-companies.ts`. **Business settings** edits the preview locally.
+The building sign follows the current company name in both rendering paths.
+The original `/demo` still opens the three setup steps.
+
 To build and serve production output:
 
 ```sh

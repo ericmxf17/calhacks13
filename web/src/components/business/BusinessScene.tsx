@@ -1,25 +1,29 @@
-import { useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefObject } from 'react'
+import { useEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { CanvasTexture, MathUtils, OrthographicCamera, Vector3, type Group } from 'three'
-import { departments, type DepartmentId } from './departments'
+import { type Department, type DepartmentId } from './departments'
 
-type Props = { active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode }
+type Props = { company: string; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode }
 const palette = { stone: '#ffb16d', trim: '#fff4d4', dark: '#253b64', gold: '#ffd447', glass: '#58cde3', wall: '#ef8259', floor: '#e48b58' }
 
 function Box({ at, size, color = palette.stone }: { at: [number, number, number]; size: [number, number, number]; color?: string }) {
   return <mesh position={at} castShadow receiveShadow><boxGeometry args={size}/><meshStandardMaterial color={color} roughness={0.84}/></mesh>
 }
 
-function Sign() {
+function Sign({ company }: { company: string }) {
   const texture = useMemo(() => {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 128
     const ctx = c.getContext('2d')!
     ctx.fillStyle = '#3475dc'; ctx.fillRect(0, 0, 1024, 128)
     ctx.fillStyle = '#ffffff'; ctx.font = 'bold 58px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-    ctx.fillText('C O N S U L', 512, 65)
+    const label = company.toUpperCase()
+    const width = ctx.measureText(label).width
+    ctx.font = `bold ${Math.min(58, 58 * 944 / Math.max(width, 1))}px sans-serif`
+    ctx.fillText(label, 512, 65)
     return new CanvasTexture(c)
-  }, [])
+  }, [company])
+  useEffect(() => () => texture.dispose(), [texture])
   return <mesh position={[0, 2.16, 1.125]}><planeGeometry args={[4.75, 0.49]}/><meshStandardMaterial map={texture} roughness={1}/></mesh>
 }
 
@@ -46,7 +50,7 @@ function Furnishing({ color, variant = 0 }: { color: string; variant?: number })
   </group>
 }
 
-function DepartmentRoom({ department, active, open, index, portal }: { department: typeof departments[number]; active: DepartmentId | null; open: Props['open']; index: number; portal: RefObject<HTMLElement> }) {
+function DepartmentRoom({ department, active, open, index, portal }: { department: Department; active: DepartmentId | null; open: Props['open']; index: number; portal: RefObject<HTMLElement> }) {
   const [hovered, setHovered] = useState(false)
   const shutters = useRef<Group>(null)
   const selected = active === department.id
@@ -70,7 +74,7 @@ function DepartmentRoom({ department, active, open, index, portal }: { departmen
   </group>
 }
 
-function Storefront({ active, open, portal }: Pick<Props, 'active' | 'open'> & { portal: RefObject<HTMLElement> }) {
+function Storefront({ company, departments, active, open, portal }: Pick<Props, 'company' | 'departments' | 'active' | 'open'> & { portal: RefObject<HTMLElement> }) {
   return <group>
     {/* A solid rear shell, with an open facade around the four recessed rooms. */}
     <Box at={[0, 3.59, -.4]} size={[5.25, 7.1, 1.3]}/>
@@ -88,7 +92,7 @@ function Storefront({ active, open, portal }: Pick<Props, 'active' | 'open'> & {
     <Box at={[0, 4.35, 1.76]} size={[1.45, .055, .045]} color={palette.dark}/>
     <Box at={[0, 3.99, 1.76]} size={[1.45, .04, .045]} color={palette.dark}/>
     {Array.from({ length: 9 }, (_, i) => <Box key={i} at={[-.65 + i * .163, 4.17, 1.76]} size={[.025, .4, .025]} color={palette.dark}/>)}
-    <Box at={[0, 2.16, 1]} size={[5.18, .57, .22]}/><Sign/>
+    <Box at={[0, 2.16, 1]} size={[5.18, .57, .22]}/><Sign company={company}/>
     {[-2.52, -.68, .68, 2.52].map(x => <Box key={x} at={[x, 1.13, .94]} size={[.13, 1.83, .16]} color={palette.dark}/>)}
     {[-1.6, 1.6].map(x => <group key={x}>
       <Box at={[x, 1.1, .39]} size={[1.65, 1.7, .2]} color="#ffd473"/>
@@ -114,7 +118,7 @@ function Storefront({ active, open, portal }: Pick<Props, 'active' | 'open'> & {
   </group>
 }
 
-function CameraRig({ active, pointer, reducedMotion }: Pick<Props, 'active' | 'pointer' | 'reducedMotion'>) {
+function CameraRig({ departments, active, pointer, reducedMotion }: Pick<Props, 'departments' | 'active' | 'pointer' | 'reducedMotion'>) {
   const { camera, size } = useThree()
   const target = useRef(new Vector3(0, 3.5, 0))
   const position = useRef(new Vector3(8, 6.5, 16))
@@ -152,8 +156,8 @@ export default function BusinessScene(props: Props) {
     <hemisphereLight args={['#ffffff', '#88b7cb', 1.1]}/>
     <directionalLight position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10} shadow-camera-right={10} shadow-camera-top={12} shadow-camera-bottom={-8} shadow-normalBias={.025}/>
     <directionalLight position={[7, 6, -3]} intensity={1.2} color="#d3e0dc"/>
-    <Storefront active={props.active} open={props.open} portal={portal}/>
+    <Storefront company={props.company} departments={props.departments} active={props.active} open={props.open} portal={portal}/>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.17, 0]} receiveShadow><planeGeometry args={[200, 200]}/><meshStandardMaterial color="#dcf5fc" roughness={1}/></mesh>
-    <CameraRig active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion}/>
+    <CameraRig departments={props.departments} active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion}/>
   </Canvas></>
 }

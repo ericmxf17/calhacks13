@@ -2,6 +2,8 @@
 
 import { useEffect, useState, type FormEvent, type InputHTMLAttributes } from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { demoCompanies, type DemoCompany } from '@/lib/demo-companies'
 import { validateBusiness, type BusinessInput } from '@/lib/business-input'
 
 const Scene = dynamic(() => import('./business/App'), {
@@ -59,14 +61,18 @@ async function request(body?: unknown) {
   return data
 }
 
-export default function Workspace({ initialView = 'account' }: { initialView?: WorkspaceView }) {
+type WorkspaceProps =
+  | { initialView?: 'account'; preset?: never }
+  | { initialView: 'demo'; preset?: DemoCompany }
+
+export default function Workspace({ initialView = 'account', preset }: WorkspaceProps) {
   const [view, setView] = useState<WorkspaceView>(initialView)
   const [loading, setLoading] = useState(initialView === 'account')
   const [signedIn, setSignedIn] = useState(false)
-  const [complete, setComplete] = useState(false)
+  const [complete, setComplete] = useState(Boolean(preset))
   const [mode, setMode] = useState<'signup' | 'login'>('signup')
   const [step, setStep] = useState(0)
-  const [business, setBusiness] = useState<BusinessInput>(initialView === 'demo' ? demoBusiness : empty)
+  const [business, setBusiness] = useState<BusinessInput>(() => structuredClone(preset?.business ?? (initialView === 'demo' ? demoBusiness : empty)))
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [fileName, setFileName] = useState('')
@@ -225,7 +231,7 @@ export default function Workspace({ initialView = 'account' }: { initialView?: W
   if (complete && !editing)
     return (
       <>
-        <Scene company={business.company} />
+        <Scene company={business.company} departments={view === 'demo' ? preset?.departments : undefined} />
         <div className="fixed right-6 top-20 z-50 flex gap-4 text-xs text-muted">
           <button
             onClick={() => {
@@ -529,7 +535,7 @@ export default function Workspace({ initialView = 'account' }: { initialView?: W
                 </label>
                 <p className="text-xs leading-6 text-muted">
                   Use columns <strong className="font-medium text-ink">supplier, part, cost</strong>{' '}
-                  (USD). Your rows are saved privately to your workspace.
+                  (USD). {view === 'demo' ? 'Your rows stay in this preview only.' : 'Your rows are saved privately to your workspace.'}
                 </p>
                 {!business.demo && business.parts.length > 0 && (
                   <div className="overflow-hidden rounded-lg border border-line text-xs">
@@ -614,7 +620,7 @@ export default function Workspace({ initialView = 'account' }: { initialView?: W
                     Cancel
                   </button>
                 )}
-                <span>Saved securely to your account</span>
+                <span>{view === 'demo' ? 'Preview only · Changes aren’t saved' : 'Saved securely to your account'}</span>
               </div>
             )}
           </form>
@@ -626,6 +632,18 @@ export default function Workspace({ initialView = 'account' }: { initialView?: W
               </a>
               <small>No account needed · Illustrative business data</small>
             </div>
+          )}
+          {!hasWorkspaceAccess && (
+            <nav className="company-previews" aria-label="Sample company workspaces">
+              <p>Or step into a sample company</p>
+              {demoCompanies.map((profile) => (
+                <Link className="company-preview" key={profile.id} href={`/demo/${profile.id}`}>
+                  <strong>{profile.business.company}<span aria-hidden="true"> →</span></strong>
+                  <span>{profile.industry}</span>
+                  <small>{profile.summary}</small>
+                </Link>
+              ))}
+            </nav>
           )}
           {!hasWorkspaceAccess && (
             <p className="mt-6 text-center text-xs text-muted">

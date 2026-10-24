@@ -1,5 +1,5 @@
 export type DepartmentId = 'finance' | 'hiring' | 'supply' | 'marketing'
-type Department = {
+export type Department = {
   id: DepartmentId; name: string; shortName: string; floor: string; number: string; position: [number, number, number]; color: string;
   description: string; metrics: { label: string; value: string; change: string }[];
   chartTitle: string; chartNote: string; chartLabels: string[]; chartValues: number[]; unit: string;
