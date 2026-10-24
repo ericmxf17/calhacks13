@@ -19,6 +19,8 @@ const makePublicPreviewOrigin = (() => {
 })()
 
 const nextConfig: NextConfig = {
+  // Droid launches its native CLI from the server; keep the SDK out of the bundle.
+  serverExternalPackages: ['@factory/droid-sdk'],
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

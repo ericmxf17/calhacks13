@@ -10,7 +10,7 @@ import { GroundProps, Lot, RoofProps } from './scene/props'
 import Building from './scene/archetypes'
 import Construction from './scene/archetypes/Construction'
 
-export type BusinessView = 'home' | 'agents'
+export type BusinessView = 'home' | 'agents' | 'council'
 type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 
 function CameraRig({ layout, departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'layout' | 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
@@ -55,6 +55,7 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
       if (!homeQuaternion.current) homeQuaternion.current = camera.quaternion.clone()
       const destination = homeQuaternion.current.clone()
       if (requestedView === 'agents') destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2))
+      if (requestedView === 'council') destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI / 2))
       // Every request starts at the rendered pose, including reversals mid-swing.
       swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), zoom: orthographic.zoom, elapsed: 0, complete: false }
     }
@@ -81,9 +82,9 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
       if (continuing.current) invalidate()
       return
     }
-    // The agents view is a fixed pose. Request reversals are handled above before
+    // Non-home views hold a fixed pose. Request reversals are handled above before
     // this return, so a new home request can still begin from the rendered pose.
-    if (requestedView === 'agents') return
+    if (requestedView !== 'home') return
     const mobile = size.width < 760
     const room = departments.find(d => d.id === active)
     const amount = reducedMotion ? 1 : 1 - Math.exp(-delta * 4)

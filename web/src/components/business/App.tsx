@@ -3,6 +3,10 @@ import { Component, useCallback, useEffect, useMemo, useRef, useState, type CSSP
 import { defaultSceneSpec, type SceneSpec } from '@/lib/scene-spec'
 import BusinessScene, { type BusinessView } from './BusinessScene'
 import AgentsPanel from './AgentsPanel'
+import CouncilPanel from './CouncilPanel'
+import './council-transition.css'
+import type { BusinessInput } from '@/lib/business-input'
+import { councilBusinessKey } from '@/lib/council-types'
 import { departments as defaultDepartments, type Department, type DepartmentId } from './departments'
 import { layoutBuilding, placeRooms, type BuildingLayout } from './scene/layout'
 import { drawnArchetype } from './scene/archetypes'
@@ -90,7 +94,7 @@ function DesignStatus({ design }: { design: Design }) {
   return null
 }
 
-export default function App({ company = 'Consul Goods', departments: rooms = defaultDepartments, scene = defaultScene, design, actions }: { company?: string; departments?: Department[]; scene?: SceneSpec; design?: Design; actions?: ReactNode }) {
+export default function App({ company = 'Consul Goods', departments: rooms = defaultDepartments, scene = defaultScene, design, actions, business }: { business?: BusinessInput; company?: string; departments?: Department[]; scene?: SceneSpec; design?: Design; actions?: ReactNode }) {
   // The design picks the building; rooms keep their content and get their place in the building's grid.
   // While Scene Designer works, a construction site stands in, framed like a three-floor building.
   const constructing = design?.state === 'designing'
@@ -114,6 +118,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     setSceneView({ view, settled: false })
   }
   const homeReady = sceneView.view === 'home' && sceneView.settled
+  const councilReady = sceneView.view === 'council' && sceneView.settled
   const activeDepartment = departments.find(department => department.id === active)
   const panelSide = activeDepartment?.side === 'left' ? 'left' : 'right'
   const roomColors = activeDepartment ? { '--room-color': activeDepartment.ink, '--room-soft': activeDepartment.soft } as CSSProperties : undefined
@@ -137,7 +142,8 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     const escape = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
       if (document.querySelector('dialog[open]')) return
-      if (sceneView.view === 'agents') { selectView('home'); document.getElementById('nav-agents')?.focus() }
+      if (sceneView.view === 'council') { selectView('home'); document.getElementById('nav-consul')?.focus() }
+      else if (sceneView.view === 'agents') { selectView('home'); document.getElementById('nav-agents')?.focus() }
       else if (active) close()
     }
     window.addEventListener('keydown', escape)
@@ -145,12 +151,12 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   }, [active, reducedMotion, sceneView.view])
   const fallback = homeReady ? <FlatStorefront open={open} company={company} departments={departments} scene={drawn} layout={layout}/> : null
 
-  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-department={active || undefined} style={roomColors}
+  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-council-open={councilReady} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-department={active || undefined} style={roomColors}
     onPointerMove={event => {
       if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
-    <div className="scene-layer"><SceneBoundary key={layout.key} fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
+    <div className="scene-layer" inert={!homeReady}><SceneBoundary key={layout.key} fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="world-header-content">
@@ -161,15 +167,16 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}
     <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>{design?.state === 'agent' ? `Designed by Scene Designer: ${scene.reasoning}` : design && design.state !== 'designing' ? scene.reasoning : 'Step closer. Every room tells a story.'}</p></div>
     {design && !active && homeReady && <DesignStatus design={design}/>}
-    {activeDepartment && ready && <DepartmentView department={activeDepartment} departments={departments} close={close} select={open}/>}
+    {homeReady && activeDepartment && ready && <DepartmentView department={activeDepartment} departments={departments} close={close} select={open}/>}
     {!active && homeReady && <footer className="world-footer"><div className="coordinate"><span>01 — THE WHOLE PICTURE</span><small>{company} · Your business, connected</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">A little closer to everything.</span></footer>}
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
+    {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
-      <Button id="nav-consul" className="bottom-navigation-item" aria-disabled="true">
+      <Button id="nav-consul" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
         <span>Consul</span>
       </Button>
-      <Button className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => sceneView.view === 'home' ? close() : selectView('home')}>
+      <Button className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>
         <span>Home</span>
       </Button>

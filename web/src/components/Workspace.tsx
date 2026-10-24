@@ -206,6 +206,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
     return (
       <>
         <Scene
+          business={business}
           company={business.company}
           scene={scene}
           departments={rooms}

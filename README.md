@@ -17,6 +17,33 @@ bill number
 
 Rule: **AI reads and writes, code calculates.** Agents never invent probabilities or dollar figures, and `verify_brief.py` checks that they didn't.
 
+## Consul: a council over your saved evidence
+
+In the running web app, select a company and open **Consul**. Choose completed
+CREAO API run conversations or text artifacts, explicitly assign them to that
+company, enter a question, and run the council. Four real Factory SDK sessions
+speak in order: Finance, Operations responding to Finance, Skeptic challenging
+the earlier positions, and Chair issuing a cited decision. Completed turns and
+source snapshots are saved as they arrive, so closing the panel can recover the
+same council. Reading a saved council never starts another session.
+
+The implementation uses the [Factory TypeScript SDK](https://docs.factory.com/sdk/typescript)
+with isolated working directories, disabled tools, autonomy Off, and cancelled
+permissions. Set `FACTORY_API_KEY`, the native CLI path `DROID_EXECUTABLE`,
+`COUNCIL_MODEL_ID`, and `COUNCIL_REASONING_EFFORT` in `web/.env`, enable
+`ENABLE_LOCAL_AGENT_PREVIEW=true`, and restart the local dev
+server. Existing app-scoped CREAO keys read the selected evidence; no CREAO
+account credential is required. See the [council setup and CLI guide](backend/README.md#consul-council)
+for the API, limits, durable job recovery, and `node scripts/council.mjs setup`.
+
+Consul checks output shape, citation membership, and literal supporting excerpts
+for numeric claims. Those checks do not establish semantic truth. Inspect each
+cited source and its dates. The optional VoltRide sample is fictional saved
+analysis; other companies can start with their profile alone, with limited
+evidence and no demonstrated bill impact. Actual live council responses require
+a configured Factory key. The [editable Consul design](https://www.figma.com/design/mD2dLj2EvZDrdfv6wpAfLK?node-id=7-9)
+shows the evidence chooser, debate, and decision panel.
+
 ## Run the whole chain
 
 ```bash

@@ -1,0 +1,22 @@
+.council-shimmer {
+  display: inline-block;
+  color: #526b82;
+}
+.council-shimmer:not([data-reduced-motion]) {
+  background-image: linear-gradient(90deg, #526b82 calc(50% - var(--shimmer-spread)), #2468d2 50%, #526b82 calc(50% + var(--shimmer-spread)));
+  background-size: 250% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: council-shimmer 2s linear infinite;
+}
+.council-response > p { margin: 0 0 12px; line-height: 1.8; }
+.council-response > :last-child { margin-bottom: 0; }
+@keyframes council-shimmer {
+  from { background-position: 100% center; }
+  to { background-position: 0% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .council-shimmer:not([data-reduced-motion]) { animation: none; background: none; color: #526b82; }
+  .council-panel [data-sd-animate] { animation: none !important; opacity: 1; }
+}
