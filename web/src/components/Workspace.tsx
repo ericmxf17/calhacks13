@@ -218,12 +218,12 @@ export default function Workspace() {
     'Connect the dots.',
   ]
   return (
-    <main className="min-h-dvh bg-paper text-ink">
+    <main className="consul-onboarding min-h-dvh bg-paper text-ink">
       <header className="flex items-center justify-between px-6 py-7 md:px-12">
         <div className="flex items-center gap-3">
-          <span className="font-display text-4xl">n.</span>
+          <span className="font-display text-4xl">c.</span>
           <div className="text-lg font-medium tracking-tight">
-            northstar
+            consul
             <span className="block text-[7px] tracking-[0.25em]">THE BUSINESS, CONNECTED</span>
           </div>
         </div>
@@ -252,7 +252,7 @@ export default function Workspace() {
             </p>
           </div>
           <div className="mt-10 hidden sm:block" aria-hidden="true">
-            <div className="mx-auto w-56 border-8 border-line bg-stone-200 shadow-xl">
+            <div className="onboarding-building mx-auto w-56 border-8 border-line bg-stone-200 shadow-xl">
               <div className="border-b-4 border-paper px-5 pt-6">
                 <div className="grid grid-cols-2 gap-7 pb-5">
                   {[0, 1, 2, 3].map((n) => (
@@ -261,7 +261,7 @@ export default function Workspace() {
                 </div>
               </div>
               <p className="border-b-4 border-paper py-2 text-center font-display text-sm tracking-[0.2em]">
-                NORTHSTAR
+                CONSUL
               </p>
               <div className="flex gap-3 p-4">
                 {[0, 1, 2].map((n) => (
@@ -580,8 +580,17 @@ export default function Workspace() {
             )}
           </form>
           {!signedIn && (
+            <div className="demo-entry">
+              <span>Just looking around?</span>
+              <a href="/demo" className="demo-button">
+                Explore demo <span aria-hidden="true">→</span>
+              </a>
+              <small>No account needed · Illustrative business data</small>
+            </div>
+          )}
+          {!signedIn && (
             <p className="mt-6 text-center text-xs text-muted">
-              {mode === 'signup' ? 'Already have a home here?' : 'New to Northstar?'}{' '}
+              {mode === 'signup' ? 'Already have a home here?' : 'New to Consul?'}{' '}
               <button
                 className="font-medium text-ink underline underline-offset-4"
                 onClick={() => {

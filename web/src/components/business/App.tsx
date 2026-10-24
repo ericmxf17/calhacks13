@@ -20,7 +20,7 @@ class SceneBoundary extends Component<{ children: ReactNode; fallback: ReactNode
 function FlatStorefront({ open }: { open: (id: DepartmentId) => void }) {
   return <div className="flat-scene"><div className="flat-building"><div className="flat-cornice" />
     <div className="flat-windows">{departments.map(d => <Button id={`room-${d.id}`} key={d.id} className="flat-window" onClick={() => open(d.id)}><span />{d.name}<Arrow /></Button>)}</div>
-    <div className="flat-sign">NORTHSTAR</div><div className="flat-shop"><span/><span/><span/></div>
+    <div className="flat-sign">CONSUL</div><div className="flat-shop"><span/><span/><span/></div>
   </div><p className="fallback-note">Simplified view · 3D isn’t available on this device</p></div>
 }
 
@@ -46,7 +46,7 @@ function DepartmentView({ id, close, select }: { id: DepartmentId; close: () => 
   </section>
 }
 
-export default function App({ company = 'Northstar Goods' }: { company?: string }) {
+export default function App({ company = 'Consul Goods' }: { company?: string }) {
   const [active, setActive] = useState<DepartmentId | null>(null)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [ready, setReady] = useState(false)
@@ -77,14 +77,14 @@ export default function App({ company = 'Northstar Goods' }: { company?: string 
   }, [active, reducedMotion])
   const fallback = <FlatStorefront open={open}/>
 
-  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-panel-side={panelSide}
+  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-panel-side={panelSide} data-department={active || undefined}
     onPointerMove={event => {
       if (event.pointerType === 'touch' || active || reducedMotion) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
     <div className="scene-layer"><SceneBoundary fallback={fallback}><BusinessScene active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
-      <div className="wordmark"><span className="wordmark-symbol">n.</span><div>northstar<span>THE BUSINESS, CONNECTED</span></div></div>
+      <div className="wordmark"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="workspace-status"><i/> {company}<span className="status-divider"/><span className="established">Illustrative room data</span></div>
     </header>
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}

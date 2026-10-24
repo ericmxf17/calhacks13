@@ -14,7 +14,13 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open http://localhost:3000. To build and serve production output:
+Open http://localhost:3000.
+
+The signup/sign-in screen includes **Explore demo**, which opens `/demo` without
+an account using only illustrative business data. The demo does not access or
+save a real workspace, and includes a link back to sign in.
+
+To build and serve production output:
 
 ```sh
 pnpm build
