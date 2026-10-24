@@ -215,10 +215,16 @@ separate context. Reading or reloading a saved conversation does not start a
 model run. See the [council backend guide](../backend/README.md#consul-council)
 for credentials, round limits, and recovery.
 
-The conversation and message primitives are adapted from
+The conversation, message and shimmer primitives are adapted from
 [Vercel AI Elements](https://elements.ai-sdk.dev/components/conversation).
 Their source and license are kept in `src/components/ai-elements/`. The composer
 uses the existing council API; it does not require another model provider.
+Message responses use [Streamdown's word animation](https://streamdown.ai/docs/animation).
+Factory returns complete validated role summaries. Newly received summaries
+reveal progressively in the browser; this is a display effect, not raw token
+streaming. Saved history appears immediately when recovered. The active public
+role label uses the [Shimmer effect](https://elements.ai-sdk.dev/components/shimmer).
+Avatar movement, cursor tracking and text effects respect reduced motion.
 
 During development, `/demo/council` shows the production renderer with an
 explicitly illustrative conversation and Chair decision. Use

@@ -79,3 +79,33 @@ completed Chair decision. Replay, pause and manual advancement were exercised
 through the playback controls. TypeScript and
 the whitespace diff check pass. This demonstrates interface behavior, not live
 Factory generation.
+
+## Motion and blue conversation surface
+
+The history canvas now uses `#e8f7ff`, a tint derived from the app's established
+sky blue. Figma's variable read was attempted again for the existing council
+frame and remained blocked by the Starter-plan tool quota. This tint is not
+claimed as a newly verified Figma variable.
+
+Council avatars reuse `AgentAvatar`, including the animated SVGs and cursor
+tracking already used by Agents. The browser loaded the animated artwork and
+eye trackers; moving the cursor between controls visibly changed the eye
+translation attributes. The job stage remains the only running-role signal.
+
+Added Vercel AI Elements' `MessageResponse` adapter backed by Streamdown and a
+CSS adaptation of its Shimmer gradient. Newly received validated summaries
+reveal word by word. Restored history establishes a static baseline; polling
+the same turns does not restart the effect. The latter behavior was inspected
+in `receiveThread`; a completed live Factory recovery still requires a key.
+
+The browser probe captured a partial Skeptic summary with Streamdown animation
+wrappers, then the complete summary with those wrappers removed. Earlier
+Finance and Operations text stayed complete. The public active-role label has
+the shimmer animation. The full validated summary is exposed once through an
+accessible group label; its visual animated copy is hidden from screen readers.
+
+Reduced-motion handling was inspected: still avatar fallback, full summary,
+static status text, and timer cleanup. Unfinished effects can restart under
+React's development effect replay; a completed or reduced-motion reveal does
+not replay. Phone inspection at 390 by 844 confirmed no horizontal overflow
+and a visible composer. No assertion tests were added or run.

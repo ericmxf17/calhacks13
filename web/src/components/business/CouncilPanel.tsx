@@ -17,7 +17,8 @@ import {
   ConversationContent,
   ConversationScrollButton,
 } from '@/components/ai-elements/conversation'
-import { Message, MessageContent } from '@/components/ai-elements/message'
+import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message'
+import { Shimmer } from '@/components/ai-elements/shimmer'
 import AgentAvatar from './AgentAvatar'
 
 const seats = [
@@ -52,16 +53,81 @@ const seats = [
 ] as const
 
 // Shared Consul illustrations decorate council seats; their labels identify
-// Factory council roles, not CREAO agent runs. Still art never signals activity.
-function CouncilAvatar({ seat }: { seat: (typeof seats)[number] }) {
+// Factory council roles, not CREAO agent runs. Character motion is decorative;
+// only the job stage below identifies an active council seat.
+function CouncilAvatar({
+  seat,
+  reducedMotion,
+}: {
+  seat: (typeof seats)[number]
+  reducedMotion: boolean
+}) {
   return (
     <span className="council-avatar">
       <AgentAvatar
         stillSrc={`/agents/${seat.avatar}.svg`}
         animatedSrc={`/agents/${seat.avatar}-animated.svg`}
-        reducedMotion
+        reducedMotion={reducedMotion}
       />
     </span>
+  )
+}
+
+const turnIdentity = (round: CouncilJob, role: string) => `${round.id}:${role}`
+
+// Factory publishes whole, validated summaries. Reveal their words locally;
+// this is presentation, not a provider stream or a view into private reasoning.
+function CouncilSummary({
+  text,
+  reveal,
+  reducedMotion,
+  motionReady,
+}: {
+  text: string
+  reveal: boolean
+  reducedMotion: boolean
+  motionReady: boolean
+}) {
+  const [visibleText, setVisibleText] = useState(reveal ? '' : text)
+  const [revealing, setRevealing] = useState(false)
+  const finished = useRef(false)
+  useEffect(() => {
+    if (!motionReady) return
+    if (!reveal || reducedMotion || finished.current) {
+      finished.current = true
+      setVisibleText(text)
+      setRevealing(false)
+      return
+    }
+    const words = text.match(/\S+\s*/g) ?? [text]
+    let count = 0
+    setVisibleText('')
+    setRevealing(true)
+    const timer = window.setInterval(() => {
+      count = Math.min(count + 1, words.length)
+      setVisibleText(words.slice(0, count).join(''))
+      if (count === words.length) {
+        finished.current = true
+        window.clearInterval(timer)
+        setVisibleText(text)
+        setRevealing(false)
+      }
+    }, 48)
+    return () => window.clearInterval(timer)
+  }, [text, reveal, reducedMotion, motionReady])
+  // The log exposes the validated summary once, independent of visual progress.
+  // Hiding only the animated copy prevents every word becoming an announcement.
+  return (
+    <div className="council-summary" role="group" aria-label={text}>
+      <div aria-hidden="true">
+        <MessageResponse
+          animated={reducedMotion ? undefined : { animation: 'fadeIn', duration: 180 }}
+          isAnimating={revealing}
+        >
+          {motionReady && reducedMotion ? text : visibleText}
+        </MessageResponse>
+      </div>
+    </div>
   )
 }
 
@@ -151,11 +217,27 @@ export default function CouncilPanel({
   const [nextOffset, setNextOffset] = useState(0)
   const [saved, setSaved] = useState<SavedCouncil | null>(null)
   const [thread, setThread] = useState<CouncilThread | null>(previewThread ?? null)
+  const seenTurns = useRef<Set<string> | null>(
+    previewThread
+      ? new Set(
+          previewThread.rounds.flatMap((round) =>
+            round.turns.map((turn) => turnIdentity(round, turn.role)),
+          ),
+        )
+      : null,
+  )
+  const [revealedTurns, setRevealedTurns] = useState<Set<string>>(() => {
+    const lastRound = previewThread?.rounds.at(-1)
+    const lastTurn = lastRound?.turns.at(-1)
+    return new Set(lastRound && lastTurn ? [turnIdentity(lastRound, lastTurn.role)] : [])
+  })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [readVersion, setReadVersion] = useState(0)
   const [contextOpen, setContextOpen] = useState(false)
   const [inspectedSource, setInspectedSource] = useState<string | null>(null)
+  const [reducedMotion, setReducedMotion] = useState(true)
+  const [motionReady, setMotionReady] = useState(false)
   const job = thread?.rounds.at(-1)
   const terminal = !!job && ['completed', 'failed', 'interrupted'].includes(job.status)
   const pending = !!saved && (saved.pending ?? !terminal)
@@ -166,6 +248,31 @@ export default function CouncilPanel({
   const source = evidence.find((item) => item.id === inspectedSource)
   const sameRef = (a: CouncilSourceOption, b: CouncilSourceOption) =>
     JSON.stringify(a.ref) === JSON.stringify(b.ref)
+
+  useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => {
+      setReducedMotion(preference.matches)
+      setMotionReady(true)
+    }
+    update()
+    preference.addEventListener('change', update)
+    return () => preference.removeEventListener('change', update)
+  }, [])
+
+  function receiveThread(next: CouncilThread, submitted = false) {
+    const identities = new Set(
+      next.rounds.flatMap((round) => round.turns.map((turn) => turnIdentity(round, turn.role))),
+    )
+    const previous = seenTurns.current
+    if (previous || submitted) {
+      const appended = [...identities].filter((identity) => !previous?.has(identity))
+      if (appended.length) setRevealedTurns((current) => new Set([...current, ...appended]))
+    }
+    // The first saved-thread read establishes a static history baseline.
+    seenTurns.current = identities
+    setThread(next)
+  }
 
   useEffect(() => {
     alive.current = true
@@ -216,7 +323,7 @@ export default function CouncilPanel({
           { signal: controller.signal },
         )
         if (controller.signal.aborted) return
-        setThread(result)
+        receiveThread(result)
         setError('')
         const last = result.rounds.at(-1)
         if (last && ['completed', 'failed', 'interrupted'].includes(last.status)) {
@@ -324,10 +431,13 @@ export default function CouncilPanel({
         body: JSON.stringify(snapshot.request),
       })
       if (!alive.current) return
-      setThread((current) => ({
-        rootJobId: result.rootJobId,
-        rounds: [...(current?.rounds.filter((item) => item.id !== result.id) ?? []), result],
-      }))
+      receiveThread(
+        {
+          rootJobId: result.rootJobId,
+          rounds: [...(thread?.rounds.filter((item) => item.id !== result.id) ?? []), result],
+        },
+        true,
+      )
       const accepted = {
         ...snapshot,
         submitted: true,
@@ -387,6 +497,8 @@ export default function CouncilPanel({
     }
     setSaved(null)
     setThread(null)
+    seenTurns.current = null
+    setRevealedTurns(new Set())
     setQuestion('')
     setSelected([])
     setAssigned(false)
@@ -461,7 +573,7 @@ export default function CouncilPanel({
               key={seat.role}
               title={`${seat.name} · ${seat.purpose}`}
             >
-              <CouncilAvatar seat={seat} />
+              <CouncilAvatar seat={seat} reducedMotion={reducedMotion} />
               <div>
                 <strong>{seat.name}</strong>
                 <small>{activeSeat?.role === seat.role ? seat.focus : seat.purpose}</small>
@@ -497,7 +609,7 @@ export default function CouncilPanel({
               {!thread && (
                 <div className="council-empty">
                   <span className="council-empty-mark">
-                    <CouncilAvatar seat={seats[3]} />
+                    <CouncilAvatar seat={seats[3]} reducedMotion={reducedMotion} />
                   </span>
                   <span className="council-eyebrow">MAKE ROOM FOR A BETTER DECISION</span>
                   <h2>What’s on your mind?</h2>
@@ -542,7 +654,7 @@ export default function CouncilPanel({
                     if (!turn && !(seat.role === 'chair' && round.decision)) return null
                     return (
                       <Message from="assistant" key={seat.role}>
-                        <CouncilAvatar seat={seat} />
+                        <CouncilAvatar seat={seat} reducedMotion={reducedMotion} />
                         <MessageContent>
                           <div className="council-byline">
                             <strong>{seat.name}</strong>
@@ -552,7 +664,12 @@ export default function CouncilPanel({
                           </div>
                           {turn && (
                             <>
-                              <p>{turn.summary}</p>
+                              <CouncilSummary
+                                text={turn.summary}
+                                reveal={revealedTurns.has(turnIdentity(round, seat.role))}
+                                reducedMotion={reducedMotion}
+                                motionReady={motionReady}
+                              />
                               {(turn.claims.length > 0 || turn.challenges.length > 0) && (
                                 <details className="council-specialist-details">
                                   <summary>Review reasoning & challenges</summary>
@@ -649,10 +766,12 @@ export default function CouncilPanel({
                   })}
                   {round.status === 'running' || round.status === 'resolving' ? (
                     <p className="council-stage" role="status">
-                      <span />
-                      {round.status === 'running'
-                        ? `${seats.find((seat) => seat.role === round.stage)?.name ?? 'Council'} · ${seats.find((seat) => seat.role === round.stage)?.focus ?? 'Preparing discussion'}`
-                        : 'Preparing the shared evidence'}
+                      <span className="council-stage-dot" aria-hidden="true" />
+                      <Shimmer reducedMotion={reducedMotion}>
+                        {round.status === 'running'
+                          ? `${seats.find((seat) => seat.role === round.stage)?.name ?? 'Council'} · ${seats.find((seat) => seat.role === round.stage)?.focus ?? 'Preparing discussion'}`
+                          : 'Preparing the shared evidence'}
+                      </Shimmer>
                     </p>
                   ) : (
                     round.message && <p className="council-stage">{round.message}</p>
