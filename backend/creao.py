@@ -85,36 +85,91 @@ def _strings(obj):
         yield obj
 
 
-def extract_json(run, key=None, expected_file=None):
-    """Find the agent's JSON answer in a finished run."""
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args, **kwargs):
+        return None
+
+
+def download(url, key):
+    """Download a run artifact. CREAO answers with a redirect to storage; the key is
+    sent only to CREAO, never to the storage host."""
+    try:
+        opener = urllib.request.build_opener(_NoRedirect)
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {key}"})
+        try:
+            with opener.open(req, timeout=60) as r:
+                return r.read().decode("utf-8", "ignore")
+        except urllib.error.HTTPError as e:
+            if e.code not in (301, 302, 303, 307, 308):
+                raise CreaoError(f"Downloading the file failed (HTTP {e.code})")
+            with urllib.request.urlopen(e.headers["Location"], timeout=60) as r:
+                return r.read().decode("utf-8", "ignore")
+    except urllib.error.URLError as e:
+        if "CERTIFICATE_VERIFY_FAILED" not in str(e):
+            raise CreaoError(f"Downloading the file failed: {e}")
+    r = subprocess.run(["curl", "-s", "-m", "60", "-o", "/dev/null", "-w", "%{redirect_url}",
+                        "-H", f"Authorization: Bearer {key}", url], capture_output=True, text=True)
+    target = r.stdout.strip() or url
+    r = subprocess.run(["curl", "-sL", "-m", "60", target], capture_output=True)
+    return r.stdout.decode("utf-8", "ignore")
+
+
+def _json_candidates(text):
+    """Every JSON object in a reply: each ```json block, then the whole text."""
+    for block in re.findall(r"```json\s*(\{.*?\})\s*```", text or "", re.S):
+        yield block
+    if (text or "").strip().startswith("{"):
+        yield text.strip()
+
+
+def extract_json(run, key=None, expected_file=None, required=()):
+    """Find the agent's JSON answer in a finished run.
+
+    CREAO puts a short summary in result.text and the full reply in result.chatText,
+    and lists files the agent saved in result.artifacts. Check, in order: the saved
+    file named expected_file, then JSON blocks in the full reply, then the summary.
+    The first candidate that has every key in `required` wins.
+    """
     result = run.get("result") or {}
-    texts = [result.get("text"), result.get("chatText")] + list(_strings(result))
-    for t in texts:
-        if not t:
-            continue
-        block = re.search(r"```json\s*(\{.*\})\s*```", t, re.S)
-        candidate = block.group(1) if block else t.strip()
-        if candidate.startswith("{"):
-            try:
-                return json.loads(candidate)
-            except json.JSONDecodeError:
-                pass
-    # Fall back to a JSON file the agent saved
+    tried = []
+
+    def usable(data, source):
+        if isinstance(data, dict) and all(k in data for k in required):
+            return True
+        tried.append(f"{source} (keys: {list(data)[:6] if isinstance(data, dict) else type(data).__name__})")
+        return False
+
     for art in result.get("artifacts", []):
-        name = (art.get("title") or "") + " " + (art.get("type") or "")
-        if expected_file and expected_file not in name and "json" not in name.lower():
-            continue
-        url = art.get("url") or f"{BASE_URL}/api/v1/runs/{run.get('id')}/artifacts/download?artifactId={art.get('id')}"
-        status, text = _request("GET", url, key)
-        if status < 400:
+        if expected_file and (art.get("title") == expected_file or str(art.get("id", "")).endswith("/" + expected_file)):
+            url = art.get("url") or f"{BASE_URL}/api/v1/runs/{run.get('id')}/artifacts/download?artifactId={art.get('id')}"
             try:
-                return json.loads(text)
+                data = json.loads(download(url, key))
+                if usable(data, f"file {expected_file}"):
+                    return data
+            except (CreaoError, json.JSONDecodeError) as e:
+                tried.append(f"file {expected_file} ({e})")
+
+    for field in ("chatText", "text"):
+        for candidate in _json_candidates(result.get(field)):
+            try:
+                data = json.loads(candidate)
             except json.JSONDecodeError:
                 continue
-    raise CreaoError("The run finished, but no JSON answer was found in its reply or files")
+            if usable(data, f"result.{field}"):
+                return data
+
+    raise CreaoError("The run finished, but none of its answers had the expected fields "
+                     f"{list(required)}. Checked: {'; '.join(tried) or 'nothing found'}")
 
 
-def run_agent(app_id, key, inputs, expected_file=None, on_tick=None):
-    run_id = start_run(app_id, key, inputs)
+def get_run(app_id, key, run_id):
+    status, text = _request("GET", f"{BASE_URL}/api/v1/apps/{app_id}/runs/{run_id}", key)
+    return _json_or_error(status, text, "Reading the run")
+
+
+def run_agent(app_id, key, inputs, expected_file=None, required=(), on_tick=None, run_id=None):
+    """Start a run (or reuse a finished one by run_id), wait for it, and return its JSON answer."""
+    if not run_id:
+        run_id = start_run(app_id, key, inputs)
     run = wait_for_run(app_id, key, run_id, on_tick=on_tick)
-    return extract_json(run, key, expected_file), run_id
+    return extract_json(run, key, expected_file, required), run_id

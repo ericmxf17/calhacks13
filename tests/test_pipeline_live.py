@@ -57,8 +57,17 @@ class FakeCreao(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parts = self.path.strip("/").split("?")[0].split("/")
-        if parts[:2] == ["files", "research.json"]:
+        if parts[:2] == ["storage", "research.json"]:
+            if self.headers.get("Authorization"):
+                errors.append("the API key was sent to the storage host")
             return self.reply(200, open(os.path.join(ROOT, APPS["app-research"][0]), "rb").read())
+        if parts[-2:] == ["artifacts", "download"]:
+            if not self.headers.get("Authorization", "").startswith("Bearer capi_test_"):
+                errors.append("artifact download without the API key")
+            self.send_response(302)
+            self.send_header("Location", f"http://127.0.0.1:{self.server.server_port}/storage/research.json")
+            self.end_headers()
+            return
         app, run_id = parts[3], parts[5]
         if not self.authorized(app):
             return
@@ -68,12 +77,17 @@ class FakeCreao(BaseHTTPRequestHandler):
             return self.reply(200, {"id": run_id, "status": "running"})
         saved, _, mode = APPS[app]
         answer = open(os.path.join(ROOT, saved)).read()
+        # Like real CREAO: result.text is a short summary JSON, the full reply is in chatText,
+        # and saved files are listed in artifacts (download redirects to storage).
+        summary = json.dumps({"status": "ok", "note": "short summary, not the answer"})
         if mode == "text":
-            result = {"text": "Here is the result:\n```json\n" + answer + "\n```", "artifacts": []}
+            result = {"text": summary, "chatText": "Starting now.```json\n" + answer + "\n```", "artifacts": []}
         else:
             base = f"http://127.0.0.1:{self.server.server_port}"
-            result = {"text": "Saved research.json.", "artifacts": [
-                {"id": "a1", "title": "research.json", "type": "file", "url": f"{base}/files/research.json"}]}
+            result = {"text": summary, "chatText": "Saved the file.", "artifacts": [
+                {"id": "work/fetch.sh", "title": "fetch.sh", "type": "application/x-sh", "url": f"{base}/files/fetch.sh"},
+                {"id": "files/research.json", "title": "research.json", "type": "application/json",
+                 "url": f"{base}/api/v1/runs/{run_id}/artifacts/download?artifactId=files%2Fresearch.json"}]}
         self.reply(200, {"id": run_id, "status": "completed", "result": result})
 
 
@@ -99,7 +113,7 @@ def main():
         ("pipeline finished", p.returncode == 0),
         ("4 agent runs started", len(runs) == 4),
         ("every agent got the right key and inputs", not errors),
-        ("research read from a saved file (artifact fallback)", os.path.exists(os.path.join(new[-1], "2-research.json")) if new else False),
+        ("research read from its saved file via redirect, key kept off storage", os.path.exists(os.path.join(new[-1], "2-research.json")) if new else False),
         ("brief passed the number check", summary.get("steps", {}).get("9 number check", {}).get("verified") is True),
         ("run IDs recorded", all(summary.get("steps", {}).get(s, {}).get("run_id") for s in
                                  ("1 bill analyst", "2 researcher", "5 impact planner", "8 brief writer"))),

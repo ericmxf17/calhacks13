@@ -94,8 +94,11 @@ def log(msg):
     print(msg, flush=True)
 
 
-def call_agent(run, step, agent, inputs, out_name, expected_file):
-    """Run one CREAO agent (or copy its saved output in demo mode) and save the JSON."""
+def call_agent(run, step, agent, inputs, out_name, expected_file, required):
+    """Run one CREAO agent (or copy its saved output in demo mode) and save the JSON.
+
+    If an earlier attempt already started this step's CREAO run, that run is reused
+    instead of starting (and paying for) a new one."""
     if run.has(out_name):
         log(f"  {step}: already done, skipping")
         return run.read(out_name)
@@ -109,9 +112,15 @@ def call_agent(run, step, agent, inputs, out_name, expected_file):
     else:
         app_id, key = agent_credentials(agent)
         tick = lambda state, secs: print(f"\r  {step}: {state} ({secs // 60}m{secs % 60:02d}s)   ", end="", flush=True)
-        data, run_id = creao.run_agent(app_id, key, inputs, expected_file, on_tick=tick)
+        earlier = run.summary["steps"].get(step, {}).get("run_id")
+        if earlier:
+            log(f"  {step}: reusing CREAO run {earlier}")
+        else:
+            run_id = creao.start_run(app_id, key, inputs)
+            run.note(step, mode="live", run_id=run_id)  # saved first, so a crash never pays twice
+        data, run_id = creao.run_agent(app_id, key, inputs, expected_file, required, on_tick=tick,
+                                       run_id=earlier or run_id)
         print()
-        run.note(step, mode="live", run_id=run_id)
     run.write(out_name, data)
     run.note(step, seconds=round(time.time() - started), done=True)
     log(f"  {step}: done")
@@ -137,13 +146,13 @@ def run_pipeline(run, congress, bill_type, number, companion, company_path):
     analysis = call_agent(run, "1 bill analyst", "bill_analyst",
                           {"congress": congress, "bill_type": bill_type, "bill_number": number,
                            "companion_bill": companion or ""},
-                          "1-bill-analysis.json", "bill-analysis.json")
+                          "1-bill-analysis.json", "bill-analysis.json", ("bill", "status", "provisions"))
     check_bill_analysis(analysis, bill_id)
 
     log("[2/4] Researcher")
     research = call_agent(run, "2 researcher", "researcher",
                           {"bill_analysis": json.dumps(analysis, ensure_ascii=False)},
-                          "2-research.json", "research.json")
+                          "2-research.json", "research.json", ("bill_id", "expert_analysis", "forecast_adjustments"))
 
     log("      Forecast")
     fc = forecast_model.forecast(analysis, research)
@@ -159,7 +168,7 @@ def run_pipeline(run, congress, bill_type, number, companion, company_path):
     log("[3/4] Impact Planner")
     plan = call_agent(run, "5 impact planner", "impact_planner",
                       {**{k: json.dumps(v, ensure_ascii=False) for k, v in planner_inputs.items()}, "as_of": as_of},
-                      "5-impact-plan.json", "impact-plan.json")
+                      "5-impact-plan.json", "impact-plan.json", ("scenarios", "options", "assumptions"))
 
     log("      Impact calculator")
     try:
@@ -182,7 +191,7 @@ def run_pipeline(run, congress, bill_type, number, companion, company_path):
     log("[4/4] Brief Writer")
     brief = call_agent(run, "8 brief writer", "brief_writer",
                        {"brief_inputs": json.dumps(bundle, ensure_ascii=False)},
-                       "8-brief.json", "brief.json")
+                       "8-brief.json", "brief.json", ("headline", "recommendation", "options_compared"))
 
     log("      Number check")
     allowed = set(verify_brief.numbers(bundle)) | set(verify_brief.numbers(company))
