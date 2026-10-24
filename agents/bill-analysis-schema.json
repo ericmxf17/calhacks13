@@ -41,9 +41,9 @@
     {
       "id": "string, P1, P2, ...",
       "section": "string, e.g. 'Sec. 2(a)'",
-      "type": "one of: mandatory_standard | certification_requirement | ban_or_restriction | labeling | reporting_requirement | tax_credit | grant_or_subsidy | tariff_or_duty | penalty | agency_study | other",
+      "type": "one of: mandatory_standard | certification_requirement | ban_or_restriction | exemption_or_relief (loosens an existing rule) | labeling | reporting_requirement | tax_credit | grant_or_subsidy | tariff_or_duty | penalty | agency_rulemaking (orders an agency to write a rule) | agency_study (orders only a report or study) | other",
       "plain_english": "string, one or two sentences",
-      "who_must_act": ["one or more of: manufacturers | importers | distributors | retailers | consumers | federal_agency | states"],
+      "who_must_act": ["one or more of: manufacturers | importers | distributors | retailers | recyclers_or_waste_handlers | other_businesses | consumers | federal_agency | states. List only who the text actually applies to."],
       "regulator": "string or null, e.g. 'Consumer Product Safety Commission'",
       "affected_products": ["string, plain product categories"],
       "standards_referenced": ["string, normalized codes like 'UL 2271'"],

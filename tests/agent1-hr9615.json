@@ -1,0 +1,144 @@
+{
+  "bill": {
+    "id": "hr9615-119",
+    "congress": 119,
+    "type": "hr",
+    "number": 9615,
+    "title": "BRACE Act",
+    "policy_area": "Environmental Protection",
+    "url": "https://www.congress.gov/bill/119th-congress/house-bill/9615",
+    "text_version_used": "Engrossed in House (2026-09-15)"
+  },
+  "status": {
+    "stage": "passed_one_chamber",
+    "latest_action": {
+      "date": "2026-09-16",
+      "text": "Received in the Senate and Read twice and referred to the Committee on Environment and Public Works."
+    },
+    "sponsor": {"name": "Mariannette Miller-Meeks", "party": "R", "state": "IA"},
+    "cosponsors": {"total": 3, "by_party": {"D": 2, "R": 1, "I": 0}},
+    "committees": ["House Energy and Commerce Committee", "Senate Environment and Public Works Committee"],
+    "chamber_votes": [
+      {
+        "chamber": "House",
+        "date": "2026-09-15",
+        "yeas": null,
+        "nays": null,
+        "method": "voice vote, motion to suspend the rules and pass the bill, as amended"
+      }
+    ],
+    "companion_bills": [],
+    "congress_ends": "2027-01-03",
+    "days_until_congress_ends": 71
+  },
+  "plain_summary": "The BRACE Act would let facilities that store lithium-ion batteries before recycling them follow the lighter universal waste storage rules instead of the stricter hazardous waste standards, so they can hold batteries on site without a special permit. It also orders the EPA to issue a universal waste rule for lithium-ion batteries within 18 months of enactment and updates an outdated cross-reference in the 1996 battery recycling law. The bill passed the House by voice vote on September 15, 2026 and is now with the Senate Environment and Public Works Committee.",
+  "provisions": [
+    {
+      "id": "P1",
+      "section": "Sec. 2(b)",
+      "type": "exemption_or_relief",
+      "plain_english": "From enactment until EPA issues the new universal waste rule, a destination facility that stores lithium-ion batteries before recycling them may follow the lighter universal waste storage requirements for large quantity handlers instead of the stricter hazardous waste storage standards in 40 CFR 273.60(a). The facility also follows the 273.60(b) requirements as though the batteries had not been stored before recycling.",
+      "who_must_act": ["recyclers_or_waste_handlers"],
+      "regulator": "Environmental Protection Agency",
+      "affected_products": ["lithium-ion batteries", "end-of-life lithium-ion batteries sent for recycling"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": null,
+        "days_after_trigger": null,
+        "what_happens_then": "Interim relief applies from enactment until the date EPA issues the section 2(c) universal waste rule; at that point the new rule governs.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "high",
+      "relevance_reason": "Removes the need for hazardous waste permits for on-site storage of lithium-ion batteries at recycling destination facilities, directly changing siting, permitting and operating costs.",
+      "quote": "in lieu of the requirements described in section 273.60(a) of title 40, Code of Federal Regulations (or any successor regulations), a destination facility that stores lithium-ion batteries prior to recycling such lithium-ion batteries shall comply with",
+      "confidence": "high"
+    },
+    {
+      "id": "P2",
+      "section": "Sec. 2(c)(1)",
+      "type": "agency_rulemaking",
+      "plain_english": "Orders the EPA Administrator to issue a rule within 18 months of enactment that manages lithium-ion batteries as universal waste. The bill sets an agency deadline only; it does not set a date by which businesses must comply.",
+      "who_must_act": ["federal_agency"],
+      "regulator": "Environmental Protection Agency",
+      "affected_products": ["lithium-ion batteries"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": "Not later than 18 months after the date of enactment of this Act, the Administrator shall issue a rule regarding the management of lithium-ion batteries as universal waste.",
+        "days_after_trigger": 540,
+        "what_happens_then": "EPA must issue a universal waste rule for lithium-ion batteries; the regulations that apply to handlers after that date are not yet known.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "medium",
+      "relevance_reason": "The resulting rule will define the long-term federal requirements for lithium-ion battery collection, storage and recycling, replacing today's interim arrangement.",
+      "quote": "Not later than 18 months after the date of enactment of this Act, the Administrator shall issue a rule regarding the management of lithium-ion batteries as universal waste.",
+      "confidence": "high"
+    },
+    {
+      "id": "P3",
+      "section": "Sec. 2(c)(2)",
+      "type": "agency_rulemaking",
+      "plain_english": "Directs EPA to consider, during the universal waste rulemaking, requirements tailored to lithium-ion batteries, carrying over elements of the interim standards, other changes to support recycling and critical mineral recovery, and additional safety requirements to close gaps in existing protections.",
+      "who_must_act": ["federal_agency"],
+      "regulator": "Environmental Protection Agency",
+      "affected_products": ["lithium-ion batteries", "battery recycling streams", "recovered critical minerals"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": null,
+        "days_after_trigger": null,
+        "what_happens_then": "The contents of the lithium-ion universal waste rule may add battery-specific handling and safety duties for facilities beyond today's interim requirements.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "medium",
+      "relevance_reason": "Signals that the upcoming rule may add new battery-specific safety and handling requirements, so recyclers should expect the interim framework to change.",
+      "quote": "In issuing the rule pursuant to paragraph (1), the Administrator shall consider including in such rule, in addition to any other issue that arises as part of the notice and comment period for such rule, the following:",
+      "confidence": "high"
+    },
+    {
+      "id": "P4",
+      "section": "Sec. 3",
+      "type": "other",
+      "plain_english": "Replaces the outdated 1995 EPA battery regulations cited in the Mercury-Containing and Rechargeable Battery Management Act with the current universal waste rules in 40 CFR part 273, so the older rechargeable battery statute points at today's regulatory framework.",
+      "who_must_act": ["recyclers_or_waste_handlers"],
+      "regulator": "Environmental Protection Agency",
+      "affected_products": ["mercury-containing batteries", "rechargeable batteries", "nickel-cadmium and sealed lead-acid batteries collected for recycling"],
+      "standards_referenced": [],
+      "amounts": [],
+      "timing": {
+        "trigger": "enactment",
+        "deadline_text": null,
+        "days_after_trigger": null,
+        "what_happens_then": "Collection, storage and transportation of covered used rechargeable batteries is governed by 40 CFR part 273 instead of the 1995 regulations referenced in the 1996 Act.",
+        "compliance_date_known": false
+      },
+      "business_relevance": "medium",
+      "relevance_reason": "Conforming cross-reference update that changes which federal regulations govern collection, storage and transport of used rechargeable batteries.",
+      "quote": "Section 104(a) of the Mercury-Containing and Rechargeable Battery Management Act (42 U.S.C. 14323(a)) is amended by striking",
+      "confidence": "high"
+    }
+  ],
+  "open_questions": [
+    "The bill sets no business compliance date; the interim storage relief starts only when the bill is enacted, and enactment has not happened.",
+    "The 18-month deadline is an EPA rulemaking deadline, not a deadline for regulated facilities.",
+    "The permanent requirements for lithium-ion battery handlers will be set in EPA's rule and cannot be determined from the bill.",
+    "The bill does not state whether states with their own universal waste or hazardous waste programs must adopt the interim approach.",
+    "No Senate companion bill was identified: the related bills endpoint returned none and no same-title Senate bill was found, so enactment timing in the Senate is unknown."
+  ],
+  "sources": [
+    "https://api.congress.gov/v3/bill/119/hr/9615?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/actions?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/cosponsors?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/committees?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/summaries?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/text?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/relatedbills?format=json",
+    "https://api.congress.gov/v3/bill/119/hr/9615/subjects?format=json",
+    "https://www.congress.gov/119/bills/hr9615/BILLS-119hr9615eh.htm"
+  ],
+  "generated_at": "2026-10-24"
+}
