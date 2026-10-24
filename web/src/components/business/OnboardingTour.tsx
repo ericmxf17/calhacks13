@@ -12,7 +12,9 @@ export function tourSteps(company: string): TourStep[] {
     { view: 'home', title: `Welcome to ${company}`, body: 'This building is your business. Take a one-minute tour to see how to get around, run your agents, and keep your company details up to date.' },
     { view: 'home', target: '.room-hotspot', title: 'Every room is part of your business', body: 'Rooms show numbers worked out from your setup, like revenue, products and suppliers. Click a room’s label to step inside, and press Esc to step back out.' },
     { view: 'home', target: '[data-tour="home"]', title: 'Home', body: 'The Home tab brings you back to your building from anywhere.' },
-    { view: 'home', target: '[data-tour="consul"]', title: 'Consul, your advisory council', body: 'Ask about a decision you’re facing. Four AI advisors (Finance, Operations, Skeptic and Chair) talk it through and give you a recommendation with sources.' },
+    { view: 'council', target: '.council-roster', title: 'Consul, your advisory council', body: 'Four AI advisors look at every decision with you. Finance, Operations and Skeptic each weigh in, in turn, then Chair brings it together into one recommendation.' },
+    { view: 'council', target: '.council-composer', title: 'Ask about a decision', body: 'Type a question here, or tap a starter like “Find our next priority”. Your council talks it through in rounds, and you can ask follow-ups or push back.' },
+    { view: 'council', target: '.council-context', title: 'What your council knows', body: 'In the room shows what the council can see: your company setup, plus any results from your CREAO agents that you add under Context & sources.' },
     { view: 'agents', target: '.agent-card', title: 'Agents, your research team', body: 'These AI agents read new bills, research them, work out what they mean for your company, and write you a short brief.' },
     { view: 'agents', target: '[data-tour="brief-writer"]', title: 'Running an agent', body: 'Click an agent’s name to open it and see its past runs, outputs and files. To start one, open Brief Writer and press Run Brief Writer. The result shows up in the same window after a few minutes.' },
     { view: 'home', target: '[data-tour="settings"]', title: 'Update your company info', body: 'Open Business settings to edit your company and products, or upload a new supplier spreadsheet (CSV or XLSX with the columns supplier, part and cost). Your rooms update to match.' },
@@ -37,7 +39,9 @@ const pad = 8, gap = 14, cardWidth = 340, margin = 16, navClearance = 96, closeM
 function measure(element: HTMLElement | null): Box | null {
   if (!element || (element.checkVisibility && !element.checkVisibility({ visibilityProperty: true }))) return null
   const r = element.getBoundingClientRect()
-  return r.width || r.height ? { top: r.top - pad, left: r.left - pad, width: r.width + pad * 2, height: r.height + pad * 2 } : null
+  // Tabs sit side by side in the bottom navigation, so their highlight hugs the tab instead of spilling onto the next.
+  const p = element.closest('.bottom-navigation') ? 2 : pad
+  return r.width || r.height ? { top: r.top - p, left: r.left - p, width: r.width + p * 2, height: r.height + p * 2 } : null
 }
 /** A closed spotlight in the middle of the screen: everything dimmed, nothing highlighted. */
 const closed = (): Box => ({ top: window.innerHeight / 2, left: window.innerWidth / 2, width: 0, height: 0 })
@@ -121,12 +125,20 @@ export default function OnboardingTour({ steps, view, onView, onClose, reducedMo
   })
 
   // The card is always placed by its top-left corner, so every move between steps is one smooth glide.
-  // Below the spotlight if it fits above the bottom navigation, else above it, else as low as fits; centered while closed.
+  // Below the spotlight if it fits above the bottom navigation, else above it, else beside it (a tall column),
+  // else as low as fits; centered while the spotlight is closed.
   const width = Math.min(cardWidth, window.innerWidth - margin * 2), room = window.innerHeight - navClearance
   const open = box.width > 0
-  const left = Math.min(Math.max(box.left + box.width / 2 - width / 2, margin), window.innerWidth - width - margin)
+  let left = Math.min(Math.max(box.left + box.width / 2 - width / 2, margin), window.innerWidth - width - margin)
   const below = box.top + box.height + gap, above = box.top - gap - cardHeight
-  const top = !open ? (window.innerHeight - cardHeight) / 2 : below + cardHeight < room ? below : above > margin ? above : Math.max(margin, room - cardHeight)
+  const right = box.left + box.width + gap, leftOf = box.left - gap - width
+  const beside = Math.min(Math.max(box.top, margin), room - cardHeight)
+  let top = Math.max(margin, room - cardHeight)
+  if (!open) top = (window.innerHeight - cardHeight) / 2
+  else if (below + cardHeight < room) top = below
+  else if (above > margin) top = above
+  else if (right + width < window.innerWidth - margin) { left = right; top = beside }
+  else if (leftOf > margin) { left = leftOf; top = beside }
   return <dialog ref={dialog} open className={`tour${reducedMotion ? ' tour-still' : ''}`} data-closing={closing || undefined} aria-labelledby="tour-title" aria-describedby="tour-body">
     <div className="tour-blocker" onClick={event => event.stopPropagation()}/>
     <div className="tour-spotlight" data-open={open || undefined} style={box}/>

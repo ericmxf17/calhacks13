@@ -209,7 +209,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
     {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
-      <Button id="nav-consul" data-tour="consul" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
+      <Button id="nav-consul" data-tour="council" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
         <span>Consul</span>
       </Button>
