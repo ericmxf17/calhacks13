@@ -1,0 +1,23 @@
+/* The onboarding tour: a dimmed screen, a spotlight on one control, and a card in the Consul theme. */
+.tour { position: fixed; inset: 0; z-index: 1000; width: auto; height: auto; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #243957; overflow: visible; }
+.tour-blocker { position: fixed; inset: 0; }
+.tour-dim { position: fixed; inset: 0; background: rgba(18, 32, 52, .55); pointer-events: none; }
+.tour-spotlight { position: fixed; border-radius: 10px; box-shadow: 0 0 0 9999px rgba(18, 32, 52, .55), 0 0 0 3px #ffd447; pointer-events: none; transition: top .35s ease, left .35s ease, width .35s ease, height .35s ease; }
+.tour-card { position: fixed; width: 340px; max-width: calc(100vw - 32px); padding: 16px 18px 14px; display: grid; gap: 8px; background: #fffdf4; border: 2px solid #243957; border-radius: 6px; box-shadow: 4px 4px 0 #243957; transition: top .35s ease, left .35s ease, bottom .35s ease; }
+.tour-card-centered { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.tour-kicker { font-size: 10px; font-weight: 800; letter-spacing: .14em; color: #46647b; }
+.tour-card h2 { margin: 0; font-size: 18px; line-height: 1.25; font-weight: 900; }
+.tour-card p { margin: 0; font-size: 13px; line-height: 1.6; color: #45617a; }
+.tour-progress { display: flex; gap: 5px; margin-top: 2px; }
+.tour-progress i { width: 7px; height: 7px; border-radius: 50%; background: #bdd7e7; }
+.tour-progress i[data-on] { background: #2468d2; }
+.tour-actions { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.tour-actions span { flex: 1; }
+.tour-actions button { min-height: 38px; padding: 8px 12px; border: 2px solid #243957; border-radius: 5px; background: #fffdf4; color: #243957; font-size: 12px; font-weight: 800; cursor: pointer; }
+.tour-actions button:hover { background: #fff0b3; }
+.tour-actions button:focus-visible { outline: 3px solid #2468d2; outline-offset: 2px; }
+.tour-actions .tour-next { background: #2468d2; color: #fff; }
+.tour-actions .tour-next:hover { background: #1d57b3; }
+.tour-actions .tour-skip { border-color: transparent; background: transparent; padding-inline: 4px; color: #45617a; text-decoration: underline; text-underline-offset: 3px; }
+.tour-actions .tour-skip:hover { background: transparent; color: #243957; }
+.tour-still .tour-spotlight, .tour-still .tour-card { transition: none; }

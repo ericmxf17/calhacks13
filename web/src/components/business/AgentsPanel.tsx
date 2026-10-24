@@ -91,7 +91,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
       <div className="agents-grid">
         {agents.map((agent, index) => {
           const connection = connections?.agents.find(item => item.role === agent.role)?.connection
-          return <article className="agent-card" key={agent.id} style={{ '--card-index': index } as CSSProperties}>
+          return <article className="agent-card" key={agent.id} data-tour={agent.id === 'brief-writer' ? 'brief-writer' : undefined} style={{ '--card-index': index } as CSSProperties}>
           <div className="agent-card-topline">
             {agent.kind === 'creao' && <span className="agent-connection" data-connection={checking ? 'checking' : connection}>
               {checking ? 'Checking…' : connection ? connectionLabels[connection] : 'Status unavailable'}

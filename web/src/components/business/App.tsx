@@ -11,6 +11,7 @@ import { departments as defaultDepartments, type Department, type DepartmentId }
 import { layoutBuilding, placeRooms, type BuildingLayout } from './scene/layout'
 import { drawnArchetype } from './scene/archetypes'
 import { assembleSeconds } from './scene/assemble'
+import OnboardingTour, { markTourSeen, tourSeen, tourSteps } from './OnboardingTour'
 import { sceneTheme } from './scene/parts'
 import type { DesignState } from './useSceneDesign'
 
@@ -95,7 +96,7 @@ function DesignStatus({ design }: { design: Design }) {
   return null
 }
 
-export default function App({ company = 'Consul Goods', departments: rooms = defaultDepartments, scene = defaultScene, design, actions, business }: { business?: BusinessInput; company?: string; departments?: Department[]; scene?: SceneSpec; design?: Design; actions?: ReactNode }) {
+export default function App({ company = 'Consul Goods', departments: rooms = defaultDepartments, scene = defaultScene, design, actions, business, firstVisit = false }: { business?: BusinessInput; firstVisit?: boolean; company?: string; departments?: Department[]; scene?: SceneSpec; design?: Design; actions?: ReactNode }) {
   // The design picks the building; rooms keep their content and get their place in the building's grid.
   // While Scene Designer works, a construction site stands in, framed like a three-floor building.
   const constructing = design?.state === 'designing'
@@ -122,14 +123,16 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   // A layout effect sets this before the new scene draws its first frame, so the whole building never flashes.
   const [assembling, setAssembling] = useState(false)
   const siteShownAt = useRef<number | null>(null)
+  // Set in the same layout effect, because React runs the previous render's effects (like the tour's) before the re-render.
+  const assemblingNow = useRef(false)
   useLayoutEffect(() => {
     if (constructing) { siteShownAt.current ??= Date.now(); return }
     const since = siteShownAt.current
     siteShownAt.current = null
     // A site that only flickered (a saved or instant quick design) doesn't count.
-    if (since !== null && !reducedMotion && Date.now() - since > 1200) setAssembling(true)
+    if (since !== null && !reducedMotion && Date.now() - since > 1200) { assemblingNow.current = true; setAssembling(true) }
   }, [constructing, reducedMotion])
-  const assembled = useCallback(() => setAssembling(false), [])
+  const assembled = useCallback(() => { assemblingNow.current = false; setAssembling(false) }, [])
   useEffect(() => {
     if (!assembling) return
     // In case the scene can't draw (no WebGL), don't hold the page back.
@@ -138,6 +141,14 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   }, [assembling, assembled])
   const homeReady = sceneView.view === 'home' && sceneView.settled && !assembling
   const councilReady = sceneView.view === 'council' && sceneView.settled
+  // New owners get the tour once, as soon as their finished building is ready. The header button replays it.
+  const [touring, setTouring] = useState(false)
+  const buildingReady = homeReady && !constructing
+  useEffect(() => {
+    if (!firstVisit || !buildingReady || assemblingNow.current || tourSeen()) return
+    markTourSeen()
+    setTouring(true)
+  }, [firstVisit, buildingReady])
   const activeDepartment = departments.find(department => department.id === active)
   const panelSide = activeDepartment?.side === 'left' ? 'left' : 'right'
   const roomColors = activeDepartment ? { '--room-color': activeDepartment.ink, '--room-soft': activeDepartment.soft } as CSSProperties : undefined
@@ -180,7 +191,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="world-header-content">
         <div className="workspace-status"><i/><span className="workspace-company" title={company}>{company}</span><span className="status-divider"/><span className="established">{departments.some(d => d.source === 'illustrative') ? 'Illustrative room data' : 'Rooms built from your setup'}</span></div>
-        {actions && <div className="workspace-actions" aria-label="Workspace actions">{actions}</div>}
+        <div className="workspace-actions" aria-label="Workspace actions"><Button data-tour="tour" disabled={constructing} onClick={() => { if (active) close(); setTouring(true) }}>Take the tour</Button>{actions}</div>
       </div>
     </header>
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}
@@ -191,18 +202,19 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
     {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
-      <Button id="nav-consul" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
+      <Button id="nav-consul" data-tour="consul" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
         <span>Consul</span>
       </Button>
-      <Button className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
+      <Button data-tour="home" className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>
         <span>Home</span>
       </Button>
-      <Button id="nav-agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
+      <Button id="nav-agents" data-tour="agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4M2 12v4m20-4v4M9 16h6"/><circle cx="9" cy="12" r=".8" fill="currentColor"/><circle cx="15" cy="12" r=".8" fill="currentColor"/></svg>
         <span>Agents</span>
       </Button>
     </nav>
+    {touring && <OnboardingTour steps={tourSteps(company)} view={sceneView.view} onView={selectView} onClose={() => setTouring(false)} reducedMotion={reducedMotion}/>}
   </main>
 }
