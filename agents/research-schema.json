@@ -19,7 +19,7 @@
   "stakeholders": [
     {
       "name": "string",
-      "type": "industry | consumer | labor | safety | environmental | government | other",
+      "type": "exactly one of: industry | consumer | labor | safety | environmental | government | other (companies and trade groups are industry; law firms and think tanks are other)",
       "stance": "support | oppose | neutral | mixed | unknown",
       "what_they_want": "string",
       "evidence_url": "string"

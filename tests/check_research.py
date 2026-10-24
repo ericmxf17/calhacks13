@@ -22,6 +22,9 @@ FACTORS = {
 REQUIRED = ["bill_id", "expert_analysis", "stakeholders", "lobbying", "comparable_past_laws",
             "alternative_paths", "political_context", "forecast_adjustments", "key_uncertainties", "sources"]
 STANCES = {"support", "oppose", "neutral", "mixed", "unknown"}
+SOURCE_TYPES = {"crs_report", "cbo_estimate", "committee_report", "government_agency", "law_firm",
+                "trade_association", "think_tank", "advocacy_group", "news"}
+STAKEHOLDER_TYPES = {"industry", "consumer", "labor", "safety", "environmental", "government", "other"}
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -74,6 +77,12 @@ def main():
             fails.append(f"quote from {e.get('organization')} is {words} words (max 25)")
         if e.get("stance") not in STANCES:
             fails.append(f"bad stance '{e.get('stance')}' for {e.get('organization')}")
+        if e.get("source_type") not in SOURCE_TYPES:
+            fails.append(f"bad source_type '{e.get('source_type')}' for {e.get('organization')}")
+
+    bad_types = sorted({s.get("type") for s in r.get("stakeholders", []) if s.get("type") not in STAKEHOLDER_TYPES})
+    (fails if bad_types else passes).append(
+        f"stakeholder types not in the allowed list: {bad_types}" if bad_types else "stakeholder types valid")
 
     lob = r.get("lobbying", {})
     (passes if lob.get("searched") else fails).append("lobbying search was run" if lob.get("searched") else "lobbying search was NOT run")
