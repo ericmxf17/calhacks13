@@ -132,8 +132,11 @@ The original configuration reads `FIGMA_EID`, `FIGMA_PUBLIC_URL`,
 `FIGMA_CONTENT_API_ACCESS_KEY` from the environment. Keep credentials in a
 local `.env` file; never commit them.
 
-The website has not yet been connected to the repository's Python forecast,
-impact calculator, or CREAO agents. Dashboard figures remain design/demo data.
+The web server exposes the Python forecast and impact calculator and has a
+server-side CREAO connector with persistent local jobs. See
+[backend setup](../backend/README.md). Each agent uses its own scoped `capi_`
+key. Trusted backend callers use a separate `BACKEND_API_TOKEN`.
+Dashboard figures remain design/demo data; these endpoints have not changed the UI.
 
 Figma's agent instructions, sandbox scripts, and build caches were omitted
 from the import. The small `.figma/make/site.json` file is retained because

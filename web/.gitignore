@@ -21,3 +21,6 @@ logs/
 # beside it.
 /.plugins/
 /.opencode-skills/
+
+# Local single-process job ledger.
+.backend/

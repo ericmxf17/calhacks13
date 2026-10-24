@@ -134,6 +134,10 @@ For H.R. 9041 (an opportunity bill with a 0.3% chance), the calculator correctly
 
 ## Website (Figma export)
 
+The local backend stores agent jobs, dispatches CREAO runs with per-agent keys,
+and exposes the Python calculations through the web server.
+See [backend setup](backend/README.md) for credentials, job commands, and limits.
+
 The current business health dashboard design lives in [`web/`](web/README.md),
 with its Next.js app, interactive 3D scene, sign-in, and business setup flow.
 The Python forecast and impact pipeline remains in the folders above.

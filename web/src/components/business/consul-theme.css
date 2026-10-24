@@ -126,3 +126,24 @@
 .company-preview:focus-visible { outline: 3px solid #2468d2; outline-offset: 3px; }
 .flat-sign { overflow: hidden; }
 .flat-sign svg { display: block; width: 100%; height: 22px; letter-spacing: 0; fill: currentColor; }
+
+.bottom-navigation {
+  position: absolute; z-index: 40; bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+  left: 50%; transform: translateX(-50%); display: flex; gap: 6px; padding: 6px;
+  background: #fffdf4; border: 2px solid #294b70; border-radius: 12px;
+  box-shadow: 4px 4px 0 #294b7040;
+}
+.bottom-navigation-item {
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  min-width: 112px; min-height: 44px; padding: 10px 18px;
+  border: 0; border-radius: 7px; background: transparent;
+  color: #526b82; font-size: 13px; font-weight: 700;
+}
+.bottom-navigation-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.bottom-navigation-item[aria-current=page] { background: #2468d2; color: #fff; }
+.bottom-navigation-item[aria-disabled=true] { cursor: default; }
+.world-footer { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.world .department-view { padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+.world[data-view=agents] .hotspot-layer,
+.world[data-view-settled=false] .hotspot-layer { visibility: hidden; pointer-events: none; }
+.world[data-view=agents] .flat-scene { visibility: hidden; }

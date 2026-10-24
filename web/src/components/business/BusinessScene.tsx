@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
-import { CanvasTexture, MathUtils, OrthographicCamera, Vector3, type Group } from 'three'
+import { CanvasTexture, MathUtils, OrthographicCamera, Quaternion, Vector3, type Group } from 'three'
 import { type Department, type DepartmentId } from './departments'
 
-type Props = { company: string; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode }
+export type BusinessView = 'home' | 'agents'
+type Props = { company: string; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 const palette = { stone: '#ffb16d', trim: '#fff4d4', dark: '#253b64', gold: '#ffd447', glass: '#58cde3', wall: '#ef8259', floor: '#e48b58' }
 
 function Box({ at, size, color = palette.stone }: { at: [number, number, number]; size: [number, number, number]; color?: string }) {
@@ -118,13 +119,53 @@ function Storefront({ company, departments, active, open, portal }: Pick<Props, 
   </group>
 }
 
-function CameraRig({ departments, active, pointer, reducedMotion }: Pick<Props, 'departments' | 'active' | 'pointer' | 'reducedMotion'>) {
+function CameraRig({ departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
   const { camera, size } = useThree()
   const target = useRef(new Vector3(0, 3.5, 0))
   const position = useRef(new Vector3(8, 6.5, 16))
   const focus = useRef(new Vector3())
   const view = useRef(new Vector3())
+  const settledCallback = useRef(onViewSettled)
+  useEffect(() => { settledCallback.current = onViewSettled }, [onViewSettled])
+  const currentView = useRef<BusinessView>('home')
+  const homeQuaternion = useRef<Quaternion | null>(null)
+  const initialHomeReported = useRef(false)
+  const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; zoom: number; elapsed: number; complete: boolean } | null>(null)
+  useEffect(() => {
+    const transition = swing.current
+    if (viewSettled || currentView.current !== requestedView || (transition && !transition.complete)) return
+    interactive.current = requestedView === 'home'
+    settledCallback.current(requestedView)
+  }, [requestedView, viewSettled, onViewSettled])
   useFrame((_, dt) => {
+    const orthographic = camera as OrthographicCamera
+    if (currentView.current !== requestedView) {
+      interactive.current = false
+      currentView.current = requestedView
+      if (!homeQuaternion.current) homeQuaternion.current = camera.quaternion.clone()
+      const destination = homeQuaternion.current.clone()
+      if (requestedView === 'agents') destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2))
+      // Every request starts at the rendered pose, including reversals mid-swing.
+      swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), zoom: orthographic.zoom, elapsed: 0, complete: false }
+    }
+    const transition = swing.current
+    if (transition && (!transition.complete || requestedView === 'agents')) {
+      transition.elapsed += dt
+      const progress = reducedMotion || transition.complete ? 1 : Math.min(transition.elapsed / .9, 1)
+      const eased = progress * progress * (3 - 2 * progress)
+      camera.position.copy(transition.position)
+      orthographic.zoom = transition.zoom
+      camera.quaternion.slerpQuaternions(transition.from, transition.to, eased)
+      orthographic.updateProjectionMatrix()
+      if (progress === 1 && !transition.complete) {
+        transition.complete = true
+        initialHomeReported.current = true
+        interactive.current = requestedView === 'home'
+        position.current.copy(camera.position)
+        settledCallback.current(requestedView)
+      }
+      return
+    }
     const mobile = size.width < 760
     const room = departments.find(d => d.id === active)
     const amount = reducedMotion ? 1 : 1 - Math.exp(-dt * 4)
@@ -138,17 +179,22 @@ function CameraRig({ departments, active, pointer, reducedMotion }: Pick<Props, 
     }
     target.current.lerp(focus.current, amount); position.current.lerp(view.current, amount)
     camera.position.copy(position.current); camera.lookAt(target.current)
-    const orthographic = camera as OrthographicCamera
     const baseZoom = Math.min(size.height / (mobile ? 12 : 10.8), size.width / (mobile ? 9 : 15.5))
     const zoom = room ? baseZoom * (mobile ? 1.55 : 1.9) : baseZoom
     orthographic.zoom = MathUtils.lerp(orthographic.zoom, zoom, amount)
     orthographic.updateProjectionMatrix()
+    if (!initialHomeReported.current) {
+      initialHomeReported.current = true
+      interactive.current = true
+      settledCallback.current('home')
+    }
   })
   return null
 }
 
 export default function BusinessScene(props: Props) {
   const portal = useRef<HTMLDivElement>(null!)
+  const interactive = useRef(false)
   return <><div ref={portal} className="hotspot-layer"/><Canvas orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 1.6]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
     <color attach="background" args={['#dcf5fc']}/>
     <fog attach="fog" args={['#dcf5fc', 28, 65]}/>
@@ -156,8 +202,8 @@ export default function BusinessScene(props: Props) {
     <hemisphereLight args={['#ffffff', '#88b7cb', 1.1]}/>
     <directionalLight position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10} shadow-camera-right={10} shadow-camera-top={12} shadow-camera-bottom={-8} shadow-normalBias={.025}/>
     <directionalLight position={[7, 6, -3]} intensity={1.2} color="#d3e0dc"/>
-    <Storefront company={props.company} departments={props.departments} active={props.active} open={props.open} portal={portal}/>
+    <Storefront company={props.company} departments={props.departments} active={props.active} open={id => { if (props.view === 'home' && interactive.current) props.open(id) }} portal={portal}/>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.17, 0]} receiveShadow><planeGeometry args={[200, 200]}/><meshStandardMaterial color="#dcf5fc" roughness={1}/></mesh>
-    <CameraRig departments={props.departments} active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion}/>
+    <CameraRig departments={props.departments} active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion} view={props.view} viewSettled={props.viewSettled} onViewSettled={props.onViewSettled} interactive={interactive}/>
   </Canvas></>
 }
