@@ -203,7 +203,7 @@ export default function BusinessScene(props: Props) {
     <directionalLight position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10} shadow-camera-right={10} shadow-camera-top={12} shadow-camera-bottom={-8} shadow-normalBias={.025}/>
     <directionalLight position={[7, 6, -3]} intensity={1.2} color="#d3e0dc"/>
     <Storefront company={props.company} departments={props.departments} active={props.active} open={id => { if (props.view === 'home' && interactive.current) props.open(id) }} portal={portal}/>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.17, 0]} receiveShadow><planeGeometry args={[200, 200]}/><meshStandardMaterial color="#dcf5fc" roughness={1}/></mesh>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.17, 0]} receiveShadow><planeGeometry args={[200, 200]}/><shadowMaterial color="#76899b" opacity={.24}/></mesh>
     <CameraRig departments={props.departments} active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion} view={props.view} viewSettled={props.viewSettled} onViewSettled={props.onViewSettled} interactive={interactive}/>
   </Canvas></>
 }

@@ -231,21 +231,26 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
   if (complete && !editing)
     return (
       <>
-        <Scene company={business.company} departments={view === 'demo' ? preset?.departments : undefined} />
-        <div className="fixed right-6 top-20 z-50 flex gap-4 text-xs text-muted">
-          <button
-            onClick={() => {
-              setEditing(true)
-              setStep(0)
-            }}
-            className="hover:text-ink"
-          >
-            Business settings
-          </button>
-          <button disabled={busy} onClick={view === 'demo' ? exitDemo : logout} className="hover:text-ink">
-            Sign out
-          </button>
-        </div>
+        <Scene
+          company={business.company}
+          departments={view === 'demo' ? preset?.departments : undefined}
+          actions={
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditing(true)
+                  setStep(0)
+                }}
+              >
+                Business settings
+              </button>
+              <button type="button" disabled={busy} onClick={view === 'demo' ? exitDemo : logout}>
+                Sign out
+              </button>
+            </>
+          }
+        />
         {error && (
           <p
             role="alert"
@@ -599,7 +604,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
               <span aria-hidden="true">→</span>
             </button>
             {hasWorkspaceAccess && (
-              <div className="flex justify-between text-xs text-muted">
+              <div className="setup-footer flex justify-between text-xs text-muted">
                 {step > 0 ? (
                   <button
                     type="button"

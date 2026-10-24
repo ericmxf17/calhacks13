@@ -1,7 +1,7 @@
 .agents-panel {
   position: absolute;
   z-index: 30;
-  inset: 150px 24px 100px;
+  inset: calc(var(--world-header-height) + 16px) 24px 100px;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 4px 12px 28px;
@@ -63,7 +63,7 @@
 }
 
 @media (max-width: 599px) {
-  .agents-panel { inset: 126px 12px 94px; padding: 2px 5px 22px; }
+  .agents-panel { inset-inline: 12px; bottom: 94px; padding: 2px 5px 22px; }
   .agents-panel-heading { margin-bottom: 16px; }
   .agents-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .agent-card { min-height: 0; padding: 15px 16px 17px; }

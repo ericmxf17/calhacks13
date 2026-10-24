@@ -53,7 +53,7 @@ function DepartmentView({ department: d, departments, close, select }: { departm
   </section>
 }
 
-export default function App({ company = 'Consul Goods', departments = defaultDepartments }: { company?: string; departments?: Department[] }) {
+export default function App({ company = 'Consul Goods', departments = defaultDepartments, actions }: { company?: string; departments?: Department[]; actions?: ReactNode }) {
   const [sceneView, setSceneView] = useState<{ view: BusinessView; settled: boolean }>({ view: 'home', settled: true })
   const [active, setActive] = useState<DepartmentId | null>(null)
   const [reducedMotion, setReducedMotion] = useState(false)
@@ -109,7 +109,10 @@ export default function App({ company = 'Consul Goods', departments = defaultDep
     <div className="scene-layer"><SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
-      <div className="workspace-status"><i/> {company}<span className="status-divider"/><span className="established">Illustrative room data</span></div>
+      <div className="world-header-content">
+        <div className="workspace-status"><i/><span className="workspace-company" title={company}>{company}</span><span className="status-divider"/><span className="established">Illustrative room data</span></div>
+        {actions && <div className="workspace-actions" aria-label="Workspace actions">{actions}</div>}
+      </div>
     </header>
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}
     <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>Step closer. Every room tells a story.</p></div>
