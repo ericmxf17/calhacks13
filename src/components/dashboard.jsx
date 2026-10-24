@@ -1,27 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, CircleAlert, FileText, Info, Leaf, ShieldAlert, TrendingUp } from 'lucide-react';
+'use client';
+
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, ChevronRight, CircleAlert, Info, ShieldAlert, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
-import { prepareSnapshot } from './analysis';
+import { prepareSnapshot } from '@/analysis';
 
-const compact = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', maximumFractionDigits: 1 }).format(value);
+const compact = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact', minimumFractionDigits: 0, maximumFractionDigits: 1 }).format(value);
 const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
 const percent = value => new Intl.NumberFormat('en-US', { style: 'percent', maximumFractionDigits: 2 }).format(value);
 const date = value => new Date(`${value}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-const href = (page = 'overview', option, scenario) => `#${page}${page === 'strategies' ? `?${new URLSearchParams({ option, scenario })}` : ''}`;
+const strategyHref = (option, scenario) => `/strategies?${new URLSearchParams({ option, scenario })}`;
 const optionName = (data, option) => data.brief.options_compared.find(item => item.option_id === option.option_id)?.name || option.option_name;
-function readRoute(data) {
-  const [page, search] = location.hash.slice(1).split('?');
-  const params = new URLSearchParams(search);
+function resolveSelection(data, selection) {
   return {
-    page: page === 'strategies' ? page : 'overview',
-    option: data.strategies.has(params.get('option')) ? params.get('option') : data.recommendation.option_id,
-    scenario: data.scenarios.has(params.get('scenario')) ? params.get('scenario') : data.results.scenarios[0].id,
+    option: data.strategies.has(selection.option) ? selection.option : data.recommendation.option_id,
+    scenario: data.scenarios.has(selection.scenario) ? selection.scenario : data.results.scenarios[0].id,
   };
 }
 function Bullets({ items }) { return items?.length ? <ul className="detail-list">{items.map((item, i) => <li key={i}>{item}</li>)}</ul> : <p className="muted">Nothing listed in this saved analysis.</p>; }
@@ -35,7 +35,7 @@ function Verdict({ data, route }) {
       <span className="tradeoff"><CircleAlert size={14} /> A fast deadline could still interrupt sales.</span>
     </div>
     <div className="verdict-action"><div className="verdict-amount">{compact(option.expected_first_year_impact)}</div><div className="verdict-label">expected first-year profit change</div>
-      <Button asChild size="lg"><a href={href('strategies', option.option_id, route.scenario)}>View strategies <ArrowRight size={16} /></a></Button>
+      <Button asChild size="lg"><Link href={strategyHref(option.option_id, route.scenario)}>View strategies <ArrowRight size={16} /></Link></Button>
     </div>
   </section>;
 }
@@ -71,22 +71,23 @@ function Overview({ data, route }) {
 }
 function Sources({ data }) { return <><h3>Sources</h3><ul className="detail-list sources">{data.brief.sources.map(source => <li key={source}><a href={source} target="_blank" rel="noreferrer">{source}<ArrowUpRight size={12} /></a></li>)}</ul><p className="muted">{data.verification.numbers_trace_to_inputs ? 'Brief numbers trace to the saved inputs.' : 'Some brief numbers could not be traced to the saved inputs.'} Numeric traceability does not verify factual accuracy or legal validity.</p></>; }
 function Strategies({ data, route }) {
+  const router = useRouter();
   const selected = data.strategies.get(route.option);
   const scenario = data.scenarios.get(route.scenario);
   const outcome = selected.by_scenario.find(item => item.scenario_id === scenario.id);
   const ready = outcome.compliant && outcome.timing_problems.length === 0;
   const issues = [...outcome.compliance_issues.map(item => `${item.product}: ${item.problem}. ${item.result}.`), ...outcome.timing_problems, ...outcome.warnings];
   return <>
-    <Button asChild variant="ghost" className="back-button"><a href="#overview"><ArrowLeft size={16} /> Back to overview</a></Button>
+    <Button asChild variant="ghost" className="back-button"><Link href="/"><ArrowLeft size={16} /> Back to overview</Link></Button>
     <div className="detail-header"><div className="section-kicker">H.R. 973 / Strategy comparison</div><h1 id="page-title" tabIndex={-1}>Choose your next move.</h1><p>Compare cost with readiness. A lower expected cost can come with a larger downside.</p></div>
     <section className="recommendation-explained"><Badge variant="secondary">Recommended</Badge><h2>{optionName(data, data.recommendation)}</h2><p>{data.brief.recommendation.why}</p><div className="tradeoff"><CircleAlert size={16} /><span>{data.brief.recommendation.tradeoff}</span></div></section>
     <div className="comparison-heading"><h2>Compare the evaluated strategies</h2><span>Select a strategy to explore its outcomes</span></div>
     <Table className="strategy-table"><TableHeader><TableRow><TableHead>Strategy</TableHead><TableHead className="text-right">Expected first year</TableHead><TableHead className="text-right">Worst case</TableHead><TableHead>Ready if it passes?</TableHead></TableRow></TableHeader><TableBody>{data.results.ranking_by_expected_impact.map(id => {
       const option = data.strategies.get(id);
-      return <TableRow key={id} data-state={id === route.option ? 'selected' : undefined}><TableCell><a className="strategy-link" aria-current={id === route.option ? 'true' : undefined} href={href('strategies', id, route.scenario)}>{optionName(data, option)}{id === data.recommendation.option_id && <Badge variant="secondary">Recommended</Badge>}<ChevronRight size={14} /></a></TableCell><TableCell className="text-right tabular-nums">{money(option.expected_first_year_impact)}</TableCell><TableCell className="text-right tabular-nums">{money(option.worst_case)}</TableCell><TableCell><Badge variant="outline" className={option.compliant_in_every_pass_scenario ? 'status-ready' : 'status-risk'}>{option.compliant_in_every_pass_scenario ? 'Ready' : 'Timing or compliance risk'}</Badge></TableCell></TableRow>;
+      return <TableRow key={id} data-state={id === route.option ? 'selected' : undefined}><TableCell><Link className="strategy-link" aria-current={id === route.option ? 'true' : undefined} href={strategyHref(id, route.scenario)} scroll={false}>{optionName(data, option)}{id === data.recommendation.option_id && <Badge variant="secondary">Recommended</Badge>}<ChevronRight size={14} /></Link></TableCell><TableCell className="text-right tabular-nums">{money(option.expected_first_year_impact)}</TableCell><TableCell className="text-right tabular-nums">{money(option.worst_case)}</TableCell><TableCell><Badge variant="outline" className={option.compliant_in_every_pass_scenario ? 'status-ready' : 'status-risk'}>{option.compliant_in_every_pass_scenario ? 'Ready' : 'Timing or compliance risk'}</Badge></TableCell></TableRow>;
     })}</TableBody></Table>
     <p className="table-explanation">Expected first year = profit change weighted across scenarios. Worst case = the largest modeled first-year loss. All amounts are relative to the current business, in USD.</p>
-    <section className="scenario-section" aria-labelledby="scenario-heading"><div className="scenario-heading"><div><span className="section-kicker">Selected strategy</span><h2 id="scenario-heading">{optionName(data, selected)}</h2><p>{selected.description}</p></div><div className="scenario-control"><label htmlFor="scenario">What if…</label><Select value={route.scenario} onValueChange={value => { location.hash = href('strategies', route.option, value); }}><SelectTrigger id="scenario" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{data.results.scenarios.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent></Select></div></div>
+    <section className="scenario-section" aria-labelledby="scenario-heading"><div className="scenario-heading"><div><span className="section-kicker">Selected strategy</span><h2 id="scenario-heading">{optionName(data, selected)}</h2><p>{selected.description}</p></div><div className="scenario-control"><label htmlFor="scenario">What if…</label><Select value={route.scenario} onValueChange={value => router.push(strategyHref(route.option, value), { scroll: false })}><SelectTrigger id="scenario" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{data.results.scenarios.map(item => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent></Select></div></div>
       <p className="scenario-probability">{percent(scenario.probability)} overall scenario probability · {scenario.months_until_rule_applies === null ? 'No rule takes effect' : `Rule applies in ${scenario.months_until_rule_applies} months (assumption)`}</p>
       <div className="outcome-summary" aria-live="polite"><div><span>Annual gross profit change</span><strong>{money(outcome.annual_profit_change)}</strong><small>Once the rule applies</small></div><div><span>One-time costs</span><strong>{money(outcome.one_time_total)}</strong><small>Includes sales lost while fixes finish</small></div><div><span>First-year profit change</span><strong>{money(outcome.first_year_impact)}</strong><small>For this scenario only</small></div></div>
       <div className="outcome-status"><Badge variant="outline" className={ready ? 'status-ready' : 'status-risk'}>{ready ? (scenario.months_until_rule_applies === null ? 'No new deadline' : 'Ready by deadline') : 'Not ready by deadline'}</Badge><Badge variant="outline" className={outcome.feasible ? 'status-ready' : 'status-risk'}>{outcome.feasible ? 'Within supplier capacity' : 'Supplier capacity issue'}</Badge><span>Gross margin: {percent(outcome.gross_margin_after)}</span></div>
@@ -97,36 +98,8 @@ function Strategies({ data, route }) {
     <Accordion type="multiple"><Disclosure value="reconsider" title="When to change the recommendation"><Bullets items={data.brief.recommendation.switch_if} /></Disclosure><Disclosure value="assumptions" title="Assumptions & calculation limits"><Bullets items={data.brief.assumptions_to_verify} /><Bullets items={data.results.method_notes} /><p>Stored scenario probabilities are rounded and may not add up to exactly 100%.</p></Disclosure><Disclosure value="sources" title="Sources & numeric traceability"><Sources data={data} /></Disclosure></Accordion>
   </>;
 }
-function Analysis({ data }) {
-  const [route, setRoute] = useState(() => readRoute(data));
-  const previousPage = useRef(route.page);
-  useEffect(() => {
-    const update = () => setRoute(readRoute(data));
-    window.addEventListener('hashchange', update);
-    return () => window.removeEventListener('hashchange', update);
-  }, [data]);
-  useEffect(() => {
-    document.title = `${route.page === 'strategies' ? 'Strategies' : 'H.R. 973'} · VoltRide · Policy desk`;
-    if (previousPage.current !== route.page) {
-      document.getElementById('page-title')?.focus({ preventScroll: true });
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-    previousPage.current = route.page;
-  }, [route]);
+export default function Dashboard({ snapshot, page, selection = {} }) {
+  const data = useMemo(() => prepareSnapshot(snapshot), [snapshot]);
+  const route = { page, ...resolveSelection(data, selection) };
   return <><div className="analysis-meta"><span>VoltRide <ChevronRight size={12} /> Bill analysis</span><span><Badge variant="outline">Sample analysis</Badge><span>As of {date(data.results.as_of)}</span></span></div>{route.page === 'overview' ? <Overview data={data} route={route} /> : <Strategies data={data} route={route} />}</>;
-}
-export default function App() {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    const controller = new AbortController();
-    setError(null);
-    fetch('/snapshot.json', { signal: controller.signal }).then(response => {
-      if (!response.ok) throw new Error(`Saved analysis unavailable (HTTP ${response.status}).`);
-      return response.json();
-    }).then(raw => setData(prepareSnapshot(raw))).catch(error => { if (error.name !== 'AbortError') setError(error.message); });
-    return () => controller.abort();
-  }, [attempt]);
-  return <div className="app"><a href="#main" className="skip-link">Skip to analysis</a><header className="app-header"><div className="header-inner"><a href="#overview" className="brand"><span className="brand-icon"><Leaf size={19} /></span>policy desk<span className="brand-dot">.</span></a><span className="header-description">Policy into perspective</span><span className="company-label"><span>V</span>VoltRide</span></div></header><main id="main">{error ? <section role="alert" className="load-state"><CircleAlert /><h1>We couldn’t load the analysis.</h1><p>{error}</p><Button onClick={() => setAttempt(attempt + 1)}>Try again</Button></section> : data ? <Analysis data={data} /> : <div className="load-state" role="status" aria-label="Loading saved analysis"><Skeleton className="h-6 w-48 mb-8" /><Skeleton className="h-24 w-3/4 mb-8" /><Skeleton className="h-48 w-full" /><p>Loading the saved VoltRide analysis…</p></div>}</main><footer><span>Fictional company · Saved sample, not live bill data</span><span>Strategic analysis, not legal advice.</span></footer></div>;
 }

@@ -1,4 +1,4 @@
-const compactMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 1 });
+const compactMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", minimumFractionDigits: 0, maximumFractionDigits: 1 });
 function requireNumber(value, path) {
   if (!Number.isFinite(value)) throw new Error(`Missing numeric input: ${path}.`);
   return value;

@@ -17,13 +17,24 @@ bill number
 
 Rule: **AI reads and writes, code calculates.** Agents never invent probabilities or dollar figures, and `verify_brief.py` checks that they didn't.
 
-## Frontend design prototype
+## Run the Next.js dashboard
 
-Install and build the React/shadcn frontend with `cd prototypes/bill-impact`,
-`npm ci`, and `npm run build`, then run `python3 preview.py` and open the printed
-local URL. Read the bill overview, then inspect the five strategies and their
-scenario outcomes. This is a design prototype with saved fictional data.
-See [the prototype guide](prototypes/bill-impact/README.md) for the data sources and scope.
+From the repository root, install dependencies and start the app with Node.js 20.9 or newer.
+
+```sh
+npm ci
+npm run dev
+```
+
+Open http://127.0.0.1:5173. For a production build, run `npm run build` followed
+by `npm start`. The overview is at `/`, the strategy explorer is at `/strategies`,
+and the saved analysis is available at `/api/analysis`.
+
+The app uses Next.js App Router, React, Tailwind CSS, and shadcn/ui. It includes
+the complete fictional VoltRide example. No API keys or Python server are needed
+to run the dashboard. The Python tools below remain available for the offline
+analysis pipeline. See [the frontend guide](docs/frontend.md) for architecture,
+data sources, and Vercel deployment settings.
 
 ## Run the whole pipeline on the sample files
 
