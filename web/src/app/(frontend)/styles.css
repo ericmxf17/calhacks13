@@ -1,5 +1,7 @@
 @import "../../components/business/scene.css";
 
+/* The business scene includes persistent window labels and room navigation. */
+
 .figma-custom-code-fragment {
   display: contents;
 }

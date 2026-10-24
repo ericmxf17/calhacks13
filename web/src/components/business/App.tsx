@@ -30,6 +30,7 @@ function DepartmentView({ id, close, select }: { id: DepartmentId; close: () => 
   useEffect(() => { heading.current?.focus() }, [id])
   return <section className="department-view" aria-labelledby="room-title" key={id}>
     <div className="room-topline"><span className="section-kicker">{d.floor} / {d.number}</span><span className="period">This month · May 2025</span></div>
+    <nav className="room-switcher" aria-label="Explore another room"><span className="room-switcher-label">Explore rooms</span><div>{departments.map(item => <Button aria-pressed={item.id === id} key={item.id} onClick={() => select(item.id)}>{item.shortName}{item.id !== id && <Arrow />}</Button>)}</div></nav>
     <h1 id="room-title" ref={heading} tabIndex={-1}>{d.name}<span>.</span></h1>
     <p className="room-description">{d.description}</p>
     <div className="metrics">{d.metrics.map(m => <div className="metric" key={m.label}><span>{m.label}</span><strong>{m.value}</strong><small>{m.change}</small></div>)}</div>
@@ -41,7 +42,7 @@ function DepartmentView({ id, close, select }: { id: DepartmentId; close: () => 
     <div className="list-heading"><h2>{d.listTitle}</h2><span>{d.rows.length} items</span></div>
     <div className="room-list">{d.rows.map(row => <div className="room-row" key={row.title}><span className="row-mark">{row.initial}</span><div><strong>{row.title}</strong><small>{row.subtitle}</small></div><span className="row-value">{row.value}</span></div>)}</div>
     <div className="room-footer"><span><i/> Demo data, for exploration</span><Button className="subtle-link" onClick={close}>Back to the building <Arrow back/></Button></div>
-    <nav className="room-switcher" aria-label="Explore another room">{departments.map(item => <Button aria-pressed={item.id === id} key={item.id} onClick={() => select(item.id)}>{item.shortName}</Button>)}</nav>
+
   </section>
 }
 
@@ -51,6 +52,8 @@ export default function App({ company = 'Northstar Goods' }: { company?: string 
   const [ready, setReady] = useState(false)
   const lastRoom = useRef<DepartmentId | null>(null)
   const pointer = useRef({ x: 0, y: 0 })
+  const activeDepartment = departments.find(department => department.id === active)
+  const panelSide = activeDepartment && activeDepartment.position[0] < 0 ? 'left' : 'right'
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
     const update = () => setReducedMotion(query.matches)
@@ -74,7 +77,7 @@ export default function App({ company = 'Northstar Goods' }: { company?: string 
   }, [active, reducedMotion])
   const fallback = <FlatStorefront open={open}/>
 
-  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`}
+  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-panel-side={panelSide}
     onPointerMove={event => {
       if (event.pointerType === 'touch' || active || reducedMotion) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }

@@ -65,7 +65,7 @@ function DepartmentRoom({ department, active, open, index, portal }: { departmen
       </mesh>
       {!selected && <><Box at={[0, 0, .06]} size={[.045, 1.63, .045]} color={palette.dark}/><Box at={[0, .28, .06]} size={[1.05, .045, .045]} color={palette.dark}/></>}
     </group>
-    {!active && <Html portal={portal} position={[index % 2 === 0 ? -.77 : .77, -.08, .4]} center zIndexRange={[20, 10]}><button id={`room-${department.id}`} className={`room-hotspot ${index % 2 === 0 ? 'label-left' : 'label-right'}`} onClick={() => open(department.id)} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)} aria-label={`Enter ${department.name}`}><i/><span><small>{department.number} / {department.floor.replace(' FLOOR', '')}</small><strong>{department.shortName === 'Supply' ? 'Supply chain' : department.shortName === 'Hiring' ? 'People & hiring' : department.name}</strong></span><svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor"/></svg></button></Html>}
+    {!selected && <Html portal={portal} position={active ? [0, -.57, .4] : [index % 2 === 0 ? -.77 : .77, -.08, .4]} center zIndexRange={[20, 10]}><button id={`room-${department.id}`} className={`room-hotspot ${active ? 'room-hotspot-compact' : index % 2 === 0 ? 'label-left' : 'label-right'}`} onClick={() => open(department.id)} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)} aria-label={`Enter ${department.name}`}><i/><span><small>{active ? 'OPEN ROOM' : `${department.number} / ${department.floor.replace(' FLOOR', '')}`}</small><strong>{department.shortName === 'Supply' ? 'Supply chain' : department.shortName === 'Hiring' ? 'People & hiring' : department.name}</strong></span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor"/></svg></button></Html>}
   </group>
 }
 
@@ -120,8 +120,9 @@ function CameraRig({ active, pointer, reducedMotion }: Pick<Props, 'active' | 'p
     const room = departments.find(d => d.id === active)
     const amount = reducedMotion ? 1 : 1 - Math.exp(-dt * 4)
     if (room) {
-      focus.current.set(room.position[0] + (mobile ? .05 : 1.7), room.position[1] - (mobile ? .4 : .2), .6)
-      view.current.copy(focus.current).add(new Vector3(1.6, 1.2, 13))
+      const direction = room.position[0] < 0 ? -1 : 1
+      focus.current.set(room.position[0] + (mobile ? .05 : direction * 1.7), room.position[1] - (mobile ? .4 : .2), .6)
+      view.current.copy(focus.current).add(new Vector3(mobile ? 1.6 : direction * 1.6, 1.2, 13))
     } else {
       focus.current.set(mobile ? 0 : -.25, 3.5, 0)
       view.current.set(7.3 + (reducedMotion ? 0 : pointer.current.x * .9), 6.7 - (reducedMotion ? 0 : pointer.current.y * .55), 17)
