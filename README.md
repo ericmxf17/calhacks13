@@ -29,8 +29,9 @@ same council. Reading a saved council never starts another session.
 
 The implementation uses the [Factory TypeScript SDK](https://docs.factory.com/sdk/typescript)
 with isolated working directories, disabled tools, autonomy Off, and cancelled
-permissions. Set `FACTORY_API_KEY` and the native CLI path `DROID_EXECUTABLE` in
-`web/.env`, enable `ENABLE_LOCAL_AGENT_PREVIEW=true`, and restart the local dev
+permissions. Set `FACTORY_API_KEY`, the native CLI path `DROID_EXECUTABLE`,
+`COUNCIL_MODEL_ID`, and `COUNCIL_REASONING_EFFORT` in `web/.env`, enable
+`ENABLE_LOCAL_AGENT_PREVIEW=true`, and restart the local dev
 server. Existing app-scoped CREAO keys read the selected evidence; no CREAO
 account credential is required. See the [council setup and CLI guide](backend/README.md#consul-council)
 for the API, limits, durable job recovery, and `node scripts/council.mjs setup`.

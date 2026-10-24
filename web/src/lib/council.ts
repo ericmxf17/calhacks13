@@ -1,6 +1,6 @@
 import 'server-only'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
+import { appendFile, mkdir, readFile, rename, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { BackendError, object } from './backend'
 import { validateBusiness } from './business-input'
@@ -132,7 +132,12 @@ async function execute(saved: SavedJob, request: CouncilRequest, history: Counci
     for (const role of ['finance', 'operations', 'skeptic', 'chair'] as const) {
       saved.job.stage = role
       await save(saved)
-      const result = await runCouncilRole(saved.job, role, history, async id => { saved.sessions[role] = id; await save(saved) })
+      const result = await runCouncilRole(saved.job, role, history, async id => { saved.sessions[role] = id; await save(saved) }, async event => {
+        const entry = { at: new Date().toISOString(), role, ...event }
+        console.info('[council]', JSON.stringify({ jobId: saved.job.id, ...entry }))
+        try { await appendFile(path.join(directory(saved.job.id), 'diagnostics.jsonl'), `${JSON.stringify(entry)}\n`, { mode: 0o600 }) }
+        catch { console.warn('[council] Could not persist the diagnostic event; the job ledger is still authoritative.') }
+      })
       saved.job.turns.push(result.turn)
       if (result.decision) saved.job.decision = result.decision
       await save(saved)

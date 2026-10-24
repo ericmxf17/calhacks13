@@ -251,6 +251,17 @@ and discovering sources never start a Droid session.
 Set `FACTORY_API_KEY` in `web/.env` and install the official Factory CLI. On
 Windows, set `DROID_EXECUTABLE` to the absolute native `droid.exe` path, rather
 than a shell shim. Restart the local server after changing environment values.
+Set `COUNCIL_MODEL_ID` and `COUNCIL_REASONING_EFFORT` explicitly. The runner
+rejects missing settings and checks the actual session settings before sending
+a prompt, so a trial cannot silently use the CLI's default model. Discover
+available models and their supported reasoning levels from `web/` with:
+
+```powershell
+node --env-file=.env scripts/council-models.mjs
+```
+
+Model discovery does not start a generation. Multipliers are catalog metadata,
+not a fixed dollar quote for a whole council.
 `GET /api/council?view=setup` checks local configuration and executable presence;
 it does not verify a paid remote request or claim the credentials are valid.
 The existing development-only `ENABLE_LOCAL_AGENT_PREVIEW=true` loopback gate
@@ -279,16 +290,40 @@ Factory home, a replacement role prompt, no configured MCP servers, disabled
 builtin skills, autonomy Off, cancelled permissions and cancelled user prompts.
 The SDK's complete available tool list is disabled before the first message.
 Inherited environment values are shadowed with empty strings, restoring only OS
-plumbing and the Factory API key. CREAO, Figma and backend credentials are not
+plumbing, a valid shell and the Factory API key. CREAO, Figma and backend credentials are not
 passed to the child. Only complete structured results are saved; partial text,
 private reasoning and provider error bodies are not exposed.
 
 Output is checked against the JSON contract at runtime. Every claim needs known
 source IDs; numeric statements additionally need literal supporting excerpts
-from a cited source. Later roles must include an inspectable response to a prior
-claim. These checks establish shape, citation membership and excerpt presence,
+from a cited source. Later roles must include a cited response naming the
+preceding role. These checks establish shape, citation membership and excerpt presence,
 not semantic truth or current legislative status. The UI exposes saved source
 text so the user can assess the actual reasoning and evidence.
+Known source labels such as `S0` are references, not numerical quantities. This
+applies in summaries as well as claims. Other digit-bearing text still follows
+the numeric evidence rules. Later roles receive the complete preceding public
+turn and must name that role in a cited response. Paraphrase is allowed. The
+check establishes attribution, not substantive engagement; inspect the response
+against the preceding position and underlying evidence.
+
+Each role writes `diagnostics.jsonl` beside its job and emits the same bounded
+events to the server log: starting, session ready, tools disabled, structured
+result received, validated or failed, and closed. Events include selected model
+and reasoning settings, but never prompt bodies, private reasoning or secrets.
+From `web/`, inspect a trace with `node scripts/council.mjs trace <job-uuid>`.
+
+Inspect the last rejected role against the current production validator without
+another model call or changes to the saved job:
+
+```powershell
+node --conditions=react-server --experimental-transform-types scripts/council-validate.mjs <job-uuid>
+```
+
+This command reads only the recorded assistant public text, not thinking blocks.
+It needs the isolated session files on the same machine. Its result explains
+whether the saved rejection still occurs under the current validator; it does
+not revise the old ledger or resume execution.
 
 Council jobs live in `web/.backend/council/<UUID>/job.json` by default; override
 with `COUNCIL_DATA_DIR`. A UUID directory is reserved before provider work, and

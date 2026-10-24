@@ -6,7 +6,7 @@ The user asked to replace the form-and-card layout with chat history, named agen
 
 Consul opens through a camera swing before revealing the chat. The composer remains visible while messages scroll. Company context and selected artifact excerpts are inspectable. A saved thread contains user questions, public role contributions and the Chair decision. Follow-ups receive server-loaded prior rounds and retain the same evidence snapshot. Reload reads the selected thread without dispatching another run.
 
-Actual live generation still requires the missing local Factory key. The development-only filled-state preview must be labeled as an illustrative design preview and perform no provider calls.
+The local Factory key is now configured, and a real root council has completed. See `council-live-verification.md` for the runtime fixes and browser evidence. The development-only filled-state preview remains labeled as illustrative and performs no provider calls.
 
 ## Workflow and ownership
 
@@ -19,7 +19,8 @@ Actual live generation still requires the missing local Factory key. The develop
 - [x] Verify camera navigation and reversals; inspect renderer fallback and reduced-motion handling.
 - [x] Verify saved-thread reads and rejected continuation requests through HTTP.
 - [x] Review the integrated change and record limitations.
-- [ ] Verify a complete live Factory conversation and successful follow-up after the key is configured.
+- [x] Verify a complete live Factory root conversation after the key is configured.
+- [ ] Verify a successful live follow-up round.
 - [ ] Complete the new editable Figma frame when tool access is available.
 
 The browser prototypes are throwaway instruments in the system temporary directory. Prototype B supplies the wider conversation canvas and fixed composer. Prototype A supplies the named roster and public role order. The user subsequently rejected the prototypes' visual styling because it did not match the rest of Consul. Keep the interaction structure and use the existing Home and Agents theme for the final visual treatment.

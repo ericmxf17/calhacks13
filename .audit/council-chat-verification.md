@@ -2,8 +2,9 @@
 
 The form layout has been replaced with a conversation, named roster, compact
 shared context and a persistent composer. The Chair's decision is part of the
-message history. Real model generation and successful follow-ups remain
-unverified because the local Factory key is absent.
+message history. A real root council and its browser refresh recovery have now
+passed; see `council-live-verification.md`. Successful live follow-ups remain
+unverified.
 
 | Component | File or function | Observed behavior | Verification |
 | --- | --- | --- | --- |
@@ -14,7 +15,7 @@ unverified because the local Factory key is absent.
 | Saved threads | `readCouncilThread` | A legacy saved root is normalized to round one with its saved evidence. | Actual HTTP and CLI thread reads. |
 | Recovery and limits | `submitCouncil` | Same-payload replay returns its existing record; changed payload conflicts; failed or missing parents and changed follow-up sources are rejected. Cross-site thread reads are forbidden. | Actual local HTTP requests against existing no-key records. No completed records were fabricated. |
 | Dependencies and types | `package.json`, added components | Frozen installation and TypeScript pass. Vercel primitives are used in the production renderer with source attribution and license. | Package installation, typecheck and source inspection. |
-| Live generation | `runCouncilRole` | Pending. Four actual roles and a successful same-evidence follow-up need a configured Factory key. | Proposed final check through the real company chat. |
+| Live generation | `runCouncilRole` | Four actual roles completed and recovered after refresh. A live same-evidence follow-up remains pending. | Real Harbor Goods frontend run; see the live verification record. |
 
 No tests were created, modified or run. The preview is a development instrument,
 clearly labeled as illustrative, and skips provider calls and storage effects.
@@ -38,7 +39,7 @@ retain their original identity.
 
 Reviewed by gpt-6.1-sol.
 
-- Live Factory generation and successful multi-round recovery are still pending.
+- A successful live follow-up and multi-round recovery are still pending.
 - The Figma Starter-plan tool limit blocked composition of the new chat frame
   after its wrapper was created. The new editable Figma frame is unfinished.
   The working browser previews and app are the checked visual artifacts.
@@ -96,7 +97,8 @@ Added Vercel AI Elements' `MessageResponse` adapter backed by Streamdown and a
 CSS adaptation of its Shimmer gradient. Newly received validated summaries
 reveal word by word. Restored history establishes a static baseline; polling
 the same turns does not restart the effect. The latter behavior was inspected
-in `receiveThread`; a completed live Factory recovery still requires a key.
+in `receiveThread`; completed live root recovery is now verified in the separate
+live verification record.
 
 The browser probe captured a partial Skeptic summary with Streamdown animation
 wrappers, then the complete summary with those wrappers removed. Earlier
