@@ -1,16 +1,18 @@
 import 'server-only'
 
 import { BackendError } from './backend'
+import { agentCatalog, type AgentRole } from './agent-catalog'
+
+export type { AgentRole } from './agent-catalog'
 
 const baseURL = 'https://agent.creao.ai/api/v1'
-const roles = [
-  ['test-agent', 'Test Agent', 'CREAO_TEST_AGENT_ID', 'CREAO_TEST_AGENT_API_KEY'],
-  ['bill-analyst', 'Bill Analyst', 'CREAO_BILL_ANALYST_ID', 'CREAO_BILL_ANALYST_API_KEY'],
-  ['researcher', 'Bill Researcher', 'CREAO_RESEARCHER_ID', 'CREAO_RESEARCHER_API_KEY'],
-  ['impact-planner', 'Bill Impact Planner', 'CREAO_IMPACT_PLANNER_ID', 'CREAO_IMPACT_PLANNER_API_KEY'],
-  ['brief-writer', 'Brief Writer', 'CREAO_BRIEF_WRITER_ID', 'CREAO_BRIEF_WRITER_API_KEY'],
-] as const
-export type AgentRole = typeof roles[number][0]
+const credentials = {
+  'test-agent': ['CREAO_TEST_AGENT_ID', 'CREAO_TEST_AGENT_API_KEY'],
+  'bill-analyst': ['CREAO_BILL_ANALYST_ID', 'CREAO_BILL_ANALYST_API_KEY'],
+  researcher: ['CREAO_RESEARCHER_ID', 'CREAO_RESEARCHER_API_KEY'],
+  'impact-planner': ['CREAO_IMPACT_PLANNER_ID', 'CREAO_IMPACT_PLANNER_API_KEY'],
+  'brief-writer': ['CREAO_BRIEF_WRITER_ID', 'CREAO_BRIEF_WRITER_API_KEY'],
+} satisfies Record<AgentRole, [string, string]>
 export type Agent = {
   role: AgentRole; name: string; appId: string | null; idEnv: string; keyEnv: string
   readiness: 'missing_id' | 'missing_key' | 'invalid_key' | 'configured'
@@ -27,7 +29,8 @@ function safeCode(value: unknown): string | undefined {
 const statuses = new Set<string>(['pending', 'running', 'completed', 'failed', 'cancelled'])
 
 export function configuredAgents(): Agent[] {
-  return roles.map(([role, name, idEnv, keyEnv]) => {
+  return agentCatalog.map(({ role, name }) => {
+    const [idEnv, keyEnv] = credentials[role]
     const appId = process.env[idEnv]?.trim() || null
     const key = process.env[keyEnv]?.trim()
     const readiness = !appId ? 'missing_id' : !key ? 'missing_key' : !key.startsWith('capi_') ? 'invalid_key' : 'configured'

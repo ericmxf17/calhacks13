@@ -208,6 +208,19 @@
 .agent-run-message h3 { margin: 0 0 6px; font-size: 17px; }
 .agent-run-message p { margin: 0; color: var(--run-muted); font-size: 12px; line-height: 1.5; }
 
+.brief-writer-launcher { margin-bottom: 20px; padding: 16px; border: 1px solid var(--run-line); border-radius: 8px; background: var(--run-cream); }
+.brief-writer-launcher-heading, .brief-writer-input-heading, .brief-writer-submit, .brief-writer-request { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.brief-writer-launcher h3 { margin: 0; font-size: 16px; }
+.brief-writer-launcher p { margin: 4px 0; color: var(--run-muted); font-size: 11px; line-height: 1.5; }
+.brief-writer-launcher form, .brief-writer-job { margin-top: 16px; }
+.brief-writer-input-heading label { font-size: 12px; font-weight: 700; }
+.brief-writer-launcher textarea { display: block; width: 100%; min-height: 150px; max-height: 320px; margin: 8px 0; padding: 10px; resize: vertical; border: 1px solid var(--run-line); border-radius: 6px; background: white; color: var(--run-ink); font: 11px/1.5 monospace; }
+.brief-writer-launcher textarea:focus-visible { outline: 3px solid var(--run-blue); outline-offset: 2px; }
+.brief-writer-job { padding: 12px; border-radius: 6px; background: #e7f5e9; font-size: 13px; }
+.brief-writer-request { justify-content: flex-start; margin-top: 12px; }
+.brief-writer-request code { overflow-wrap: anywhere; }
+.brief-writer-launcher .brief-writer-example-label { color: #75540b; }
+
 @media (max-width: 999px) {
   .agent-run-content { padding: 20px; }
   .agent-run-result-grid { grid-template-columns: minmax(0, 1fr); }

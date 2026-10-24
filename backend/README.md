@@ -168,7 +168,7 @@ run status, timestamps, returned output, and artifacts. Opening or refreshing
 this view never starts an agent. Placeholders and agents without credentials
 have explicit informational states.
 
-This local demo uses an opted-in read-only API at `/api/agent-runs`. Set
+This local demo uses an opted-in API at `/api/agent-runs`. Set
 `ENABLE_LOCAL_AGENT_PREVIEW=true` in `web/.env`. The `dev` command binds to
 `127.0.0.1` so the preview is not exposed on the network. The API also requires
 development mode, a loopback Host, and same-origin browser requests. Production
@@ -177,22 +177,64 @@ existing bearer-protected `/api/backend` API for trusted server callers.
 
 | GET path | Result |
 |---|---|
+| `/api/agent-runs/agents` | Agent roles and verified connection state. Reads one history page per configured agent; never starts runs. |
 | `/api/agent-runs/{role}` | Paginated history and connection state. |
 | `/api/agent-runs/{role}/{runId}` | Selected run information and artifact metadata. |
 | `/api/agent-runs/{role}/{runId}/artifacts/{index}` | Authenticated file download. |
 | Same artifact path with `?preview=1` | Safe text preview, limited to 256 KiB. |
+| `/api/agent-runs/brief-writer/example` | Labelled fictional VoltRide / H.R. 973 analysis pack from repository fixtures. |
+| `/api/agent-runs/brief-writer/jobs/{requestId}` | Saved Brief Writer job and refreshed provider status; never dispatches another run. |
+
+Brief Writer also has `POST /api/agent-runs/brief-writer/jobs`. The body is
+`{ "requestId": "UUID", "briefInputs": { ... } }`. The pack must contain
+non-empty `names`, `bill`, `forecast`, `research`, `plan`, and `impact_results`
+objects, and serialize to at most 240 KiB. The server passes it as the deployed
+agent's single text input, `inputs.brief_inputs`. The browser POST requires
+JSON, an explicit same-origin Origin, and `Sec-Fetch-Site: same-origin`, as
+well as the existing development/loopback/opt-in gate.
+
+In Brief Writer's dialog, choose **Run Brief Writer**, paste an analysis pack
+or load **Use VoltRide example**, and choose **Run brief**. That last button
+starts a run and consumes CREAO credits. The browser stores only the request
+ID in local storage before submission. The existing job ledger reserves that
+ID before dispatch, so repeated submissions of the same request cannot bill a
+second run. Reusing an ID with different inputs is rejected. The dialog polls
+saved status every four seconds, selects the submitted run, and refreshes its
+output and artifacts when the status changes. Closing and reopening the
+dialog recovers the same saved request without submitting it again. Ambiguous
+dispatches and refresh failures require an explicit status check; there is no
+automatic execution retry. Completed or definitively rejected requests allow
+**Write another brief** to reserve a new ID for a new deliberate submission.
 
 The browser receives no CREAO key, backend bearer token, or signed storage URL.
+The grid and server share `web/src/lib/agent-catalog.ts`, including Brief Writer.
+Each card shows `Connected` only after CREAO accepts a read with its own scoped
+key. Missing credentials show `Needs setup`; rejected keys or service failures
+show `Connection unavailable`. Refresh connections repeats these reads. An
+agent can be connected with no API runs yet. Opening it shows an empty history;
+older website chat sessions are not imported by this API.
+
 The server resolves artifacts from the selected authenticated run. It sends the
 key only to CREAO and follows the verified storage redirect without credentials.
 Downloads use attachment disposition. Markdown, JSON, and text previews render
 as escaped text. Generated HTML is not executed inside the application.
 
-Verified with existing Test Agent runs only. The newer run returned no files;
-the older run returned a Markdown acknowledgement. Its preview and download
-both succeeded. Cross-site and non-local Host requests returned HTTP 403.
+During initial read-only verification, Bill Analyst, Bill Researcher, Bill Impact
+Planner, Brief Writer, and Test Agent all passed scoped history reads. The four production agents returned empty
+API histories. Test Agent returned two existing runs; the older run returned a
+Markdown acknowledgement. Its preview and download both succeeded.
+Cross-site and non-local Host requests returned HTTP 403.
 The popup was checked on desktop and phone, including Escape, focus return,
 and the unconfigured-agent state. No new CREAO executions were needed.
+
+The Brief Writer launch flow was subsequently exercised through the frontend
+with one labelled VoltRide example. Job `53ef855e-eaf3-441d-b4df-ec93a7ada513`
+created CREAO run `e36cb8c0-2f57-4f47-956e-c325269f54ac`, which completed and
+returned one `brief.json` artifact. Preview and attachment download both
+succeeded, and the downloaded file parsed as JSON. Replaying the same saved
+request returned the same run ID; closing and reopening the dialog recovered
+the completed job. Malformed input and cross-site submission were rejected
+before dispatch. No additional agent executions were needed for these checks.
 
 The popup layout is recorded in the
 [editable Figma design](https://www.figma.com/design/mD2dLj2EvZDrdfv6wpAfLK?node-id=1-2).
