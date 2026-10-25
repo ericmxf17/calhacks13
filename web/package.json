@@ -55,7 +55,8 @@
     "format": "oxfmt",
     "generate:importmap": "node --no-deprecation ./node_modules/payload/bin.js generate:importmap",
     "generate:types": "node --no-deprecation ./node_modules/payload/bin.js generate:types",
-    "payload": "node --no-deprecation ./node_modules/payload/bin.js"
+    "payload": "node --no-deprecation ./node_modules/payload/bin.js",
+    "dev:local": "node ./scripts/local-chat.mjs"
   },
   "type": "module",
   "version": "0.0.0"
