@@ -12,6 +12,8 @@ import Construction from './scene/archetypes/Construction'
 import Assemble, { type AssembleStage } from './scene/assemble'
 import Birds from './scene/Birds'
 import { viewTurn, type BusinessView } from './scene/view-turn'
+import { clearScenePosition } from './scene/view-framing'
+import { groundShadowY } from './scene/lot-volumes'
 
 export type { BusinessView } from './scene/view-turn'
 type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; onSiteShown?: () => void; assembling?: boolean; onAssembled?: () => void; onDrawn?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
@@ -27,10 +29,11 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
   useEffect(() => { settledCallback.current = onViewSettled }, [onViewSettled])
   const currentView = useRef<BusinessView>('home')
   const homeQuaternion = useRef<Quaternion | null>(null)
+  const homePosition = useRef(new Vector3())
   // A new building frames Home differently, so the Home angle is measured again before the next swing.
   useEffect(() => { if (currentView.current === 'home') homeQuaternion.current = null }, [layout.key])
   const initialHomeReported = useRef(false)
-  const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; zoom: number; elapsed: number; complete: boolean } | null>(null)
+  const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; destination: Vector3; zoom: number; elapsed: number; complete: boolean } | null>(null)
   useEffect(() => {
     if (requestedView !== 'home' || active || reducedMotion) return
     // App updates the pointer ref at the React root before this window listener.
@@ -56,19 +59,21 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
     const orthographic = camera as OrthographicCamera
     if (currentView.current !== requestedView) {
       interactive.current = false
+      if (currentView.current === 'home') homePosition.current.copy(camera.position)
       currentView.current = requestedView
       if (!homeQuaternion.current) homeQuaternion.current = camera.quaternion.clone()
       const destination = homeQuaternion.current.clone()
       destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), viewTurn(requestedView)))
       // Every request starts at the rendered pose, including reversals mid-swing.
-      swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), zoom: orthographic.zoom, elapsed: 0, complete: false }
+      const destinationPosition = requestedView === 'home' ? homePosition.current.clone() : clearScenePosition(homePosition.current, destination, size.width, orthographic.zoom, layout.lotWidth, layout.top, requestedView === 'agents' ? -1 : 1)
+      swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), destination: destinationPosition, zoom: orthographic.zoom, elapsed: 0, complete: false }
     }
     const transition = swing.current
     if (transition && !transition.complete) {
       transition.elapsed += delta
       const progress = reducedMotion ? 1 : Math.min(transition.elapsed / .9, 1)
       const eased = progress * progress * (3 - 2 * progress)
-      camera.position.copy(transition.position)
+      camera.position.lerpVectors(transition.position, transition.destination, eased)
       if (orthographic.zoom !== transition.zoom) {
         orthographic.zoom = transition.zoom
         orthographic.updateProjectionMatrix()
@@ -88,7 +93,11 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
     }
     // Non-home views hold a fixed pose. Request reversals are handled above before
     // this return, so a new home request can still begin from the rendered pose.
-    if (requestedView !== 'home') return
+    if (requestedView !== 'home') {
+      // Resizing a settled view must not reveal a previously off-screen vehicle.
+      camera.position.copy(clearScenePosition(homePosition.current, camera.quaternion, size.width, orthographic.zoom, layout.lotWidth, layout.top, requestedView === 'agents' ? -1 : 1))
+      return
+    }
     const mobile = size.width < 760
     const room = departments.find(d => d.id === active)
     const amount = reducedMotion ? 1 : 1 - Math.exp(-delta * 4)
@@ -173,7 +182,7 @@ export default function BusinessScene(props: Props) {
       </>}
       <Lot layout={layout} ground={props.constructing ? 'gravel' : scene.ground}/>
     </ThemeProvider>
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -.17, 0]} receiveShadow><planeGeometry args={[200, 200]}/><shadowMaterial color="#76899b" opacity={.24}/></mesh>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, groundShadowY, 0]} receiveShadow><planeGeometry args={[200, 200]}/><shadowMaterial color="#76899b" opacity={.24}/></mesh>
     <FirstFrame onDrawn={props.onDrawn}/>
     <CameraRig layout={layout} departments={props.departments} active={props.active} pointer={props.pointer} reducedMotion={props.reducedMotion} view={props.view} viewSettled={props.viewSettled} onViewSettled={props.onViewSettled} interactive={interactive}/>
   </Canvas></>

@@ -10,8 +10,8 @@ export function createFacadeGeometry(frame: Frame) {
   const bottom = Math.min(frame.pierY - frame.pierHeight / 2, ...frame.beams.map(y => y - halfBeam))
   // The roof slab has the same front depth: stop at its underside, never inside it.
   const top = Math.min(frame.roofBase, Math.max(frame.pierY + frame.pierHeight / 2, ...frame.beams.map(y => y + halfBeam)))
-  // Keep the outer edge clear of the rear shell's side plane, too.
-  const halfWidth = frame.half + .02, centerY = (bottom + top) / 2
+  // Match the shell's side plane; their depth ranges meet without overlapping.
+  const halfWidth = frame.half, centerY = (bottom + top) / 2
   const shape = new Shape()
   shape.moveTo(-halfWidth, bottom)
   shape.lineTo(halfWidth, bottom)

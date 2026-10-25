@@ -1,6 +1,6 @@
 import { Box, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
-import { Entrance, GlassPane, Shell, SignBand, frame } from './shared'
+import { Entrance, GlassPane, GroundFloorPosts, Shell, SignBand, frame } from './shared'
 
 function CafeWindow({ x, width }: { x: number; width: number }) {
   const theme = useTheme(), w = width - .2
@@ -36,7 +36,7 @@ export default function Cafe(props: ArchetypeProps) {
     {[0, 1, 2, 3].map(i => <Box key={i} at={[0, f.yTop + 1.38 + i * .18, .02 - i * .12]} size={[f.width + .3 - i * .1, .18, 2.1 - i * .42]} color={theme.roof}/>)}
     {/* Ground floor: café windows, a door, the awning and a chalkboard. */}
     <SignBand {...props}/>
-    {f.posts.map(x => <Box key={x} at={[x, 1.13, .94]} size={[.13, 1.83, .16]} color={theme.dark}/>)}
+    <GroundFloorPosts layout={layout}/>
     <CafeWindow x={first.x} width={first.width}/>
     {rest.map(bay => <Entrance key={bay.x} x={bay.x}/>)}
     {last && (rest.length ? <CafeWindow x={last.x} width={last.width}/> : <>

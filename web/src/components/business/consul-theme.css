@@ -107,8 +107,8 @@
 .room-hotspot small, .room-hotspot svg, .room-hotspot.room-hotspot-compact small { color: #46647b; }
 .room-hotspot.room-hotspot-compact small { font-size: 8px; }
 .back-button { top: calc(var(--world-header-height) + 8px); min-height: 44px; background: #fff; border: 2px solid #b6d2e4; padding: 9px 12px; border-radius: 5px; box-shadow: 3px 3px 0 #b6d2e4; }
-.department-view { top: calc(var(--world-header-height) + 64px); background: #f8fcfff5; border-left: 2px solid #bdd7e7; padding-top: 24px; }
-.world[data-panel-side=left] .department-view { background: #f8fcfff5; border-left: 0; border-right: 2px solid #bdd7e7; }
+.department-view { top: var(--world-header-height); background: #f8fcfff5; border-top: 2px solid #c5ced6; border-left: 2px solid #c5ced6; border-radius: 16px; padding-top: 24px; }
+.world[data-panel-side=left] .department-view { background: #f8fcfff5; border-left: 0; border-right: 2px solid #c5ced6; }
 .department-view h1 { font-weight: 900; font-size: 45px; letter-spacing: -1.7px; color: #243957; }
 .department-view h1>span { color: var(--room-color); }
 .room-description { color: #4f6980; font-size: 12px; }
@@ -171,7 +171,7 @@
   .world:not(.inside-room) .room-hotspot>i,
   .world:not(.inside-room) .room-hotspot svg { flex-shrink: 0; }
   .inside-room .scene-layer { top: var(--world-header-height); bottom: 55%; }
-  .department-view, .world[data-panel-side=left] .department-view { top: max(calc(var(--world-header-height) + 64px), 40%); border-inline: 0; border-top: 2px solid #bdd7e7; background: #f8fcff; }
+  .department-view, .world[data-panel-side=left] .department-view { top: max(calc(var(--world-header-height) + 64px), 40%); border-inline: 0; border-top: 2px solid #c5ced6; background: #f8fcff; }
   .metric { padding: 10px 7px; }.metric strong { font-size: 21px; }.metric small { font-size: 8px; }
   .room-row small { font-size: 9px; }.room-footer { flex-wrap: wrap; }
 }
