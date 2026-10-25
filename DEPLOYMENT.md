@@ -1,6 +1,6 @@
 # Vercel hosted Council deployment
 
-The saved-demo site is deployed at [consul-calhacks13.vercel.app](https://consul-calhacks13.vercel.app). The hosted worker passed health and setup checks, plus seven SpacetimeDB admission checks, without making model calls. The current Vercel deployment settings and a public browser live run remain unverified.
+Live Council chat is deployed at [consul-calhacks13.vercel.app](https://consul-calhacks13.vercel.app). Production OIDC, a real browser follow-up through all four models, and restoration after reload were verified on October 25, 2026. Seven worker admission checks and six production API checks also passed, including owner isolation and replay without new model sessions.
 
 ## Deployment boundary
 
@@ -8,7 +8,7 @@ Deploy `web/` as a Next.js project. Set `CONSUL_JUDGE_DEMO=true` in Preview and 
 
 In Vercel Production, the Next.js server always proxies new Council requests to the hosted worker. Set `COUNCIL_EXECUTION_MODE=sandbox` in Preview to use the same path there. Set `COUNCIL_EXECUTION_MODE=local` only for local development, and set `ENABLE_LOCAL_AGENT_PREVIEW=true` to allow local live runs. Production ignores the local execution path.
 
-The worker runs in one of four named persistent Vercel Sandbox slots created from `COUNCIL_SANDBOX_SNAPSHOT_ID`. The app rotates slots every 20 minutes. Each sandbox has a 45-minute timeout, which leaves each accepted round at least 24.5 minutes before its selected sandbox can stop. The four role calls have a combined 16-minute timeout. The snapshot includes the worker source and dependencies, Node.js 24, Python 3.14, and Factory Droid 0.249.0. The Vercel SDK uses OIDC credentials in hosted deployments. `COUNCIL_SANDBOX_VERCEL_TOKEN` is optional for local provisioning and is not needed in Vercel when OIDC is configured.
+The worker runs in one of four named persistent Vercel Sandbox slots created from `COUNCIL_SANDBOX_SNAPSHOT_ID`. The app rotates slots every 20 minutes. Each sandbox has a 45-minute timeout, leaving roughly 25 minutes for a new round before request overhead. The four role calls have a combined 16-minute generation timeout, plus setup and persistence work. The snapshot includes the worker source and dependencies, Node.js 24, Python 3.14, and Factory Droid 0.249.0. The Vercel SDK uses OIDC credentials in hosted deployments. `COUNCIL_SANDBOX_VERCEL_TOKEN` is optional for local provisioning and is not needed in Vercel when OIDC is configured.
 
 The app sends requests to the worker with `COUNCIL_WORKER_TOKEN`. The worker accepts only authenticated requests and a server-derived owner ID. The app signs a 30-day HTTP-only browser cookie with `COUNCIL_SESSION_SECRET`, then maps it to a private `user:` scope. Same-origin checks protect submissions. SpacetimeDB stores private snapshots, and the app reads snapshots only for the current owner.
 
