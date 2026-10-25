@@ -239,3 +239,14 @@
 @keyframes design-spin { to { transform: rotate(360deg); } }
 .reduce-motion .design-spinner { animation: none; }
 @media (max-width: 760px) { .design-status { left: 16px; right: 16px; bottom: 96px; max-width: none; } }
+
+/* The loading screen: only the building going up shows. Everything else fades in together once it's done. */
+.world .scene-layer { animation-duration: .6s; }
+.world-header, .bottom-navigation { transition: opacity .5s ease, visibility .5s; }
+.world .hotspot-layer { transition: opacity .5s ease; }
+.world[data-loading] :is(.world-header, .bottom-navigation) { opacity: 0; visibility: hidden; pointer-events: none; }
+.world[data-loading] .hotspot-layer { opacity: 0; }
+.world-footer, .design-status { animation: chrome-in .5s ease both; }
+@keyframes chrome-in { from { opacity: 0; } }
+.reduce-motion :is(.world-header, .bottom-navigation, .hotspot-layer) { transition: none; }
+.reduce-motion :is(.world-footer, .design-status) { animation: none; }

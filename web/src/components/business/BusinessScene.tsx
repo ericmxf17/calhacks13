@@ -12,7 +12,7 @@ import Construction from './scene/archetypes/Construction'
 import Assemble, { type AssembleStage } from './scene/assemble'
 
 export type BusinessView = 'home' | 'agents' | 'council'
-type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; assembling?: boolean; onAssembled?: () => void; onDrawn?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
+type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; onSiteShown?: () => void; assembling?: boolean; onAssembled?: () => void; onDrawn?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 
 function CameraRig({ layout, departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'layout' | 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
   const { camera, size, gl, invalidate } = useThree()
@@ -25,6 +25,8 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
   useEffect(() => { settledCallback.current = onViewSettled }, [onViewSettled])
   const currentView = useRef<BusinessView>('home')
   const homeQuaternion = useRef<Quaternion | null>(null)
+  // A new building frames Home differently, so the Home angle is measured again before the next swing.
+  useEffect(() => { if (currentView.current === 'home') homeQuaternion.current = null }, [layout.key])
   const initialHomeReported = useRef(false)
   const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; zoom: number; elapsed: number; complete: boolean } | null>(null)
   useEffect(() => {
@@ -157,7 +159,7 @@ export default function BusinessScene(props: Props) {
     <directionalLight key={layout.key} position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10 * s} shadow-camera-right={10 * s} shadow-camera-top={12 * s} shadow-camera-bottom={-8 * s} shadow-normalBias={.025}/>
     <directionalLight position={[7, 6, -3]} intensity={1.2} color="#d3e0dc"/>
     <ThemeProvider value={theme}>
-      {props.constructing ? <Construction company={props.company} reducedMotion={props.reducedMotion}/> : <>
+      {props.constructing ? <Construction company={props.company} reducedMotion={props.reducedMotion} onShown={props.onSiteShown}/> : <>
         <group ref={structure}>
           <Building layout={layout} company={props.company} sign={scene.sign}/>
           {props.departments.map((d, i) => <DepartmentRoom key={d.id} department={d} active={props.active} open={open} index={i} portal={portal}/>)}

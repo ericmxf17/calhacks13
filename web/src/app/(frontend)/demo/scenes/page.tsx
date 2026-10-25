@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation'
 import ScenePreview from '@/components/ScenePreview'
 
 // Development only: /demo/scenes?archetype=cafe&rooms=5&props=chimney;cafe_tables,planters
-// Add &build=8 to show the construction site for 8 seconds before the building assembles (&build=wait keeps the site up).
+// Every preview opens with the loading screen. Add &build=8 to show the Scene Designer note for 8 seconds after it,
+// as if the agent were still working (&build=wait keeps the note up).
 export default async function ScenesPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   if (process.env.NODE_ENV !== 'development') notFound()
   const { archetype, rooms, props, build } = await searchParams

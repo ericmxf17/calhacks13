@@ -3,7 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Box3, Vector3, type Group, type Mesh } from 'three'
 
 /** How long the finished building takes to assemble after the construction site. */
-export const assembleSeconds = 3
+export const assembleSeconds = 1.6
 
 /** A part of the scene that assembles in a window of the total time (0 to 1). Lower pieces go first. */
 export type AssembleStage = { root: RefObject<Group | null>; from: number; to: number; length: number }

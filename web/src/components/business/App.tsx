@@ -1,5 +1,5 @@
 'use client'
-import { Component, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { Component, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { defaultSceneSpec, type SceneSpec } from '@/lib/scene-spec'
 import BusinessScene, { type BusinessView } from './BusinessScene'
 import AgentsPanel from './AgentsPanel'
@@ -16,6 +16,9 @@ import { sceneTheme } from './scene/parts'
 import type { DesignState } from './useSceneDesign'
 
 const defaultScene = defaultSceneSpec('storefront')
+// How long the construction site shows before the building assembles. With the assembly, the loading screen lasts about three seconds.
+const siteSeconds = 1.4
+const siteLayout = layoutBuilding('storefront', 6)
 
 export function Button({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return <button type="button" className={className} {...props}>{children}</button>
@@ -84,8 +87,7 @@ function DesignStatus({ design }: { design: Design }) {
   if (design.state === 'designing') return <aside className="design-status" aria-live="polite">
     <span className="section-kicker">SCENE DESIGNER</span>
     <strong><i className="design-spinner" aria-hidden="true"/>Designing your building…</strong>
-    <p>It reads your company profile and picks a building and rooms that fit. This usually takes a minute or two.</p>
-    <button type="button" onClick={design.chooseQuickDesign}>Use a quick design for now</button>
+    <p>This is a quick design for now. Scene Designer is picking a building and rooms that fit your company, which takes a minute or two.</p>
   </aside>
   if (design.ready) return <aside className="design-status" aria-live="polite">
     <span className="section-kicker">SCENE DESIGNER</span>
@@ -98,9 +100,13 @@ function DesignStatus({ design }: { design: Design }) {
 
 export default function App({ company = 'Consul Goods', departments: rooms = defaultDepartments, scene = defaultScene, design, actions, business, firstVisit = false }: { business?: BusinessInput; firstVisit?: boolean; company?: string; departments?: Department[]; scene?: SceneSpec; design?: Design; actions?: ReactNode }) {
   // The design picks the building; rooms keep their content and get their place in the building's grid.
-  // While Scene Designer works, a construction site stands in, framed like a three-floor building.
-  const constructing = design?.state === 'designing'
-  const layout = useMemo(() => constructing ? layoutBuilding('storefront', 6) : layoutBuilding(drawnArchetype(scene.archetype), rooms.length, scene.roofProps.length), [constructing, scene.archetype, rooms.length, scene.roofProps.length])
+  // Each time the workspace opens, the building goes up as a short loading screen: a construction site,
+  // framed like a three-floor building, then the building assembles. Nothing else shows until it's done.
+  const [intro, setIntro] = useState<'site' | 'assembling' | 'done'>('site')
+  const loading = intro !== 'done'
+  const constructing = intro === 'site'
+  const buildingLayout = useMemo(() => layoutBuilding(drawnArchetype(scene.archetype), rooms.length, scene.roofProps.length), [scene.archetype, rooms.length, scene.roofProps.length])
+  const layout = constructing ? siteLayout : buildingLayout
   const departments = useMemo(() => constructing ? [] : placeRooms(layout, rooms, scene), [constructing, layout, rooms, scene])
   const drawn = useMemo(() => ({ ...scene, archetype: layout.archetype }), [scene, layout.archetype])
   const [sceneView, setSceneView] = useState<{ view: BusinessView; settled: boolean }>({ view: 'home', settled: true })
@@ -119,27 +125,29 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     pointer.current = { x: 0, y: 0 }
     setSceneView({ view, settled: false })
   }
-  // The finished building assembles once, right after the construction site was on screen.
-  // A layout effect sets this before the new scene draws its first frame, so the whole building never flashes.
-  const [assembling, setAssembling] = useState(false)
-  const siteShownAt = useRef<number | null>(null)
-  // Set in the same layout effect, because React runs the previous render's effects (like the tour's) before the re-render.
-  const assemblingNow = useRef(false)
-  useLayoutEffect(() => {
-    if (constructing) { siteShownAt.current ??= Date.now(); return }
-    const since = siteShownAt.current
-    siteShownAt.current = null
-    // A site that only flickered (a saved or instant quick design) doesn't count.
-    if (since !== null && !reducedMotion && Date.now() - since > 1200) { assemblingNow.current = true; setAssembling(true) }
-  }, [constructing, reducedMotion])
-  const assembled = useCallback(() => { assemblingNow.current = false; setAssembling(false) }, [])
+  // The site and the assembling building come from the same state, so the whole building never flashes in between.
+  // Showing Scene Designer's finished design later rebuilds the building the same way.
+  const [rebuilding, setRebuilding] = useState(false)
+  const assembling = intro === 'assembling' || rebuilding
+  // The site's time starts once it's drawn. If it never draws (no WebGL), the page moves on after a few seconds.
+  const [siteShown, setSiteShown] = useState(false)
+  const showSite = useCallback(() => setSiteShown(true), [])
+  useEffect(() => {
+    if (intro !== 'site') return
+    const timer = window.setTimeout(() => setIntro(siteShown && !reducedMotion ? 'assembling' : 'done'), (siteShown ? siteSeconds : 5) * 1000)
+    return () => window.clearTimeout(timer)
+  }, [intro, siteShown, reducedMotion])
+  // Reduced-motion users skip the loading screen.
+  useEffect(() => { if (reducedMotion) setIntro('done') }, [reducedMotion])
+  const assembled = useCallback(() => { setIntro(i => i === 'assembling' ? 'done' : i); setRebuilding(false) }, [])
+  const showDesign = () => { if (!reducedMotion) setRebuilding(true); design?.showDesign() }
   useEffect(() => {
     if (!assembling) return
     // In case the scene can't draw (no WebGL), don't hold the page back.
     const timer = window.setTimeout(assembled, (assembleSeconds + 2) * 1000)
     return () => window.clearTimeout(timer)
   }, [assembling, assembled])
-  const homeReady = sceneView.view === 'home' && sceneView.settled && !assembling
+  const homeReady = sceneView.view === 'home' && sceneView.settled && !loading && !assembling
   const councilReady = sceneView.view === 'council' && sceneView.settled
   // The tour starts on its own as soon as the finished building is ready: always right after setup, and
   // otherwise the first time this browser opens the company. Once per visit; the header button replays it.
@@ -151,7 +159,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   useEffect(() => { const timer = window.setTimeout(sceneDrawn, 6000); return () => window.clearTimeout(timer) }, [sceneDrawn])
   const buildingReady = homeReady && !constructing && firstFrame
   useEffect(() => {
-    if (!buildingReady || assemblingNow.current || tourOffered.current || (!firstVisit && tourSeen(company))) return
+    if (!buildingReady || tourOffered.current || (!firstVisit && tourSeen(company))) return
     tourOffered.current = true
     markTourSeen(company)
     setTouring(true)
@@ -188,22 +196,22 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   }, [active, reducedMotion, sceneView.view])
   const fallback = homeReady ? <FlatStorefront open={open} company={company} departments={departments} scene={drawn} layout={layout}/> : null
 
-  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-council-open={councilReady} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-department={active || undefined} style={roomColors}
+  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-council-open={councilReady} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-department={active || undefined} data-loading={loading || undefined} style={roomColors}
     onPointerMove={event => {
       if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
-    <div className="scene-layer" inert={!homeReady}><SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} assembling={assembling} onAssembled={assembled} onDrawn={sceneDrawn} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
+    <div className="scene-layer" inert={!homeReady}>{/* One canvas for every building, so the site and later redesigns swap in without a blank frame. */}<SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} onSiteShown={showSite} assembling={assembling} onAssembled={assembled} onDrawn={sceneDrawn} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
       <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
       <div className="world-header-content">
         <div className="workspace-status"><i/><span className="workspace-company" title={company}>{company}</span><span className="status-divider"/><span className="established">{departments.some(d => d.source === 'illustrative') ? 'Illustrative room data' : 'Rooms built from your setup'}</span></div>
-        <div className="workspace-actions" aria-label="Workspace actions"><Button data-tour="tour" disabled={constructing} onClick={() => { if (active) close(); setTouring(true) }}>Take the tour</Button>{actions}</div>
+        <div className="workspace-actions" aria-label="Workspace actions"><Button data-tour="tour" disabled={loading || assembling} onClick={() => { if (active) close(); setTouring(true) }}>Take the tour</Button>{actions}</div>
       </div>
     </header>
     {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}
-    <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>{design?.state === 'agent' ? `Designed by Scene Designer: ${scene.reasoning}` : design && design.state !== 'designing' ? scene.reasoning : 'Step closer. Every room tells a story.'}</p></div>
-    {design && !active && homeReady && <DesignStatus design={design}/>}
+    <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>{design?.state === 'agent' ? `Designed by Scene Designer: ${scene.reasoning}` : design ? scene.reasoning : 'Step closer. Every room tells a story.'}</p></div>
+    {design && !active && homeReady && <DesignStatus design={{ ...design, showDesign }}/>}
     {homeReady && activeDepartment && ready && <DepartmentView department={activeDepartment} departments={departments} close={close} select={open}/>}
     {!active && homeReady && <footer className="world-footer"><div className="coordinate"><span>01 — THE WHOLE PICTURE</span><small>{company} · Your business, connected</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">A little closer to everything.</span></footer>}
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}

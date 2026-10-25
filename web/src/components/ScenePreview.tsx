@@ -11,8 +11,8 @@ const Scene = dynamic(() => import('./business/App'), { ssr: false })
 
 /**
  * Development preview of one building type with a chosen number of rooms.
- * With `build` (seconds), the construction site shows first, as if Scene Designer were working,
- * then the building assembles. Infinity keeps the site up.
+ * Every preview opens with the loading screen. With `build` (seconds), the Scene Designer note
+ * shows for that long after it, as if the agent were still working. Infinity keeps the note up.
  */
 export default function ScenePreview({ archetype, rooms, props, build }: { archetype: string; rooms: number; props?: string; build?: number }) {
   const [state, setState] = useState<DesignState>('designing')
