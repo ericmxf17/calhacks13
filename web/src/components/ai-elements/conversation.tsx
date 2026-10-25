@@ -2,6 +2,7 @@
 // Adapted from Vercel AI Elements (Apache-2.0; see ai-elements-LICENSE).
 // Retains the conversation primitives; native themed controls replace shadcn UI.
 import type { ComponentProps } from 'react'
+import { Button } from '@/components/ui/button'
 import { StickToBottom, useStickToBottomContext } from 'use-stick-to-bottom'
 export function Conversation({ className = '', ...props }: ComponentProps<typeof StickToBottom>) {
   return (
@@ -26,14 +27,14 @@ export function ConversationScrollButton() {
   const { isAtBottom, scrollToBottom } = useStickToBottomContext()
   return (
     !isAtBottom && (
-      <button
+      <Button
         className="council-scroll-bottom"
         type="button"
         onClick={() => void scrollToBottom({ animation: 'instant' })}
         aria-label="Scroll to latest message"
       >
         ↓ Latest
-      </button>
+      </Button>
     )
   )
 }

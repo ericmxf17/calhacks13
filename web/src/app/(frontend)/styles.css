@@ -2,6 +2,7 @@
 @import "../../components/business/consul-theme.css";
 @import "../../components/business/onboarding-layout.css";
 @import "../../components/business/business-settings.css";
+@import "../../components/ui/button.css";
 @import "../../components/business/council-panel.css";
 
 /* Shared Consul styling, including borderless glass branding over the scene. */

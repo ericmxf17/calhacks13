@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import AgentAvatar from './AgentAvatar'
+import { Button } from '@/components/ui/button'
 import AgentRunDialog from './AgentRunDialog'
 import { agentCatalog } from '@/lib/agent-catalog'
 import type { AgentConnection, AgentConnectionsResponse, BrowserAgentRole } from '@/lib/agent-run-types'
@@ -85,7 +86,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
         <div className="agents-connection-toolbar">
           <p role="status">{checking ? 'Checking agent connections…' : connectionError
             || `${connections?.agents.filter(agent => agent.connection === 'connected').length ?? 0} of ${agentCatalog.length} agents connected`}</p>
-          <button type="button" onClick={() => setRefreshKey(key => key + 1)} disabled={checking}>Refresh connections</button>
+          <Button onClick={() => setRefreshKey(key => key + 1)} disabled={checking}>Refresh connections</Button>
         </div>
       </header>
       <div className="agents-grid">

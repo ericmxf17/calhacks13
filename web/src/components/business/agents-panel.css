@@ -21,9 +21,6 @@
 .agents-panel-heading h1:focus { outline: none; }
 .agents-connection-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
 .agents-panel-heading .agents-connection-toolbar p { font-size: 12px; }
-.agents-connection-toolbar button { flex-shrink: 0; padding: 7px 10px; border: 1px solid #294b70; border-radius: 5px; color: #294b70; background: #fffdf4; font: inherit; font-size: 12px; cursor: pointer; }
-.agents-connection-toolbar button:disabled { opacity: .6; cursor: wait; }
-.agents-connection-toolbar button:focus-visible { outline: 3px solid #2468d2; outline-offset: 3px; }
 
 .agents-grid {
   display: grid;
@@ -90,3 +87,5 @@
 .agents-panel .agent-avatar-animation { visibility: hidden; pointer-events: none; }
 .agents-panel .agent-avatar[data-animated="true"] .agent-avatar-still { visibility: hidden; }
 .agents-panel .agent-avatar[data-animated="true"] .agent-avatar-animation { visibility: visible; }
+
+.agents-connection-toolbar .ui-button { flex-shrink: 0; }
