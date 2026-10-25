@@ -1,6 +1,6 @@
 # Vercel saved-demo release
 
-Prepared 2026-10-25. No deployment, project linking, environment upload or public URL was created by this preparation.
+Deployed 2026-10-25 at [consul-calhacks13.vercel.app](https://consul-calhacks13.vercel.app). This guide records the saved-demo deployment settings and the boundary between hosted reads and local execution.
 
 ## Deployment boundary
 
@@ -27,10 +27,10 @@ Vercel serves the web interface and reads saved Council results from SpacetimeDB
 | `CONSUL_JUDGE_DEMO=true` | Public entry and account API mode | Build and runtime |
 | `SPACETIMEDB_URL` | HTTPS origin of the archive database host, with no path | Saved Council archive |
 | `SPACETIMEDB_DATABASE` | Published archive database name | Saved Council archive |
-| `SPACETIMEDB_TOKEN` | Server-only token authorized to read saved results | Saved Council archive |
+| `SPACETIMEDB_TOKEN` | Server-only publisher-identity token for the private archive | Saved Council archive |
 | `NEXT_PUBLIC_SITE_URL` | Canonical public site URL | Optional; Vercel URL is the fallback |
 
-SpacetimeDB variables must remain server-only. Never give them a `NEXT_PUBLIC_` prefix. The archive requires a published module, seeded saved sessions, and a read-authorized token. Empty variables produce an unavailable archive, not fabricated live results. The separate SpacetimeDB preparation report records module/seed status.
+SpacetimeDB variables must remain server-only. Never give them a `NEXT_PUBLIC_` prefix. The archive requires a published module, seeded saved sessions, and the publisher-identity token. Empty variables produce an unavailable archive, not fabricated live results. The separate SpacetimeDB preparation report records module/seed status.
 
 Private accounts are a separate deployment capability. The existing Payload adapter uses Figma Content API. Do not disable judge mode until its project, content system, credentials and account persistence have been configured and checked. `web/.env.example` lists the relevant Figma settings, including `PAYLOAD_SECRET`, `FIGMA_EID`, `FIGMA_CONTENT_API_URL`, `FIGMA_CONTENT_API_CONTENT_SYSTEM_ID` and `FIGMA_CONTENT_API_ACCESS_KEY`. The Figma/Payload admin and generic content endpoints are not part of the judge demo and remain unverified without that backend.
 

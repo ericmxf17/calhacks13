@@ -1,194 +1,114 @@
-# Policy impact agent (CalHacks, CREAO track)
+# Consul
 
-Reads any US federal bill, forecasts whether it will pass, calculates what it would cost or save a specific company under each strategy, and writes a one-page brief.
+Consul turns federal policy evidence into a business decision. It combines a company workspace, a bill-analysis pipeline, and a council of AI advisers that debate the evidence before a Chair recommends an action.
 
-## How it works
+[Open the live demo](https://consul-calhacks13.vercel.app) to explore VoltRide, a fictional e-bike company facing battery-policy decisions. The public deployment opens the saved workspace without signup. It serves recorded results; reading a page does not start a paid agent run.
 
-```
-bill number
-  → Agent 1: Bill Analyst      reads the bill, pulls out each requirement          (CREAO)
-  → Agent 2: Researcher        experts, lobbying, past laws, alternatives          (CREAO)
-  → forecast.py                passage probability from real data                  (backend)
-  → Agent 3: Impact Planner    scenarios, rules, and options for this company      (CREAO)
-  → impact.py                  dollars for every option in every scenario          (backend)
-  → Agent 4: Brief Writer      one-page brief with a recommendation                (CREAO)
-  → verify_brief.py            rejects any number not traced to the calculations   (backend)
-```
+## Explore the demo
 
-Rule: **AI reads and writes, code calculates.** Agents never invent probabilities or dollar figures, and `verify_brief.py` checks that they didn't.
+- `/` opens the VoltRide workspace, its interactive 3D building, and business departments.
+- `/demo` lists the available company examples.
+- `/demo/voltride` opens VoltRide directly.
 
-## Consul: a council over your saved evidence
 
-In the running web app, select a company and open **Consul**. Choose completed
-CREAO API run conversations or text artifacts, explicitly assign them to that
-company, enter a question, and run the council. Four real Factory SDK sessions
-speak in order: Finance, Operations responding to Finance, Skeptic challenging
-the earlier positions, and Chair issuing a cited decision. Completed turns and
-source snapshots are saved as they arrive, so closing the panel can recover the
-same council. Reading a saved council never starts another session.
+Open **Consul** in a workspace to inspect the saved debate, decision, and cited evidence. Open the agent cards to read archived CREAO conversations and download their artifacts. The public agent API serves the reviewed dataset in [`web/src/demo-data/agent-evidence.json`](web/src/demo-data/agent-evidence.json), never the provider's full account history.
 
-The implementation uses the [Factory TypeScript SDK](https://docs.factory.com/sdk/typescript)
-with isolated working directories and dedicated calculation, research, and
-visual tools. Native shell and file tools stay disabled. Set `FACTORY_API_KEY`, the native CLI path `DROID_EXECUTABLE`,
-`COUNCIL_MODEL_ID`, and `COUNCIL_REASONING_EFFORT` in `web/.env`, enable
-`ENABLE_LOCAL_AGENT_PREVIEW=true`, and restart the local dev
-server. Existing app-scoped CREAO keys read the selected evidence; no CREAO
-account credential is required. See the [council setup and CLI guide](backend/README.md#consul-council)
-for the API, limits, durable job recovery, and `node scripts/council.mjs setup`.
+The demo separates example inputs from actual execution. Company profiles, supplier assumptions, and some department figures are fictional samples. Other workspace figures derive from the entered company setup. The archive includes six completed CREAO runs with thirteen artifacts, plus saved responses from actual Factory Droid sessions. Model-generated output is still a claim to inspect, even when its execution is real. Saved examples do not establish current legislative status.
 
-Consul checks output shape, citation membership, and literal supporting excerpts
-for numeric claims. Those checks do not establish semantic truth. Inspect each
-cited source and its dates. The optional VoltRide sample is fictional saved
-analysis; other companies can start with their profile alone, with limited
-evidence and no demonstrated bill impact. Actual live council responses require
-a configured Factory key. The [editable Consul design](https://www.figma.com/design/mD2dLj2EvZDrdfv6wpAfLK?node-id=7-9)
-shows the evidence chooser, debate, and decision panel.
+## Bill analysis architecture
 
-## Run the whole chain
+The pipeline divides language work from calculation. CREAO agents extract requirements, research context, propose company strategies, and write a brief. Python calculates passage probabilities and the financial effects of each strategy.
 
-```bash
-python3 backend/pipeline.py hr 973 --companion s389 --demo
+```mermaid
+flowchart TD
+    Bill["Federal bill and company profile"] --> Analyst["CREAO: Bill Analyst"]
+    Analyst --> Researcher["CREAO: Bill Researcher"]
+    Researcher --> Forecast["Python: forecast/forecast.py"]
+    Forecast --> Planner["CREAO: Impact Planner"]
+    Planner --> Impact["Python: impact/impact.py"]
+    Impact --> Writer["CREAO: Brief Writer"]
+    Writer --> Verify["Python: impact/verify_brief.py"]
+    Verify --> Brief["Saved brief, scenarios, and calculations"]
+    Company["company.json"] --> Planner
+    Company --> Impact
+    Model["Historical bill-status model"] --> Forecast
 ```
 
-`--demo` uses saved real outputs from the four CREAO agents, so it finishes in a second with no API keys. Drop `--demo` to call the live agents (each run takes several minutes).
+[`backend/pipeline.py`](backend/pipeline.py) runs this chain and saves each stage. The brief verifier checks numerical support against the supplied analysis and calculation outputs. It does not verify the truth of the original sources or the completeness of an agent's interpretation.
 
-**Live setup:** copy `backend/.env.example` to `backend/.env` and fill in each agent's appId and `capi_` key (create the key on each agent's page in agent.creao.ai). `.env` is gitignored.
+The forecast model uses bill-status snapshots from the 117th and 118th Congresses, covering 31,268 House and Senate bills and 627 enactments. It learns separate models for three legislative stages and uses a fixed estimate after both chambers pass a bill. Signals include time remaining, cosponsors, party control, and companion bills. Historical performance does not establish calibration for every future Congress. Text enacted inside another bill also falls outside the model's bill-level success label.
 
-Each run saves every step in `runs/<bill>-<time>/`, from `1-bill-analysis.json` through `8-brief.json`, plus `summary.json`. If a step fails, fix it and continue with `python3 backend/pipeline.py --resume runs/<folder>`. Finished steps are skipped.
+The impact calculator compares annual profit changes, one-time costs, supplier capacity, certification timing, and readiness across scenarios. Its expected value depends on the forecast and the company's assumptions. It treats products as unsellable while required fixes remain incomplete and omits costs before the rule applies. These are scenario calculations, not verified company accounts.
 
-**Test the live code without keys:** `python3 tests/test_pipeline_live.py` runs the chain against a fake CREAO server and checks that each agent gets the right key and inputs.
+## Council, persistence, and deployment
 
-**To confirm with CREAO:** the client assumes the run endpoints are `POST /api/v1/apps/{appId}/runs` and `GET /api/v1/apps/{appId}/runs/{runId}`, that `inputs` keys match each agent's input names, and that the answer is in `result.text` or a saved `.json` file. If any of these differ, the only file to change is `backend/creao.py`.
+The Council asks four Factory Droid sessions to speak in order. Finance develops a position, Operations responds, Skeptic challenges the preceding positions, and Chair publishes a cited decision. Each later role receives the earlier public responses. The optional CREAO Scene Designer produces the workspace's building design independently of this debate.
 
-## Run the whole pipeline on the sample files
-
-```bash
-python3 forecast/forecast.py agents/hr973-expected-output.json > tests/hr973-forecast.json
-python3 impact/impact.py company.json tests/hr973-impact-plan.json tests/hr973-forecast.json > tests/hr973-impact-results.json
-python3 impact/verify_brief.py tests/hr973-brief.json tests/hr973-forecast.json tests/hr973-impact-results.json company.json tests/hr973-impact-plan.json agents/hr973-expected-output.json
+```mermaid
+flowchart TD
+    Browser["Browser: company workspace and saved evidence"] --> Web["Next.js server on Vercel"]
+    Web --> Curated["Read-only curated CREAO archive"]
+    Web --> Archive["Private SpacetimeDB snapshot tables"]
+    subgraph Local["Local execution host"]
+        Sources["Company profile and selected CREAO evidence"] --> Finance["Droid: Finance"]
+        Finance --> Operations["Droid: Operations"]
+        Operations --> Skeptic["Droid: Skeptic"]
+        Skeptic --> Chair["Droid: Chair"]
+        Tools["Restricted calculation, URL research, and visual tools"] --- Finance
+        Tools --- Operations
+        Tools --- Skeptic
+        Tools --- Chair
+        Chair --> Ledger["Local job ledger and source snapshots"]
+        Designer["CREAO: optional Scene Designer"] --> Scene["Validated building design"]
+    end
+    Ledger -->|"Publisher saves ordered snapshots"| Archive
+    Scene --> Browser
+    Archive -->|"Saved results through server"| Web
 ```
 
-In the real app, the `*-expected-output.json`, `*-impact-plan.json`, and `*-brief.json` files come from the agents instead.
+The SDK runner gives each seat dedicated tools for JavaScript calculations, trusted Python calculations, public HTTPS source reads, and visual artifacts. Native shell, file, and browser capabilities are disabled. JavaScript runs in QuickJS with memory and execution limits. Provider credentials stay on the execution host.
 
-## Folders
+Council validation checks output structure, known citation IDs, and literal supporting excerpts for numeric claims. Those checks establish traceability, not semantic truth. Source text remains available for inspection. Follow-ups retain frozen evidence and require the exact company profile, so a citation cannot silently refer to a different source or company.
 
-| Path | What it is |
-|---|---|
-| `company.json` | Fictional demo company (VoltRide e-bikes). Replace with any company in the same format |
-| `agents/bill-analyst-instructions.md` | Paste into CREAO to make Agent 1 |
-| `agents/bill-analysis-schema.json` | Agent 1's output format |
-| `agents/researcher-instructions.md` | Paste into CREAO to make Agent 2 |
-| `agents/research-schema.json` | Agent 2's output format |
-| `agents/impact-planner-instructions.md` | Paste into CREAO to make Agent 3 |
-| `agents/impact-plan-schema.json` | Agent 3's output format, including every allowed rule, effect, and action |
-| `agents/brief-writer-instructions.md` | Paste into CREAO to make Agent 4 |
-| `agents/brief-schema.json` | Agent 4's output format (what the front end shows) |
-| `agents/hr973-expected-output.json` | A known-correct Agent 1 answer, for testing |
-| `backend/pipeline.py` | Runs the whole chain for one bill, live or `--demo` |
-| `backend/creao.py` | Starts CREAO agent runs, waits for them, and reads their JSON answers |
-| `backend/.env.example` | Where each agent's appId and key go |
-| `impact/impact.py` | Calculates every option under every scenario. No packages needed |
-| `impact/slim_inputs.py` | Shrinks Agent 1 and 2 outputs into Agent 3's inputs |
-| `impact/brief_inputs.py` | Bundles everything into Agent 4's single input |
-| `impact/verify_brief.py` | Flags any number in a brief that didn't come from the inputs |
-| `agents/*-first-message.txt` | Ready-to-paste first chat message for each agent in CREAO |
-| `tests/check_bill_analysis.py`, `check_research.py`, `check_impact_plan.py` | Grade each agent's real output |
-| `tests/agent1-*`, `agent2-*`, `agent3-*`, `agent4-*` | Real outputs from the CREAO agents, all passing |
-| `forecast/forecast.py` | Scores any bill. No packages needed |
-| `forecast/forecast-model.json` | The trained model |
-| `forecast/train_forecast.py` | Retrains the model and backtests it |
-| `forecast/congresses.json` | Which party controls each chamber, per Congress |
-| `tests/` | Four test bills of different types, plus a checklist |
+The local ledger reserves request IDs before execution. Repeated submissions with the same ID and payload recover the existing job. A process restart does not automatically rerun unfinished paid work.
 
-## Run a forecast
+SpacetimeDB preserves full Council snapshots across web deployments. Its tables are private, and its reducer permits writes only from the publisher identity. Immutable ownership and company scope, strictly ordered revisions, and idempotent saves prevent stale or conflicting snapshot updates. This archive does not coordinate distributed workers. The Next.js server holds the archive credential and restricts reads to the appropriate scope or deliberately shared demo sessions.
 
-```bash
-python3 forecast/forecast.py agents/hr973-expected-output.json
+Vercel serves the interface and reads the archive. Python analysis, the Droid CLI, and new paid Council runs remain local. The public release uses `CONSUL_JUDGE_DEMO=true`; signup and private-account deployment require separate backend configuration. ElevenLabs supplies offline narration for the demo video, rather than runtime voice interaction.
+
+## Run locally
+
+Use Node.js 24.22.1 or newer, pnpm 10.26 or 11, and Python 3. From the repository root:
+
+```powershell
+Set-Location web
+pnpm install --frozen-lockfile
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+pnpm dev
 ```
 
-Add Agent 2's output as a second argument to include research adjustments. Research can move the odds by at most x0.5 to x2.0 in total.
+If `web/.env` already exists, keep it instead of copying over it. Open `http://127.0.0.1:3000`. The local development routes `/demo/council` and `/demo/scenes` preview Council layouts and building designs; production disables those routes. The example environment enables the saved-demo entry. Configure the three server-only `SPACETIMEDB_*` values to read a hosted Council archive. Without them, the archive reports unavailable.
 
-## The forecast model
+To run the saved bill pipeline without provider calls, use a second terminal at the repository root:
 
-Trained on **every House and Senate bill from the 117th and 118th Congresses** (31,268 bills, 627 enacted), using official bill status data from govinfo.gov. For each bill, it looks at snapshots at different points in the Congress, so it learns how the odds change as time runs out.
-
-It uses one model per stage (introduced, reported by committee, passed one chamber). Signals:
-- days left in the Congress
-- cosponsors from both parties
-- whether the sponsor's party controls each chamber
-- a matching bill in the other chamber
-- number of cosponsors
-
-**Backtest:** trained on one Congress and tested on the other, it beat the stage-only baseline both times. For bills past committee, its predictions roughly matched reality (for example, bills it gave 5–15% passed 9.5–10.3% of the time). It was overconfident in the 30–50% range for the 117th Congress (predicted 38%, actual 25%).
-
-**Surprising findings from the data:**
-- Bipartisan cosponsors matter most early: x6 odds for bills still in committee.
-- After passing one chamber, a matching bill in the other chamber about doubles the odds.
-- Bills from the House majority party do *worse* after passing the House. Many pass on party lines, then stall in the Senate.
-- Lots of cosponsors stops helping once other signals are counted.
-
-**Limits:**
-- Only counts a bill as enacted if *that bill* becomes law. Bill text that passes inside a larger package counts as a failure, so the model undercounts real policy outcomes.
-- The 119th Congress has one party controlling both chambers, which matches the 117th but not the 118th.
-
-**To retrain** (for example, after adding the 116th Congress), download `BILLSTATUS-{congress}-hr.zip` and `-s.zip` from https://www.govinfo.gov/bulkdata/BILLSTATUS, unzip, and run:
-
-```bash
-python3 forecast/train_forecast.py --data 117=path/to/117 --data 118=path/to/118
+```powershell
+python backend/pipeline.py hr 973 --companion s389 --demo
 ```
 
-## The impact calculator
+This command reuses saved CREAO outputs and writes a new `runs/` folder. To call the live bill agents, configure the per-agent credentials in `backend/.env` from its example and omit `--demo`.
 
-`impact.py` takes Agent 3's plan and calculates, for every option under every scenario:
-- annual profit change once the rule applies
-- one-time costs: certifications, supplier qualification, contract penalties, unsellable stock, and lost sales while fixes finish
-- whether the company is compliant in time, and whether suppliers have enough capacity
-- gross margin compared with the company's target
+For live local Council execution, configure `FACTORY_API_KEY`, `DROID_EXECUTABLE`, `COUNCIL_MODEL_ID`, `COUNCIL_REASONING_EFFORT`, and `ENABLE_LOCAL_AGENT_PREVIEW=true` in the ignored `web/.env`. Configure the app-scoped CREAO keys when selecting provider evidence. Keep credentials out of browser variables and Git. Follow the [backend and Council setup guide](backend/README.md#consul-council) for model discovery, source selection, API commands, and recovery rules.
 
-It then weights the scenarios by probability (from `forecast.py`) to get each option's **expected first-year impact**, plus its **worst case** and whether it's **ready in every pass scenario**.
+## Maintain the project
 
-It handles threat bills (rules the company must meet) and opportunity bills (lower costs, higher demand). Plans can include "wait and react" options that only act if a rule actually arrives.
+| Location | Responsibility |
+| --- | --- |
+| [`web/`](web/) | Next.js interface, 3D workspace, agent API, and Council runner |
+| [`agents/`](agents/) | CREAO instructions and JSON contracts |
+| [`backend/`](backend/) | Python pipeline orchestration and provider client |
+| [`forecast/`](forecast/) | Passage model, training code, and model data |
+| [`impact/`](impact/) | Scenario calculations and brief verification |
+| [`spacetimedb/`](spacetimedb/README.md) | Private snapshot module, adapter contracts, and archive tools |
+| [`company.json`](company.json) | Fictional VoltRide calculation inputs |
 
-**Limits:** costs before the rule applies aren't counted, and while fixes finish, a whole product is treated as unsellable (a worst case).
-
-## Company data format
-
-Any company works if its file has the same structure as `company.json`:
-
-| Section | What it needs |
-|---|---|
-| `products` | `id`, price, annual units, `certifications`, and `components` |
-| `components` | `id`, `part`, `category`, `qty`, and `sourcing`: a list of suppliers, each with unit cost and share (shares add up to 1.0) |
-| `suppliers` | `id`, `certifications`, capacity, and optional `contract` (end date, minimum units, exit penalty) |
-| `inventory` | supplier, which components it can be used in, units, and unit cost |
-| `certification_costs` | cost and weeks to certify a product |
-| `supplier_qualification` | cost and weeks to add a new supplier to a part |
-| `financials` | including `target_gross_margin` |
-
-## Sample results (H.R. 973, VoltRide)
-
-| Option | Expected first-year impact | Worst case | Ready if it passes? |
-|---|---|---|---|
-| Wait, then certify if it passes | -$88K | -$509K | No, too slow in the 7-month case |
-| Pay PowerCell to get certified now | -$217K | -$266K | Yes |
-| Switch after the PowerCell contract ends | -$374K | -$402K | Yes |
-| Switch to certified suppliers now | -$449K | -$477K | Yes ($75K penalty) |
-| Do nothing | -$2.4M | -$5.6M | No |
-
-For H.R. 9041 (an opportunity bill with a 0.3% chance), the calculator correctly says not to spend money now: an employer sales program has a slightly negative expected value.
-
-## Data sources (all free)
-
-- Congress.gov API, needs a free key from api.congress.gov (the test key hits its limit fast)
-- govinfo.gov bill status files, no key needed and a good backup when Congress.gov is rate-limited
-- Lobbying Disclosure API at lda.gov/api/v1, no key needed
-
-## Website (Figma export)
-
-The local backend stores agent jobs, dispatches CREAO runs with per-agent keys,
-and exposes the Python calculations through the web server.
-See [backend setup](backend/README.md) for credentials, job commands, and limits.
-
-The current business health dashboard design lives in [`web/`](web/README.md),
-with its Next.js app, interactive 3D scene, sign-in, and business setup flow.
-The Python forecast and impact pipeline remains in the folders above.
+Read [deployment settings and boundaries](DEPLOYMENT.md) before publishing. Use the [backend guide](backend/README.md) for live agent operations and the [archive guide](spacetimedb/README.md) for persistence changes.
