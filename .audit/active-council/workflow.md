@@ -5,7 +5,7 @@
 - [x] Phase B. Design the workflow.
 - [x] Phase C. Run the loop.
 - [x] Phase D. Keep the audit trail.
-- [ ] Phase E. Verify and hand back.
+- [x] Phase E. Verify and hand back.
 
 ## Designed phases
 
@@ -16,7 +16,7 @@
 - [x] Implement backend tools and UI in disjoint owned files.
 - [x] Verify a real tool-backed Council round, reload recovery, legacy saved turns and UI rendering.
 - [x] Independently review the diff and decision trail.
-- [ ] Open and attach a new PR.
+- [x] Open and attach a new PR.
 
 ## Throughput checkpoint
 
@@ -28,4 +28,5 @@
 ## Done predicate
 
 The Council has visibly distinct avatars and truthful backend model labels. A real Droid session invokes a dedicated tool and the saved result renders inside chat as a usable artifact. Quantitative results come from executed code with recorded inputs and outputs. Existing saved Council rounds still open. The Figma deliverable uses editable layers. The new PR includes verification evidence and explicit limitations.
+
 
