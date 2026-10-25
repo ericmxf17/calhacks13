@@ -1,6 +1,6 @@
 import { Box, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
-import { Shell, SignBand, frame } from './shared'
+import { GroundFloorPosts, Shell, SignBand, frame } from './shared'
 
 function Dock({ x, width }: { x: number; width: number }) {
   const theme = useTheme(), door = Math.min(1.9, width - .5)
@@ -24,7 +24,7 @@ export default function Warehouse(props: ArchetypeProps) {
     {[-(f.half - .2), ...f.mids, f.half - .2].map(x => <Box key={x} at={[x, f.pierY, .72]} size={[x === f.half - .2 || x === -(f.half - .2) ? .4 : 1.75, f.pierHeight, .6]}/>)}
     {f.mids.map(x => <Box key={x} at={[x, f.pierY, 1.03]} size={[.16, f.pierHeight, .06]} color={theme.dark} cast={false}/>)}
     {f.beams.map(y => <group key={y}>
-      <Box at={[0, y, .72]} size={[f.width - .05, .42, .6]}/>
+      <Box at={[0, y, .74]} size={[f.width - .05, .42, .6]}/>
       {[-.1, .1].map(dy => <Box key={dy} at={[0, y + dy, 1.03]} size={[f.width - .05, .025, .02]} color={theme.trim} cast={false}/>)}
     </group>)}
     {/* A low parapet and flat roof. */}
@@ -32,7 +32,7 @@ export default function Warehouse(props: ArchetypeProps) {
     <Box at={[0, f.yTop + 1.44, .02]} size={[f.width + .15, .18, 2.0]} color={theme.roof}/>
     {/* Loading docks in every bay but the last, which holds the office entrance. */}
     <SignBand {...props}/>
-    {f.posts.map(x => <Box key={x} at={[x, 1.13, .94]} size={[.13, 1.83, .16]} color={theme.dark}/>)}
+    <GroundFloorPosts layout={layout}/>
     {f.bays.slice(0, -1).map(bay => <Dock key={bay.x} x={bay.x} width={bay.width}/>)}
     <Box at={[office.x, 1.1, .39]} size={[office.width - .2, 1.7, .2]} color="#eef1f4"/>
     <Box at={[office.x - office.width * .2, 1.0, .98]} size={[.9, 1.75, .07]} color={theme.dark}/>

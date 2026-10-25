@@ -1,6 +1,7 @@
 import { Box, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
-import { Entrance, GlassPane, Shell, SignBand, frame } from './shared'
+import { Entrance, Facade, GlassPane, GroundFloorPosts, Shell, SignBand, frame } from './shared'
+import { cornerPipeSegments } from '../shell-volumes'
 
 function LoadingBay({ x, width }: { x: number; width: number }) {
   const theme = useTheme(), door = width - .3
@@ -37,15 +38,12 @@ export default function Workshop(props: ArchetypeProps) {
   const [first, ...rest] = f.bays, last = rest.pop()
   return <group>
     <Shell layout={layout}/>
-    {/* The facade frame: slim outer piers, wide inner piers with steel ribs, and floor beams. */}
-    {[-(f.half - .245), f.half - .245].map(x => <Box key={x} at={[x, f.pierY, .72]} size={[.5, f.pierHeight, .6]}/>)}
+    <Facade layout={layout}/>
     {f.mids.map(x => <group key={x}>
-      <Box at={[x, f.pierY, .72]} size={[1.75, f.pierHeight, .6]}/>
       {[-.5, 0, .5].map(dx => <Box key={dx} at={[x + dx, f.pierY, 1.04]} size={[.07, f.pierHeight - .2, .05]} color={theme.trim} cast={false}/>)}
     </group>)}
-    {f.beams.map(y => <Box key={y} at={[0, y, .72]} size={[f.width - .05, .42, .6]}/>)}
     {/* Parapet, roof deck and a sawtooth of skylights along the back. */}
-    <Box at={[0, f.yTop + 1.29, .12]} size={[f.width + .05, .12, 2.18]} color={theme.trim}/>
+    <Box at={[0, f.yTop + 1.29, .12]} size={[f.width + .16, .12, 2.18]} color={theme.trim} cast={false}/>
     <Box at={[0, f.yTop + 1.46, .02]} size={[f.width + .2, .2, 2.0]} color={theme.trim}/>
     <Box at={[0, f.yTop + 1.52, -.15]} size={[f.width, .1, 1.65]} color={theme.roof}/>
     {Array.from({ length: teeth }, (_, i) => {
@@ -55,10 +53,11 @@ export default function Workshop(props: ArchetypeProps) {
         <Box at={[x0 + tooth - .03, f.yTop + 1.57 + rise / 2, -.6]} size={[.05, rise, .68]} color="#8fd3e8" cast={false}/>
       </group>
     })}
-    <Box at={[f.half + .03, f.shellTop / 2, .9]} size={[.09, f.shellTop, .09]} color={theme.dark}/>
+    {/* Mount against the side wall, with clear breaks at the trim bands. */}
+    {cornerPipeSegments(f.yTop).map(({ bottom, top }) => <Box key={bottom} at={[f.half + .045, (bottom + top) / 2, .9]} size={[.09, top - bottom, .09]} color={theme.dark} cast={false} receive={false}/>)}
     {/* Ground floor: loading bay on the left, showroom on the right, entrance between (or beside). */}
     <SignBand {...props}/>
-    {f.posts.map(x => <Box key={x} at={[x, 1.13, .94]} size={[.13, 1.83, .16]} color={theme.dark}/>)}
+    <GroundFloorPosts layout={layout}/>
     <LoadingBay x={first.x} width={first.width}/>
     {rest.map(bay => <Entrance key={bay.x} x={bay.x}/>)}
     {last && (rest.length ? <Showroom x={last.x} width={last.width}/> : <>

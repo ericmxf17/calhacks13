@@ -1,4 +1,4 @@
-import { useRef, useState, type RefObject } from 'react'
+import { useMemo, useRef, useState, type RefObject } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { MathUtils, MeshStandardMaterial, type Group } from 'three'
@@ -6,13 +6,15 @@ import type { Department, DepartmentId } from '../departments'
 import type { Vec3 } from './layout'
 import { Box, useTheme } from './parts'
 import RoomFurniture from './furniture'
+import { paneDestination, windowClipPlanes } from './window-pane-motion'
 
 export const settleEpsilon = 1e-4
 
+// Side posts meet the horizontal rails without overlapping their outer faces.
 function Frame() {
   const { trim } = useTheme()
   return <>
-    {[-.59, .59].map(side => <Box key={side} at={[side, 0, -.02]} size={[.12, 1.81, .25]} color={trim}/>)}
+    {[-.59, .59].map(side => <Box key={side} at={[side, 0, -.02]} size={[.12, 1.64, .25]} color={trim}/>)}
     {[-.88, .88].map(side => <Box key={side} at={[0, side, .035]} size={[1.3, .12, .35]} color={trim}/>)}
   </>
 }
@@ -23,10 +25,13 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
   const continuing = useRef(false)
   const invalidate = useThree(state => state.invalidate)
   const theme = useTheme()
+  const [x, y, z] = department.position
+  const side = department.side ?? (index % 2 === 0 ? 'left' : 'right')
+  const clippingPlanes = useMemo(() => windowClipPlanes(x), [x])
   const selected = active === department.id
   useFrame((_, dt) => {
     if (!shutters.current) return
-    const destination = selected ? -1.35 : 0
+    const destination = paneDestination(selected, side)
     // The first frame after idle includes the entire dormant interval in dt.
     const delta = continuing.current ? dt : 1 / 60
     const next = MathUtils.damp(shutters.current.position.x, destination, 6, delta)
@@ -34,8 +39,6 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
     shutters.current.position.x = continuing.current ? next : destination
     if (continuing.current) invalidate()
   })
-  const [x, y, z] = department.position
-  const side = department.side ?? (index % 2 === 0 ? 'left' : 'right')
   // A middle-column label sits on the beam above its room, clear of the window and the sign below.
   const label: Vec3 = active ? [0, -.57, .4] : side === 'center' ? [0, 1.02, .5] : [side === 'left' ? -.77 : .77, -.08, .4]
   return <group position={[x, y, z]}>
@@ -45,15 +48,18 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
     <Frame/>
     <group ref={shutters}>
       <mesh position={[0, 0, .018]} onClick={() => open(department.id)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
-        <boxGeometry args={[1.02, 1.61, .035]}/><meshStandardMaterial color={hovered ? '#a5edff' : '#47a8ce'} transparent opacity={selected ? 0 : .28} roughness={.28} metalness={.2}/>
+        <boxGeometry args={[1.02, 1.61, .035]}/><meshStandardMaterial color={hovered ? '#a5edff' : '#47a8ce'} transparent depthWrite={false} opacity={.28} roughness={.28} metalness={.2} clippingPlanes={clippingPlanes}/>
       </mesh>
-      {!selected && <><Box at={[0, 0, .06]} size={[.045, 1.63, .045]} color={theme.dark}/><Box at={[0, .28, .06]} size={[1.05, .045, .045]} color={theme.dark}/></>}
+      <>
+        <mesh position={[0, 0, .06]} castShadow receiveShadow><boxGeometry args={[.045, 1.63, .045]}/><meshStandardMaterial color={theme.dark} roughness={.84} clippingPlanes={clippingPlanes} clipShadows/></mesh>
+        <mesh position={[0, .28, .06]} castShadow receiveShadow><boxGeometry args={[1.05, .045, .045]}/><meshStandardMaterial color={theme.dark} roughness={.84} clippingPlanes={clippingPlanes} clipShadows/></mesh>
+      </>
     </group>
     {!selected && <Html portal={portal} position={label} center zIndexRange={[20, 10]}><button id={`room-${department.id}`} className={`room-hotspot ${active ? 'room-hotspot-compact' : `label-${side}`}`} onClick={() => open(department.id)} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)} aria-label={`Enter ${department.name}`}><i/><span><small>{active ? 'OPEN ROOM' : `${department.number} / ${department.floor.replace(' FLOOR', '')}`}</small><strong>{department.name}</strong></span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor"/></svg></button></Html>}
   </group>
 }
 
-const blindsGlass = new MeshStandardMaterial({ color: '#47a8ce', transparent: true, opacity: .28, roughness: .28, metalness: .2 })
+const blindsGlass = new MeshStandardMaterial({ color: '#47a8ce', transparent: true, depthWrite: false, opacity: .28, roughness: .28, metalness: .2 })
 
 /** A window in the room grid with no room behind it, shown with its blinds down. */
 export function BlankWindow({ at }: { at: Vec3 }) {

@@ -1,6 +1,7 @@
 import type { Ground, GroundProp, RoofProp } from '@/lib/scene-spec'
 import type { BuildingLayout, Vec3 } from './layout'
 import { Box, Plant, material, useTheme } from './parts'
+import { lotVolumes } from './lot-volumes'
 
 const groundColors: Record<Ground, { base: string; top: string; plaza: string; lines: string }> = {
   lawn: { base: '#529d58', top: '#8cda68', plaza: '#ffe5b2', lines: '#e3b97b' },
@@ -11,15 +12,16 @@ const groundColors: Record<Ground, { base: string; top: string; plaza: string; l
 /** The ground the building stands on, the paved front, and the road. */
 export function Lot({ layout, ground }: { layout: BuildingLayout; ground: Ground }) {
   const c = groundColors[ground], w = layout.lotWidth, plaza = w - 1.7, road = Math.max(12, w + 3.7)
+  const volumes = lotVolumes(w)
   const lanes: number[] = [], paving: number[] = []
   for (let x = -road / 2 + 1; x <= road / 2 - 1 + 1e-9; x += 2) lanes.push(x)
   const n = Math.floor(plaza / 2 - 1.3 + 1e-9)
   for (let x = -n; x <= n; x++) paving.push(x)
   return <>
-    <Box at={[0, -.16, 0]} size={[w, .3, 5.2]} color={c.base}/>
-    <Box at={[0, .005, -.2]} size={[w, .08, 4.8]} color={c.top}/>
-    <Box at={[0, .06, .3]} size={[plaza, .12, 3.7]} color={c.plaza}/>
-    <Box at={[0, -.06, 3.1]} size={[road, .12, 1.3]} color="#718ba2"/>
+    <Box {...volumes.base} color={c.base}/>
+    <Box {...volumes.surface} color={c.top}/>
+    <Box {...volumes.plaza} color={c.plaza}/>
+    <Box {...volumes.road} color="#718ba2"/>
     {lanes.map(x => <Box key={`lane-${x}`} at={[x, .01, 3.1]} size={[.75, .012, .07]} color="#fff6d9"/>)}
     {paving.map(x => <Box key={x} at={[x, .003, 1.9]} size={[.008, .003, .45]} color={c.lines}/>)}
   </>

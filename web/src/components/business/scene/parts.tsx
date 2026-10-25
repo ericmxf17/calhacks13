@@ -27,9 +27,9 @@ export function material(color: string, roughness = .84) {
   return found
 }
 
-export function Box({ at, size, color, cast = true, roughness, rotation }: { at: Vec3; size: Vec3; color?: string; cast?: boolean; roughness?: number; rotation?: Vec3 }) {
+export function Box({ at, size, color, cast = true, receive = true, roughness, rotation }: { at: Vec3; size: Vec3; color?: string; cast?: boolean; receive?: boolean; roughness?: number; rotation?: Vec3 }) {
   const theme = useTheme()
-  return <mesh position={at} scale={size} rotation={rotation} geometry={unitBox} material={material(color ?? theme.body, roughness)} castShadow={cast} receiveShadow/>
+  return <mesh position={at} scale={size} rotation={rotation} geometry={unitBox} material={material(color ?? theme.body, roughness)} castShadow={cast} receiveShadow={receive}/>
 }
 
 export function Sign({ text, tagline = '', background, color, at, width, height = .49 }: { text: string; tagline?: string; background: string; color: string; at: Vec3; width: number; height?: number }) {

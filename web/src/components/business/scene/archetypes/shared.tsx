@@ -1,6 +1,9 @@
+import { useEffect, useMemo } from 'react'
 import { MeshStandardMaterial } from 'three'
+import { createFacadeGeometry } from '../facade-geometry'
+import { facadeDepth, groundPostVolume, shellVolumes, signBandVolume } from '../shell-volumes'
 import type { BuildingLayout, Vec3 } from '../layout'
-import { Box, Sign, useTheme } from '../parts'
+import { Box, Sign, material, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
 
 /** Measurements every building type shares: the room grid's frame and the ground-floor bays. */
@@ -20,7 +23,16 @@ export function frame(layout: BuildingLayout) {
   }
 }
 
-const glass = new MeshStandardMaterial({ color: '#53bdd4', transparent: true, opacity: .34, roughness: .22, metalness: .1 })
+const glass = new MeshStandardMaterial({ color: '#53bdd4', transparent: true, depthWrite: false, opacity: .34, roughness: .22, metalness: .1 })
+
+/** One continuous facade: intersecting column/beam cubes leave competing depth and shadow edges. */
+export function Facade({ layout }: { layout: BuildingLayout }) {
+  const theme = useTheme()
+  const { geometry, centerY } = useMemo(() => createFacadeGeometry({ ...frame(layout), roofBase: layout.rowY[0] + 1.36 }), [layout])
+  useEffect(() => () => geometry.dispose(), [geometry])
+  return <mesh position={[0, centerY, facadeDepth.back]} geometry={geometry} material={material(theme.body)} castShadow receiveShadow/>
+}
+
 export function GlassPane({ at, width, height }: { at: Vec3; width: number; height: number }) {
   return <mesh position={at} scale={[width, height, 1]} material={glass}><planeGeometry/></mesh>
 }
@@ -28,10 +40,12 @@ export function GlassPane({ at, width, height }: { at: Vec3; width: number; heig
 /** The rear shell, the back wall and the trim bands at the ground floor and sign line. */
 export function Shell({ layout }: { layout: BuildingLayout }) {
   const theme = useTheme(), f = frame(layout)
+  const volumes = shellVolumes(f.width, f.shellTop)
   return <>
-    <Box at={[0, (.04 + f.shellTop) / 2, -.4]} size={[f.width, f.shellTop - .04, 1.3]}/>
-    <Box at={[0, (f.shellTop + .04) / 2, -.97]} size={[f.width + .05, f.shellTop + .04, .13]} color={theme.wall}/>
-    {[.16, 2.51].map(y => <Box key={y} at={[0, y, .12]} size={[f.width + .05, .12, 2.18]} color={theme.trim}/>)}
+    <Box {...volumes.body}/>
+    <Box {...volumes.rear} color={theme.wall}/>
+    {/* Stand proud of the rear wall on both sides: equal widths leave coplanar end faces. */}
+    {[.16, 2.51].map(y => <Box key={y} at={[0, y, .12]} size={[f.width + .16, .12, 2.18]} color={theme.trim} cast={false}/>)}
   </>
 }
 
@@ -39,9 +53,15 @@ export function Shell({ layout }: { layout: BuildingLayout }) {
 export function SignBand({ layout, company, sign, width }: ArchetypeProps & { width?: number }) {
   const f = frame(layout)
   return <>
-    <Box at={[0, 2.16, 1]} size={[f.width - .07, .57, .22]}/>
+    <Box {...signBandVolume(f.width)}/>
     <Sign text={company} tagline={sign.tagline} background={sign.background} color={sign.color} at={[0, 2.16, 1.125]} width={width ?? f.width - .5}/>
   </>
+}
+
+/** Posts stop beneath the sign instead of sharing its side faces. */
+export function GroundFloorPosts({ layout }: { layout: BuildingLayout }) {
+  const theme = useTheme(), f = frame(layout)
+  return <>{f.posts.map(x => <Box key={x} {...groundPostVolume(x)} color={theme.dark}/>)}</>
 }
 
 /** A glass entrance door with steps; the frame takes the design's accent color. */

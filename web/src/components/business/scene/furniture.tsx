@@ -1,5 +1,6 @@
 import type { Furniture } from '@/lib/scene-spec'
 import { Box, useTheme } from './parts'
+import { shelfVolumes } from './shelf-volumes'
 
 // Each set fits inside a room (1.03 wide, 1.6 tall, floor at y -.79, back wall at z -.65).
 // Only the original desk casts shadows, so new sets add few shadow draws.
@@ -23,9 +24,10 @@ function Desk({ color, variant }: Props) {
 
 function Shelves({ color }: Props) {
   const { dark } = useTheme()
+  const frame = shelfVolumes()
   return <group>
-    {[-.42, .42].map(x => <Box key={x} at={[x, -.25, -.45]} size={[.05, 1.1, .3]} color={dark} cast={false}/>)}
-    {[-.6, -.25, .1].map(y => <Box key={y} at={[0, y, -.45]} size={[.86, .04, .3]} color={wood} cast={false}/>)}
+    {frame.posts.map(post => <Box key={post.at[0]} {...post} color={dark} cast={false}/>)}
+    {frame.rails.map(rail => <Box key={rail.at[1]} {...rail} color={wood} cast={false}/>)}
     <Box at={[-.2, -.51, -.42]} size={[.22, .14, .22]} color={color} cast={false}/>
     <Box at={[.15, -.16, -.42]} size={[.3, .14, .22]} color="#ffd473" cast={false}/>
     <Box at={[-.1, .18, -.42]} size={[.26, .12, .2]} color={color} cast={false}/>

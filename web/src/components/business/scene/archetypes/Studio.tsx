@@ -14,7 +14,7 @@ export default function Studio(props: ArchetypeProps) {
       <Box at={[x, f.pierY, .72]} size={[.5, f.pierHeight, .6]} color={theme.trim}/>
       <Box at={[x + Math.sign(x) * .2, f.pierY, 1.05]} size={[.08, f.pierHeight, .1]} color={theme.accent} cast={false}/>
     </group>)}
-    {f.beams.map(y => <Box key={y} at={[0, y, .72]} size={[f.width - .05, .3, .6]} color={theme.trim}/>)}
+    {f.beams.map(y => <Box key={y} at={[0, y, .74]} size={[f.width - .05, .3, .6]} color={theme.trim}/>)}
     {/* The glass strip between the room columns. */}
     {f.mids.map(x => <group key={x}>
       <Box at={[x, glassY, .62]} size={[1.75, glassHeight, .4]} color="#7fc6e0"/>

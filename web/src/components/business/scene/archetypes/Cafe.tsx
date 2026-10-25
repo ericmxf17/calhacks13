@@ -1,6 +1,6 @@
 import { Box, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
-import { Entrance, GlassPane, Shell, SignBand, frame } from './shared'
+import { Entrance, GlassPane, GroundFloorPosts, Shell, SignBand, frame } from './shared'
 
 function CafeWindow({ x, width }: { x: number; width: number }) {
   const theme = useTheme(), w = width - .2
@@ -26,7 +26,7 @@ export default function Cafe(props: ArchetypeProps) {
     <Shell layout={layout}/>
     {[-(f.half - .245), f.half - .245].map(x => <Box key={x} at={[x, f.pierY, .72]} size={[.5, f.pierHeight, .6]}/>)}
     {f.mids.map(x => <Box key={x} at={[x, f.pierY, .72]} size={[1.75, f.pierHeight, .6]}/>)}
-    {f.beams.map(y => <Box key={y} at={[0, y, .72]} size={[f.width - .05, .42, .6]} color={theme.trim}/>)}
+    {f.beams.map(y => <Box key={y} at={[0, y, .74]} size={[f.width - .05, .42, .6]} color={theme.trim}/>)}
     {/* Flower boxes under every window in the room grid. */}
     {[...layout.cells.map(c => c.position), ...layout.blanks].map(([x, y]) => <group key={`${x},${y}`}>
       <Box at={[x, y - .98, 1.16]} size={[1.1, .14, .26]} color="#a8643e"/>
@@ -36,7 +36,7 @@ export default function Cafe(props: ArchetypeProps) {
     {[0, 1, 2, 3].map(i => <Box key={i} at={[0, f.yTop + 1.38 + i * .18, .02 - i * .12]} size={[f.width + .3 - i * .1, .18, 2.1 - i * .42]} color={theme.roof}/>)}
     {/* Ground floor: café windows, a door, the awning and a chalkboard. */}
     <SignBand {...props}/>
-    {f.posts.map(x => <Box key={x} at={[x, 1.13, .94]} size={[.13, 1.83, .16]} color={theme.dark}/>)}
+    <GroundFloorPosts layout={layout}/>
     <CafeWindow x={first.x} width={first.width}/>
     {rest.map(bay => <Entrance key={bay.x} x={bay.x}/>)}
     {last && (rest.length ? <CafeWindow x={last.x} width={last.width}/> : <>
