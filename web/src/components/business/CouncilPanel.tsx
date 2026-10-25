@@ -412,7 +412,7 @@ export default function CouncilPanel({
         offset: number
         limit: number
         hasMore: boolean
-      }>(`/api/council?view=sources&role=${role}&offset=${more ? nextOffset : 0}`, {
+      }>(`/api/council?view=sources&role=${role}&offset=${more ? nextOffset : 0}${demoQuery}`, {
         signal: controller.signal,
       })
       if (controller.signal.aborted) return
@@ -439,7 +439,7 @@ export default function CouncilPanel({
     setAssigned(false)
   }
   async function send() {
-    if (previewThread || busy) return
+    if (previewThread || !canSend) return
     const snapshot: SavedCouncil =
       pending && saved
         ? saved
@@ -473,7 +473,7 @@ export default function CouncilPanel({
     setBusy(true)
     setError('')
     try {
-      const result = await councilFetch<CouncilJob>('/api/council', {
+      const result = await councilFetch<CouncilJob>(`/api/council${demoId ? `?demo=${encodeURIComponent(demoId)}` : ''}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(snapshot.request),
@@ -499,7 +499,7 @@ export default function CouncilPanel({
       if (!alive.current) return
       if (
         e instanceof CouncilFetchError &&
-        ([400, 403, 415].includes(e.status) ||
+        ([400, 401, 403, 415, 429].includes(e.status) ||
           [
             'CONTEXT_TOO_LARGE',
             'INPUT_TOO_LARGE',
@@ -569,6 +569,15 @@ export default function CouncilPanel({
     } catch (e) { if (alive.current) setError(e instanceof Error ? e.message : 'Could not open the saved conversation.') }
     finally { if (alive.current) setHistoryBusy(false) }
   }
+  async function checkConnection() {
+    setError('')
+    try {
+      const next = await councilFetch<CouncilSetup>(`/api/council?view=setup${demoQuery}`)
+      if (alive.current) setSetup(next)
+    } catch (error) {
+      if (alive.current) setError(error instanceof Error ? error.message : 'Could not check the council connection.')
+    }
+  }
   const maxRounds = (job?.round ?? 0) >= 4
   const canSend =
     !!setup?.available &&
@@ -602,7 +611,7 @@ export default function CouncilPanel({
           {history.length > 0 && (
             <label className="council-history-label">
               Saved conversations
-              <select aria-label="Saved conversations" value={job?.id ?? ''} disabled={pending || busy || historyBusy} onChange={event => void openConversation(event.target.value)}>
+              <select aria-label="Saved conversations" value={history.find(item => thread?.rounds.some(round => round.id === item.id))?.id ?? ''} disabled={pending || busy || historyBusy} onChange={event => void openConversation(event.target.value)}>
                 <option value="" disabled>Choose a discussion</option>
                 {history.map(item => <option key={item.id} value={item.id}>{item.question.slice(0, 90)}</option>)}
               </select>
@@ -621,7 +630,7 @@ export default function CouncilPanel({
             disabled={!!previewThread || pending || busy}
             onClick={newConversation}
           >
-            {setup?.mode === 'archive' ? 'Clear discussion' : 'New conversation ＋'}
+            New conversation ＋
           </Button>
         </div>
       </header>
@@ -877,13 +886,14 @@ export default function CouncilPanel({
             {!previewThread && setup && !setup.available && (
               <details className="council-setup">
                 <summary>
-                  {setup.mode === 'archive' ? 'Saved demo conversations' : 'Live council is unavailable'} <span>ⓘ</span>
+                  Live council is unavailable <span>ⓘ</span>
                 </summary>
                 <p>
                   {setup.message ||
-                    'Factory is unavailable. Configure the server runtime to start a council.'}{' '}
-                  You can read saved reasoning, decisions, and source evidence.
+                    'The council runner is unavailable. Try checking the connection again shortly.'}{' '}
+                  Saved reasoning, decisions, and source evidence remain available.
                 </p>
+                <Button onClick={() => void checkConnection()}>Check connection</Button>
               </details>
             )}
             <form
@@ -899,11 +909,9 @@ export default function CouncilPanel({
                 value={question}
                 maxLength={2000}
                 rows={2}
-                disabled={pending || busy || maxRounds || setup?.mode === 'archive'}
+                disabled={pending || busy || maxRounds}
                 placeholder={
-                  setup?.mode === 'archive'
-                    ? 'This hosted demo contains completed discussions. Choose one from Saved conversations.'
-                    : maxRounds
+                  maxRounds
                     ? 'Four rounds complete. Start a new conversation to explore another decision.'
                     : pending
                       ? 'Your council is considering the question…'
@@ -935,9 +943,9 @@ export default function CouncilPanel({
             <p className="council-fineprint">
               {previewThread
                 ? 'Preview controls only prefill the composer.'
-                : setup?.mode === 'archive'
-                  ? 'Reading a saved discussion starts no model run. New executions start on the team runner.'
-                : 'Sends your question and shared context to Factory · uses Factory credits. The final call is yours.'}
+                : !setup?.available
+                  ? 'Sending is available when the council runner is connected. You can draft a question here.'
+                : 'Sends your question and shared context to the council runner · uses model credits. The final call is yours.'}
             </p>
           </div>
         </div>
@@ -1068,7 +1076,7 @@ export default function CouncilPanel({
                     Load more
                   </Button>
                 )}
-                {business.company.trim().toLowerCase() === 'voltride' &&
+                {setup?.mode !== 'live' && business.company.trim().toLowerCase() === 'voltride' &&
                   new URL(business.website).hostname === 'voltride.example' && (
                     <label className="council-source-option">
                       <input

@@ -10,11 +10,14 @@ import { councilReadiness, runCouncilRole } from './council-droid'
 import type { CouncilToolEffect } from './council-tools'
 import { resolveCouncilSources } from './council-sources'
 import { councilDemoId } from './council-demo'
-import { councilStoreConfigured, saveCouncilSnapshot } from './council-store'
+import { councilStoreConfigured, saveCouncilSnapshot, readCouncilSnapshot, reserveCouncilSnapshot } from './council-store'
 import { councilModelConfiguration, councilRoles } from './council-model-config'
+import { demoCouncilCatalog } from './demo-council-catalog'
+import { readDemoCouncilThread } from './council-archive'
+import { resolveHostedCouncilSources, validateHostedCouncilSources } from './council-hosted-evidence'
 export { councilSourceOptions } from './council-sources'
 
-type SavedJob = { job: CouncilJob; requestHash: string; sessions: Partial<Record<CouncilRole, string>> }
+type SavedJob = { job: CouncilJob; requestHash: string; sessions: Partial<Record<CouncilRole, string>>; ownerScope?: string }
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const maxRounds = 4
 const maxHistoryBytes = 256 * 1024
@@ -38,6 +41,10 @@ async function saveSnapshot(saved: SavedJob) {
   const temporary = path.join(directory(saved.job.id), `${randomUUID()}.tmp`)
   await writeFile(temporary, JSON.stringify(saved, null, 2), { flag: 'wx', mode: 0o600 })
   await rename(temporary, path.join(directory(saved.job.id), 'job.json'))
+  if (saved.ownerScope) {
+    await saveCouncilSnapshot(saved.ownerScope, saved)
+    return
+  }
   const demoId = councilDemoId(saved.job.business)
   if (demoId && councilStoreConfigured()) {
     try { await saveCouncilSnapshot(`demo:${demoId}`, saved) }
@@ -136,6 +143,63 @@ export async function readCouncilThread(value: unknown): Promise<CouncilThread> 
   }
   return { rootJobId: root.id, rounds }
 }
+
+function hostedScope(owner: string) {
+  if (!/^[a-f0-9]{64}$/.test(owner)) throw new BackendError(400, 'INVALID_OWNER', 'A valid visitor session is required.')
+  return `user:${owner}`
+}
+
+export async function readOwnedCouncilJob(value: unknown, owner: string): Promise<CouncilJob> {
+  const id = jobId(value)
+  const saved = await readCouncilSnapshot(hostedScope(owner), id)
+  if (!saved) throw new BackendError(404, 'JOB_NOT_FOUND', 'This conversation does not belong to this browser session.')
+  if (['resolving', 'running'].includes(saved.job.status) && !owners.has(id) && Date.now() - Date.parse(saved.job.updatedAt) > 20 * 60_000) {
+    saved.job.status = 'interrupted'
+    saved.job.stage = null
+    saved.job.decision = null
+    saved.job.message = 'The runner stopped before this discussion finished. Completed turns are retained. No automatic retry was made; start a new discussion to try again.'
+    saved.job.updatedAt = new Date(Math.max(Date.now(), Date.parse(saved.job.updatedAt) + 1)).toISOString()
+    for (const call of saved.job.toolCalls || []) if (call.status === 'running') { call.status = 'interrupted'; call.completedAt = saved.job.updatedAt; call.error = 'The worker stopped before saving the tool result.' }
+    await saveCouncilSnapshot(hostedScope(owner), saved)
+  }
+  return saved.job
+}
+
+export async function readOwnedCouncilThread(value: unknown, owner: string): Promise<CouncilThread> {
+  hostedScope(owner)
+  const rounds: CouncilJob[] = []
+  const visited = new Set<string>()
+  let id: string | null = jobId(value)
+  while (id) {
+    if (visited.has(id) || rounds.length >= maxRounds) throw new BackendError(409, 'INVALID_COUNCIL_THREAD', 'This discussion has an invalid history.')
+    visited.add(id)
+    const shared = demoCouncilCatalog[id]
+    if (shared) {
+      const thread = await readDemoCouncilThread(shared.demoId, id)
+      rounds.unshift(...thread.rounds)
+      break
+    }
+    const job = await readOwnedCouncilJob(id, owner)
+    rounds.unshift(job)
+    id = job.previousJobId
+  }
+  const root = rounds[0]
+  if (!root || rounds.length > maxRounds || rounds.some((round, index) => round.rootJobId !== root.id || round.round !== index + 1 || canonical(validateBusiness(round.business)) !== canonical(validateBusiness(root.business)) || canonical(round.sources) !== canonical(root.sources))) throw new BackendError(409, 'INVALID_COUNCIL_THREAD', 'The saved discussion has inconsistent company or evidence snapshots.')
+  return { rootJobId: root.id, rounds }
+}
+
+export async function submitOwnedCouncil(raw: unknown, owner: string): Promise<CouncilJob> {
+  const ownerScope = hostedScope(owner)
+  const request = validateRequest(raw)
+  await validateHostedCouncilSources(request.sources)
+  const existing = await readCouncilSnapshot(ownerScope, request.requestId)
+  if (existing) {
+    const hash = createHash('sha256').update(canonical({ request, ownerScope })).digest('hex')
+    if (existing.requestHash !== hash) throw new BackendError(409, 'REQUEST_ID_CONFLICT', 'This ID belongs to a different submission. Keep the original request for recovery.')
+    return readOwnedCouncilJob(request.requestId, owner)
+  }
+  return submitCouncil(request, ownerScope)
+}
 function validateRequest(raw: unknown): CouncilRequest {
   const input = object(raw, 'Council request')
   const requestId = jobId(input.requestId)
@@ -166,7 +230,7 @@ export async function councilSetup() {
 async function execute(saved: SavedJob, request: CouncilRequest, history: CouncilHistoryRound[]) {
   try {
     if (!request.previousJobId) {
-      const sources = await resolveCouncilSources(request.business, request.sources)
+      const sources = saved.ownerScope ? await resolveHostedCouncilSources(request.business, request.sources) : await resolveCouncilSources(request.business, request.sources)
       await commit(saved, () => { saved.job.sources = sources })
     }
     const readiness = await councilReadiness()
@@ -205,24 +269,27 @@ async function execute(saved: SavedJob, request: CouncilRequest, history: Counci
     })
   }
 }
-export async function submitCouncil(raw: unknown): Promise<CouncilJob> {
+export async function submitCouncil(raw: unknown, ownerScope?: string): Promise<CouncilJob> {
   const request = validateRequest(raw)
-  const requestHash = createHash('sha256').update(canonical(request)).digest('hex')
-  await mkdir(dataDirectory(), { recursive: true, mode: 0o700 })
-  // Replay before checking parent eligibility. Recovery must never create a
-  // second paid run because a previously accepted parent is now unavailable.
-  try {
-    await stat(directory(request.requestId))
-    const saved = await readSaved(request.requestId)
-    if (saved.requestHash !== requestHash) throw new BackendError(409, 'REQUEST_ID_CONFLICT', 'This request ID already belongs to a different council submission. Recover the saved job or use a new ID for an intentionally new council.')
-    return readCouncilJob(request.requestId)
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+  const requestHash = createHash('sha256').update(canonical(ownerScope ? { request, ownerScope } : request)).digest('hex')
+  if (!ownerScope) {
+    await mkdir(dataDirectory(), { recursive: true, mode: 0o700 })
+    // Replay before checking parent eligibility. Recovery must never create a
+    // second paid run because a previously accepted parent is now unavailable.
+    try {
+      await stat(directory(request.requestId))
+      const saved = await readSaved(request.requestId)
+      if (saved.ownerScope !== ownerScope) throw new BackendError(404, 'JOB_NOT_FOUND', 'This request belongs to another session.')
+      if (saved.requestHash !== requestHash) throw new BackendError(409, 'REQUEST_ID_CONFLICT', 'This request ID already belongs to a different council submission. Recover the saved job or use a new ID for an intentionally new council.')
+      return readCouncilJob(request.requestId)
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+    }
   }
   let previous: CouncilJob | null = null
   let history: CouncilHistoryRound[] = []
   if (request.previousJobId) {
-    const thread = await readCouncilThread(request.previousJobId)
+    const thread = ownerScope ? await readOwnedCouncilThread(request.previousJobId, ownerScope.slice(5)) : await readCouncilThread(request.previousJobId)
     previous = thread.rounds.at(-1)!
     if (previous.status !== 'completed') throw new BackendError(409, 'PREVIOUS_COUNCIL_NOT_COMPLETE', 'Wait for the previous round to complete. Failed or interrupted rounds require a new thread.')
     if (canonical(request.business) !== canonical(validateBusiness(previous.business))) throw new BackendError(409, 'COUNCIL_COMPANY_CHANGED', 'Follow-ups require the exact saved company profile. Start a new thread for the edited profile.')
@@ -230,18 +297,31 @@ export async function submitCouncil(raw: unknown): Promise<CouncilJob> {
     history = thread.rounds.map(({ id, question, turns, decision, createdAt, artifacts, toolEvidence }) => ({ id, question, turns, decision, createdAt, artifacts: artifacts?.map(artifact => artifact.kind === 'html' ? { ...artifact, html: '[Saved custom HTML omitted from context]' } : artifact), toolEvidence }))
     if (Buffer.byteLength(JSON.stringify(history)) > maxHistoryBytes) throw new BackendError(413, 'CONTEXT_TOO_LARGE', 'Saved council history exceeds 256 KiB. Start a new thread; no history was silently removed.')
   }
-  try { await mkdir(directory(request.requestId), { mode: 0o700 }) }
-  catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
-    const saved = await readSaved(request.requestId)
-    if (saved.requestHash !== requestHash) throw new BackendError(409, 'REQUEST_ID_CONFLICT', 'This request ID already belongs to a different council submission. Recover the saved job or use a new ID for an intentionally new council.')
-    return readCouncilJob(request.requestId)
-  }
-  // Reserve before any provider operation. An uncertain write/dispatch outcome
-  // leaves this directory in place, so another POST cannot dispatch it again.
-  await writeFile(path.join(directory(request.requestId), 'reservation.json'), JSON.stringify({ requestHash }), { flag: 'wx', mode: 0o600 })
   const now = new Date().toISOString()
   const saved: SavedJob = { requestHash, sessions: {}, job: { id: request.requestId, previousJobId: previous?.id ?? null, rootJobId: previous?.rootJobId ?? request.requestId, round: previous ? previous.round + 1 : 1, business: request.business, businessKey: councilBusinessKey(request.business), question: request.question, status: 'resolving', stage: null, artifacts: [], toolCalls: [], toolEvidence: [], speakers: {}, sources: previous ? structuredClone(previous.sources) : [], turns: [], decision: null, message: null, createdAt: now, updatedAt: now } }
+  if (ownerScope) {
+    saved.ownerScope = ownerScope
+    try { await reserveCouncilSnapshot(ownerScope, saved) }
+    catch (error) {
+      const existing = await readCouncilSnapshot(ownerScope, request.requestId)
+      if (existing?.requestHash === requestHash) return existing.job
+      throw error
+    }
+    // A rejected shared reservation leaves no local tombstone that could
+    // block the same request after capacity or connectivity recovers.
+    await mkdir(directory(request.requestId), { recursive: true, mode: 0o700 })
+    await writeFile(path.join(directory(request.requestId), 'reservation.json'), JSON.stringify({ requestHash }), { mode: 0o600 })
+  } else {
+    try { await mkdir(directory(request.requestId), { mode: 0o700 }) }
+    catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
+      const saved = await readSaved(request.requestId)
+      if (saved.ownerScope !== ownerScope) throw new BackendError(404, 'JOB_NOT_FOUND', 'This request belongs to another session.')
+      if (saved.requestHash !== requestHash) throw new BackendError(409, 'REQUEST_ID_CONFLICT', 'This request ID already belongs to a different council submission. Recover the saved job or use a new ID for an intentionally new council.')
+      return readCouncilJob(request.requestId)
+    }
+    await writeFile(path.join(directory(request.requestId), 'reservation.json'), JSON.stringify({ requestHash }), { flag: 'wx', mode: 0o600 })
+  }
   // Publish ownership before the first awaited state write, so GET cannot
   // mistake an active reservation for a runner lost in a process restart.
   let start!: () => void

@@ -35,7 +35,14 @@ async function request(endpoint: string, body: string, contentType: string) {
   } catch {
     throw new BackendError(503, 'COUNCIL_STORE_UNAVAILABLE', 'The saved council archive is unreachable. Retry when SpacetimeDB is available.')
   }
-  if (!response.ok) throw new BackendError(503, 'COUNCIL_STORE_FAILED', `The saved council archive rejected the operation (HTTP ${response.status}). Check its server configuration and module logs.`)
+  if (!response.ok) {
+    if (endpoint === 'call/reserve_council_snapshot') {
+      const detail = await response.text()
+      if (detail.includes('COUNCIL_RATE_LIMIT')) throw new BackendError(429, 'COUNCIL_RATE_LIMIT', 'The live council has reached its current execution limit. Try again after an active discussion finishes or the daily allowance resets at UTC midnight.')
+      if (detail.includes('COUNCIL_REQUEST_EXISTS')) throw new BackendError(409, 'REQUEST_ID_CONFLICT', 'This request ID is already reserved. Read its saved state before retrying.')
+    }
+    throw new BackendError(503, 'COUNCIL_STORE_FAILED', `The saved council archive rejected the operation (HTTP ${response.status}). Check its server configuration and module logs.`)
+  }
   return response
 }
 async function snapshots(query: string): Promise<SavedCouncilSnapshot[]> {
@@ -54,6 +61,14 @@ export async function saveCouncilSnapshot(owner: string, saved: SavedCouncilSnap
   const snapshot = JSON.stringify(saved)
   if (Buffer.byteLength(snapshot) > 2 * 1024 * 1024) throw new BackendError(413, 'COUNCIL_SNAPSHOT_TOO_LARGE', 'Saved council snapshots must be smaller than 2 MiB.')
   await request('call/save_council_snapshot', JSON.stringify([owner, snapshot]), 'application/json')
+}
+export async function reserveCouncilSnapshot(owner: string, saved: SavedCouncilSnapshot): Promise<void> {
+  ownerScope(owner)
+  const bounded = (key: string, fallback: number, maximum: number) => {
+    const value = Number(process.env[key] || fallback)
+    return Number.isSafeInteger(value) && value > 0 && value <= maximum ? value : fallback
+  }
+  await request('call/reserve_council_snapshot', JSON.stringify([owner, JSON.stringify(saved), bounded('COUNCIL_DAILY_ROUND_LIMIT', 40, 1000), bounded('COUNCIL_CONCURRENT_LIMIT', 2, 8)]), 'application/json')
 }
 export async function readCouncilSnapshot(owner: string, id: string): Promise<SavedCouncilSnapshot | null> {
   const rows = await snapshots(`SELECT snapshot_json FROM council_snapshot WHERE owner_scope = ${literal(ownerScope(owner))} AND run_id = ${literal(runId(id))}`)
