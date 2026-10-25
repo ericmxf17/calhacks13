@@ -7,7 +7,6 @@ export type { AgentRole } from './agent-catalog'
 
 const baseURL = 'https://agent.creao.ai/api/v1'
 const credentials = {
-  'test-agent': ['CREAO_TEST_AGENT_ID', 'CREAO_TEST_AGENT_API_KEY'],
   'bill-analyst': ['CREAO_BILL_ANALYST_ID', 'CREAO_BILL_ANALYST_API_KEY'],
   researcher: ['CREAO_RESEARCHER_ID', 'CREAO_RESEARCHER_API_KEY'],
   'impact-planner': ['CREAO_IMPACT_PLANNER_ID', 'CREAO_IMPACT_PLANNER_API_KEY'],

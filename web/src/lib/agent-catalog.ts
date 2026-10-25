@@ -5,7 +5,6 @@ export const agentCatalog = [
   { role: 'impact-planner', name: 'Bill Impact Planner', description: 'Builds company-specific scenarios and options to evaluate their business impact.', avatar: 'impact-planner' },
   { role: 'brief-writer', name: 'Brief Writer', description: 'Turns the analysis, research, and company impact into a concise decision brief.', avatar: 'researcher' },
   { role: 'scene-designer', name: 'Scene Designer', description: 'Designs each new company’s 3D building and rooms from its profile.', avatar: 'impact-planner' },
-  { role: 'test-agent', name: 'Test Agent', description: 'A general research agent for trying out the CREAO connection.', avatar: 'test-agent' },
 ] as const
 
 export type AgentRole = typeof agentCatalog[number]['role']

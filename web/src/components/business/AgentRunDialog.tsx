@@ -7,7 +7,7 @@ import type { AgentRunDetail, AgentRunsResponse, ArchivedAgentEvidence, Artifact
 import './agent-run-dialog.css'
 
 type AgentRunDialogProps = {
-  agent: { name: string; role: BrowserAgentRole | null; avatar: { still: string; animated: string } }
+  agent: { name: string; role: BrowserAgentRole; avatar: { still: string; animated: string } }
   reducedMotion: boolean
   onClose: () => void
 }
@@ -159,10 +159,6 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
   }, [])
 
   useEffect(() => {
-    if (!agent.role) {
-      setListLoading(false)
-      return
-    }
     const controller = new AbortController()
     setListLoading(true)
     setListError(null)
@@ -195,7 +191,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
   }, [agent.role, offset, refreshKey])
 
   useEffect(() => {
-    if (!agent.role || !selectedRunId) {
+    if (!selectedRunId) {
       setDetail(null)
       setDetailLoading(false)
       setDetailError(null)
@@ -256,7 +252,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
       <AgentAvatar stillSrc={agent.avatar.still} animatedSrc={agent.avatar.animated} reducedMotion={reducedMotion} />
       <div className="agent-run-identity"><h2>{agent.name}</h2><p>CREAO API run history, output and files</p></div>
       <span className={`agent-run-connection ${connection === 'connected' ? 'is-connected' : ''}`}>
-        {agent.role !== null && <span aria-hidden="true" />}{agent.role === null ? 'Placeholder' : archive ? 'Saved runs' : connection === 'connected' ? 'Connected' : connection === 'not_configured' ? 'Not connected' : listError ? 'Connection unavailable' : 'Checking connection'}
+        <span aria-hidden="true" />{archive ? 'Saved runs' : connection === 'connected' ? 'Connected' : connection === 'not_configured' ? 'Not connected' : listError ? 'Connection unavailable' : 'Checking connection'}
       </span>
       <button type="button" className="agent-run-close" aria-label="Close run history" onClick={onClose}>×</button>
     </header>
@@ -289,9 +285,9 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
               {runs?.map(run => <option key={run.id} value={run.id}>{formatDate(run.createdAt)} · {run.id.slice(0, 8)}</option>)}
             </select>
           </label>
-          {agent.role !== null && <button type="button" className="agent-run-refresh" onClick={() => setRefreshKey(key => key + 1)} disabled={listLoading}>
+          <button type="button" className="agent-run-refresh" onClick={() => setRefreshKey(key => key + 1)} disabled={listLoading}>
             {listLoading && runs ? 'Refreshing…' : 'Refresh'}
-          </button>}
+          </button>
         </div>
         {runs && connection === 'connected' && <nav className="agent-run-mobile-pagination" aria-label="Run history pages">
           <button type="button" onClick={() => setOffset(Math.max(0, offset - pageSize))} disabled={offset === 0 || listLoading}>Previous</button>
@@ -299,11 +295,10 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
           <button type="button" onClick={() => setOffset(offset + pageSize)} disabled={!hasNextPage || listLoading}>Next</button>
         </nav>}
 
-        {agent.role === null && <section className="agent-run-message"><h3>Concept agent</h3><p>This concept has no connected agent and cannot run tasks.</p></section>}
         {listError && <p className="agent-run-error" role="alert">{listError} {runs && 'Showing the last loaded history.'}</p>}
         {connection === 'not_configured' && <section className="agent-run-message"><h3>Agent not connected</h3><p>{agent.name} is not configured for run history yet.</p></section>}
-        {agent.role && connection === null && !listError && <p className="agent-run-muted">Checking the agent connection…</p>}
-        {agent.role && connection === 'connected' && runs?.length === 0 && !listLoading && <section className="agent-run-message"><h3>No API runs on this page</h3><p>Runs started through the CREAO API will appear here, along with their output and artifacts. Conversations started on the CREAO website are not included.</p></section>}
+        {connection === null && !listError && <p className="agent-run-muted">Checking the agent connection…</p>}
+        {connection === 'connected' && runs?.length === 0 && !listLoading && <section className="agent-run-message"><h3>No API runs on this page</h3><p>Runs started through the CREAO API will appear here, along with their output and artifacts. Conversations started on the CREAO website are not included.</p></section>}
         {detailError && <p className="agent-run-error" role="alert">{detailError} {visibleDetail && 'Showing the last loaded details.'}</p>}
 
         {visibleDetail && <>
@@ -336,7 +331,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
             </section>
           </div>
         </>}
-        {agent.role && connection === 'connected' && selectedRunId && !visibleDetail && !detailError && detailLoading && <p className="agent-run-muted">Loading selected run…</p>}
+        {connection === 'connected' && selectedRunId && !visibleDetail && !detailError && detailLoading && <p className="agent-run-muted">Loading selected run…</p>}
       </div>
     </div>
   </dialog>

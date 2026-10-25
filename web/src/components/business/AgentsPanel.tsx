@@ -9,29 +9,18 @@ import type { AgentConnection, AgentConnectionsResponse, BrowserAgentRole } from
 import './agents-panel.css'
 
 type AgentAvatar = { still: string; animated: string }
-const avatars = {
-  analyst: { still: '/agents/bill-analyst.svg', animated: '/agents/bill-analyst-animated.svg' },
-  researcher: { still: '/agents/researcher.svg', animated: '/agents/researcher-animated.svg' },
-  planner: { still: '/agents/impact-planner.svg', animated: '/agents/impact-planner-animated.svg' },
-  test: { still: '/agents/test-agent.svg', animated: '/agents/test-agent-animated.svg' },
-} satisfies Record<string, AgentAvatar>
 
 type AgentCard = {
   id: string
   name: string
   description: string
   avatar: AgentAvatar
-} & ({ kind: 'creao'; role: BrowserAgentRole } | { kind: 'placeholder'; role?: never })
+  role: BrowserAgentRole
+}
 
-const agents: AgentCard[] = [
-  ...agentCatalog.map(agent => ({ id: agent.role, name: agent.name, description: agent.description,
+const agents: AgentCard[] = agentCatalog.map(agent => ({ id: agent.role, name: agent.name, description: agent.description,
     avatar: { still: `/agents/${agent.avatar}.svg`, animated: `/agents/${agent.avatar}-animated.svg` },
-    kind: 'creao' as const, role: agent.role })),
-  { id: 'finance-scout', name: 'Finance Scout', description: 'Concept only. No finance runs or account connection.', avatar: avatars.analyst, kind: 'placeholder' },
-  { id: 'people-partner', name: 'People Partner', description: 'Concept only. No hiring runs or account connection.', avatar: avatars.researcher, kind: 'placeholder' },
-  { id: 'supply-watch', name: 'Supply Watch', description: 'Concept only. No supplier monitoring or run connection.', avatar: avatars.planner, kind: 'placeholder' },
-  { id: 'market-monitor', name: 'Market Monitor', description: 'Concept only. No market monitoring or run connection.', avatar: avatars.test, kind: 'placeholder' },
-]
+    role: agent.role }))
 
 function isConnectionsResponse(value: unknown): value is AgentConnectionsResponse {
   if (!value || typeof value !== 'object' || !('agents' in value) || !Array.isArray(value.agents)) return false
@@ -53,7 +42,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const archive = connections?.evidence?.mode === 'archive'
-  const visibleAgents = archive ? agents.filter(agent => agent.kind === 'creao' && connections?.agents.some(item => item.role === agent.role && item.connection === 'connected')) : agents
+  const visibleAgents = archive ? agents.filter(agent => connections?.agents.some(item => item.role === agent.role && item.connection === 'connected')) : agents
 
   useEffect(() => { heading.current?.focus() }, [])
   useEffect(() => {
@@ -92,15 +81,16 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
           <Button onClick={() => setRefreshKey(key => key + 1)} disabled={checking}>{archive ? 'Reload saved runs' : 'Refresh connections'}</Button>
         </div>
       </header>
+      {archive && visibleAgents.length === 0 && <p role="status">No saved agent runs are available.</p>}
       <div className="agents-grid">
         {visibleAgents.map((agent, index) => {
           const connection = connections?.agents.find(item => item.role === agent.role)?.connection
           return <article className="agent-card" key={agent.id} data-tour={agent.id === 'brief-writer' ? 'brief-writer' : undefined} style={{ '--card-index': index } as CSSProperties}>
           <div className="agent-card-topline">
-            {agent.kind === 'creao' && <span className="agent-connection" data-connection={checking ? 'checking' : connection}>
+            <span className="agent-connection" data-connection={checking ? 'checking' : connection}>
               {checking ? 'Checking…' : archive && connection === 'connected' ? 'Saved runs' : connection ? connectionLabels[connection] : 'Status unavailable'}
-            </span>}
-            <span className={`agent-kind agent-kind-${agent.kind}`}>{agent.kind === 'creao' ? 'CREAO agent' : 'Placeholder'}</span>
+            </span>
+            <span className="agent-kind">CREAO agent</span>
           </div>
           <AgentAvatar stillSrc={agent.avatar.still} animatedSrc={agent.avatar.animated} reducedMotion={reducedMotion}/>
           <h2><button type="button" className="agent-card-trigger" aria-haspopup="dialog" onClick={() => setSelectedAgent(agent)}>{agent.name}</button></h2>
@@ -108,6 +98,6 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
         </article>})}
       </div>
     </div>
-    {selectedAgent && <AgentRunDialog key={selectedAgent.id} agent={{ name: selectedAgent.name, role: selectedAgent.kind === 'creao' ? selectedAgent.role : null, avatar: selectedAgent.avatar }} reducedMotion={reducedMotion} onClose={() => setSelectedAgent(null)}/>}
+    {selectedAgent && <AgentRunDialog key={selectedAgent.id} agent={selectedAgent} reducedMotion={reducedMotion} onClose={() => setSelectedAgent(null)}/>}
   </section>
 }
