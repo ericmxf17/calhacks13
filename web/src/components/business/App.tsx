@@ -57,7 +57,7 @@ function DepartmentView({ department: d, departments, close, select }: { departm
   const values = d.chartValues ?? [], labels = d.chartLabels ?? [], rows = d.rows ?? [], unit = d.unit ?? ''
   const top = values.length ? Math.max(...values) : 0
   const heading = useRef<HTMLHeadingElement>(null)
-  useEffect(() => { heading.current?.focus() }, [id])
+  useEffect(() => { heading.current?.focus({ preventScroll: true }) }, [id])
   return <section className="department-view" aria-labelledby="room-title" key={id}>
     <div className="room-topline"><span className="section-kicker">{d.floor} / {d.number}</span><span className="period">{d.period ?? 'This month · May 2025'}</span></div>
     <nav className="room-switcher" aria-label="Explore another room"><span className="room-switcher-label">Explore rooms</span><div>{departments.map(item => <Button aria-pressed={item.id === id} key={item.id} onClick={() => select(item.id)}>{item.shortName}{item.id !== id && <Arrow />}</Button>)}</div></nav>
