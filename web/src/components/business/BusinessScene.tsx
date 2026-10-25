@@ -14,6 +14,7 @@ import Birds from './scene/Birds'
 import { viewTurn, type BusinessView } from './scene/view-turn'
 import { clearScenePosition } from './scene/view-framing'
 import { groundShadowY } from './scene/lot-volumes'
+import { homeCameraPose } from './scene/home-camera-pose'
 
 export type { BusinessView } from './scene/view-turn'
 type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; onSiteShown?: () => void; assembling?: boolean; onAssembled?: () => void; onDrawn?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
@@ -33,7 +34,7 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
   // A new building frames Home differently, so the Home angle is measured again before the next swing.
   useEffect(() => { if (currentView.current === 'home') homeQuaternion.current = null }, [layout.key])
   const initialHomeReported = useRef(false)
-  const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; destination: Vector3; zoom: number; elapsed: number; complete: boolean } | null>(null)
+  const swing = useRef<{ from: Quaternion; to: Quaternion; position: Vector3; destination: Vector3; zoom: number; destinationZoom: number; homeTarget: Vector3 | null; elapsed: number; complete: boolean } | null>(null)
   useEffect(() => {
     if (requestedView !== 'home' || active || reducedMotion) return
     // App updates the pointer ref at the React root before this window listener.
@@ -59,14 +60,17 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
     const orthographic = camera as OrthographicCamera
     if (currentView.current !== requestedView) {
       interactive.current = false
-      if (currentView.current === 'home') homePosition.current.copy(camera.position)
+      if (currentView.current === 'home') {
+        homePosition.current.copy(camera.position)
+        homeQuaternion.current = camera.quaternion.clone()
+      }
       currentView.current = requestedView
       if (!homeQuaternion.current) homeQuaternion.current = camera.quaternion.clone()
-      const destination = homeQuaternion.current.clone()
-      destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), viewTurn(requestedView)))
+      const home = requestedView === 'home' ? homeCameraPose(layout, size, pointer.current, reducedMotion) : null
+      const destination = home ? home.rotation : homeQuaternion.current.clone().premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), viewTurn(requestedView)))
       // Every request starts at the rendered pose, including reversals mid-swing.
-      const destinationPosition = requestedView === 'home' ? homePosition.current.clone() : clearScenePosition(homePosition.current, destination, size.width, orthographic.zoom, layout.lotWidth, layout.top, requestedView === 'agents' ? -1 : 1)
-      swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), destination: destinationPosition, zoom: orthographic.zoom, elapsed: 0, complete: false }
+      const destinationPosition = home ? home.position : clearScenePosition(homePosition.current, destination, size.width, orthographic.zoom, layout.lotWidth, layout.top, requestedView === 'agents' ? -1 : 1)
+      swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), destination: destinationPosition, zoom: orthographic.zoom, destinationZoom: home?.zoom ?? orthographic.zoom, homeTarget: home?.target ?? null, elapsed: 0, complete: false }
     }
     const transition = swing.current
     if (transition && !transition.complete) {
@@ -74,8 +78,9 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
       const progress = reducedMotion ? 1 : Math.min(transition.elapsed / .9, 1)
       const eased = progress * progress * (3 - 2 * progress)
       camera.position.lerpVectors(transition.position, transition.destination, eased)
-      if (orthographic.zoom !== transition.zoom) {
-        orthographic.zoom = transition.zoom
+      const nextZoom = MathUtils.lerp(transition.zoom, transition.destinationZoom, eased)
+      if (orthographic.zoom !== nextZoom) {
+        orthographic.zoom = nextZoom
         orthographic.updateProjectionMatrix()
       }
       camera.quaternion.slerpQuaternions(transition.from, transition.to, eased)
@@ -84,9 +89,10 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
         initialHomeReported.current = true
         interactive.current = requestedView === 'home'
         position.current.copy(camera.position)
+        if (transition.homeTarget) target.current.copy(transition.homeTarget)
         settledCallback.current(requestedView)
       }
-      // Returning Home resumes its position/target damping after the rotation.
+      // Home resumes damping from the exact landing pose, including its look-at target.
       continuing.current = progress < 1 || requestedView === 'home'
       if (continuing.current) invalidate()
       return
@@ -101,15 +107,20 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
     const mobile = size.width < 760
     const room = departments.find(d => d.id === active)
     const amount = reducedMotion ? 1 : 1 - Math.exp(-delta * 4)
+    let zoom: number
     if (room) {
       const direction = room.side === 'left' || (!room.side && room.position[0] < 0) ? -1 : 1
       focus.current.set(room.position[0] + (mobile ? .05 : direction * 1.7), room.position[1] - (mobile ? .4 : .2), .6)
       view.current.copy(focus.current).add(new Vector3(mobile ? 1.6 : direction * 1.6, 1.2, 13))
+      // Every room uses the original building's close-up scale.
+      const fit = Math.min(size.height / (mobile ? 12 : 10.8), size.width / (mobile ? 9 : 15.5))
+      zoom = fit * (mobile ? 1.55 : 1.9)
     } else {
       // Frame the whole building; bigger buildings are centered higher and seen from further out.
-      const [x, y] = layout.homeTarget
-      focus.current.set(mobile ? x + .25 : x, y, 0)
-      view.current.set(x + 7.55 + (reducedMotion ? 0 : pointer.current.x * .9), y + 3.2 - (reducedMotion ? 0 : pointer.current.y * .55), 17)
+      const home = homeCameraPose(layout, size, pointer.current, reducedMotion)
+      focus.current.copy(home.target)
+      view.current.copy(home.position)
+      zoom = home.zoom
     }
     target.current.lerp(focus.current, amount); position.current.lerp(view.current, amount)
     const targetSettled = target.current.distanceToSquared(focus.current) <= settleEpsilon ** 2
@@ -117,9 +128,6 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
     if (targetSettled) target.current.copy(focus.current)
     if (positionSettled) position.current.copy(view.current)
     camera.position.copy(position.current); camera.lookAt(target.current)
-    // Room close-ups use the original building's zoom, so every room looks the same size.
-    const fit = (scale: number) => Math.min(size.height / ((mobile ? 12 : 10.8) * scale), size.width / ((mobile ? 9 : 15.5) * scale))
-    const zoom = room ? fit(1) * (mobile ? 1.55 : 1.9) : fit(layout.scale)
     const dampedZoom = MathUtils.lerp(orthographic.zoom, zoom, amount)
     const zoomSettled = Math.abs(dampedZoom - zoom) <= settleEpsilon
     const nextZoom = zoomSettled ? zoom : dampedZoom
