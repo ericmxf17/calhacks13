@@ -160,7 +160,7 @@ export default function BusinessScene(props: Props) {
   const open = (id: DepartmentId) => { if (props.view === 'home' && interactive.current) props.open(id) }
   const s = layout.scale
   // offsetSize measures the layout size, ignoring the scene layer's fade-in scale, so the canvas renders at full resolution.
-  return <><div ref={portal} className="hotspot-layer" style={props.assembling ? { visibility: 'hidden' } : undefined}/><Canvas resize={{ offsetSize: true }} frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 2]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
+  return <><div ref={portal} className="hotspot-layer" style={props.assembling ? { visibility: 'hidden' } : undefined}/><Canvas resize={{ offsetSize: true }} frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 2]} fallback={props.fallback} gl={{ antialias: true, alpha: true }} onCreated={({ gl }) => { gl.localClippingEnabled = true }}>
     <color attach="background" args={['#dcf5fc']}/>
     <fog attach="fog" args={['#dcf5fc', 28, 65]}/>
     <ambientLight intensity={1.1}/>
