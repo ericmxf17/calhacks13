@@ -28,8 +28,8 @@ source snapshots are saved as they arrive, so closing the panel can recover the
 same council. Reading a saved council never starts another session.
 
 The implementation uses the [Factory TypeScript SDK](https://docs.factory.com/sdk/typescript)
-with isolated working directories, disabled tools, autonomy Off, and cancelled
-permissions. Set `FACTORY_API_KEY`, the native CLI path `DROID_EXECUTABLE`,
+with isolated working directories and dedicated calculation, research, and
+visual tools. Native shell and file tools stay disabled. Set `FACTORY_API_KEY`, the native CLI path `DROID_EXECUTABLE`,
 `COUNCIL_MODEL_ID`, and `COUNCIL_REASONING_EFFORT` in `web/.env`, enable
 `ENABLE_LOCAL_AGENT_PREVIEW=true`, and restart the local dev
 server. Existing app-scoped CREAO keys read the selected evidence; no CREAO

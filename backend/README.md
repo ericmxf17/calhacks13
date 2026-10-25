@@ -285,27 +285,68 @@ coherent `tests/agent1-hr973.json`, `agent2-hr973.json`, `agent3-hr973.json`,
 `agent3-hr973-results.json`, and `agent4-hr973-brief.json` fixtures. These are
 fictional saved analyses, not a live or latest legislative update.
 
-Each session uses an empty isolated temporary working directory and isolated
-Factory home, a replacement role prompt, no configured MCP servers, disabled
-builtin skills, autonomy Off, cancelled permissions and cancelled user prompts.
-The SDK's complete available tool list is disabled before the first message.
+Each session uses an isolated temporary working directory and Factory home,
+a role prompt, disabled builtin skills, autonomy Off, and cancelled user prompts.
+An SDK MCP server exposes four dedicated tools. The runner discovers their exact
+identities and permits only those tools. Native shell, file, browser, and other
+execution tools are disabled before the first message. The CLI retains its
+internal ToolSearch command for tool metadata discovery.
 Inherited environment values are shadowed with empty strings, restoring only OS
 plumbing, a valid shell and the Factory API key. CREAO, Figma and backend credentials are not
-passed to the child. Only complete structured results are saved; partial text,
+passed to the child. Tool activity and validated artifacts are saved as tools
+complete. Final public positions use structured results. Partial text,
 private reasoning and provider error bodies are not exposed.
+
+| Tool | Operation |
+| --- | --- |
+| `publish_visual` | Saves an inline bar or line chart, table, directed flowchart, schematic coordinate map, or custom HTML document. |
+| `calculate_javascript` | Executes a synchronous generated function in QuickJS WebAssembly. Saves inputs, code, assumptions, and the JSON result. |
+| `calculate_policy` | Calls the existing trusted Python forecast, impact, or brief-verification worker. It accepts data, not generated Python source. |
+| `research_url` | Reads a known public HTTPS URL. Saves dated extracted text. This is URL reading, not web search. |
+
+Generated JavaScript receives JSON inputs without host functions, file access,
+network, modules, clocks, or random numbers. QuickJS has a 16 MiB interpreter
+memory limit and a 1.5 second execution deadline. Its child process has a six
+second deadline. Input and output JSON are limited to 32 KB. Nonfinite numbers,
+Promises, and non-JSON output are rejected. Fixed Python calculations continue
+to use the existing local Python installation and its 30 second worker limit.
+No Docker service or additional provider credential is needed.
+
+Each role may invoke at most eight tools, and a round accepts at most 24 calls
+and 512 KiB of artifact data. All state changes use the same serialized atomic
+job writer. Tool success is returned to the model after its result is saved.
+Supplementary calculation and research evidence uses short references such as
+`R1F1`. Original selected evidence stays frozen across follow-ups. Calculations
+remain labeled scenarios because executing a program does not verify its inputs.
+Visuals cite their underlying evidence and do not become independent evidence.
+An agent may reference a saved visual when discussing it. Visual references
+cannot provide numerical support for factual claims.
+
+Custom HTML opens on demand in an opaque-origin iframe with scripts allowed.
+It has no parent bridge or network capability. The host document also sets
+`frame-src 'none'` to constrain iframe navigation. Closing a preview removes
+the iframe. Browser previews do not have the server calculation runtime's hard
+CPU limit. Maps use a local coordinate grid without tiles, routing, or geocoding.
+
+The UI displays the configured model for a pending seat and the recorded actual
+model for a saved turn. Legacy turns whose model was not saved say so. The
+existing shared `COUNCIL_MODEL_ID` and `COUNCIL_REASONING_EFFORT` power all seats.
+This API remains a local development preview behind the existing loopback gate.
+
+Inspect SDK tool discovery without generating an answer from `web/` with
+`node scripts/council-sdk-probe.mjs`. Add `--call` to invoke its sum tool through
+a real model session. The latter uses the configured Factory account.
 
 Output is checked against the JSON contract at runtime. Every claim needs known
 source IDs; numeric statements additionally need literal supporting excerpts
-from a cited source. Later roles must include a cited response naming the
-preceding role. These checks establish shape, citation membership and excerpt presence,
+from a cited source. Later roles receive earlier positions and are asked to
+respond substantively. These checks establish shape, citation membership and excerpt presence,
 not semantic truth or current legislative status. The UI exposes saved source
 text so the user can assess the actual reasoning and evidence.
 Known source labels such as `S0` are references, not numerical quantities. This
 applies in summaries as well as claims. Other digit-bearing text still follows
 the numeric evidence rules. Later roles receive the complete preceding public
-turn and must name that role in a cited response. Paraphrase is allowed. The
-check establishes attribution, not substantive engagement; inspect the response
-against the preceding position and underlying evidence.
+turn. Inspect each response against that position and its underlying evidence.
 
 Each role writes `diagnostics.jsonl` beside its job and emits the same bounded
 events to the server log: starting, session ready, tools disabled, structured

@@ -1,0 +1,37 @@
+{
+  "business": {
+    "company": "Harbor Goods",
+    "website": "https://harborgoods.example/",
+    "offering": "Reusable kitchenware and thoughtful home storage",
+    "channels": "Online shop and two neighborhood stores",
+    "demo": true,
+    "products": [
+      {
+        "name": "Glass storage set",
+        "price": 48,
+        "units": 12000
+      },
+      {
+        "name": "Reusable kitchen wrap",
+        "price": 24,
+        "units": 18000
+      }
+    ],
+    "parts": [
+      {
+        "supplier": "Clear Coast",
+        "part": "Glass storage set",
+        "cost": 19
+      },
+      {
+        "supplier": "Paper Pier",
+        "part": "Shipping box",
+        "cost": 1.8
+      }
+    ]
+  },
+  "requestId": "151f984e-2a59-4142-94ad-9cb925b9878b",
+  "sources": [],
+  "question": "Explore an explicitly hypothetical trial. Finance should use calculate_javascript with units 120, price 25, and unit cost 17, then publish an illustrative bar chart of revenue, total cost and gross profit. Operations should publish a decision flowchart. Skeptic should challenge the assumptions. Chair should publish a self-contained interactive HTML quantity slider showing revenue at the hypothetical price. Each seat should do its own part. Label all outputs illustrative and cite executed results.",
+  "assignToCompany": true
+}
