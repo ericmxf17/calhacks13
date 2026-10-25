@@ -43,6 +43,7 @@
 /* Desktop detail panels follow their window; the building occupies the other side. */
 @media(min-width:761px){
   .world[data-panel-side=left] .department-view{left:0;right:auto;padding:20px 3% 25px 5%;background:linear-gradient(270deg,#eeede500,#eeede5ee 8%,#eeede5 35%);animation-name:room-enter-left;animation-duration:.55s;animation-timing-function:cubic-bezier(.22,.8,.25,1)}
+  .world[data-panel-side=left][data-room-closing=true] .department-view{animation:room-exit-left .32s cubic-bezier(.4,0,.7,1) both;pointer-events:none}
   .world[data-panel-side=left] .back-button{left:auto;right:43px}
   .inside-room .flat-scene{transform:translateX(-25%);transition:transform .65s ease}
   .inside-room[data-panel-side=left] .flat-scene{transform:translateX(25%)}
@@ -50,6 +51,7 @@
 @media(min-width:761px) and (max-width:1100px){.world[data-panel-side=left] .department-view{padding-left:4%;padding-right:2%}}
 @media(min-width:1600px){.world[data-panel-side=left] .department-view{padding-left:8%}}
 @keyframes room-enter-left{from{transform:translateX(calc(100vw + 2px))}to{transform:translateX(0)}}
+@keyframes room-exit-left{from{transform:var(--room-exit-start,translateX(0))}to{transform:translateX(calc(-100% - 2px))}}
 
 /* Keep room navigation discoverable without hover or scrolling to the footer. */
 .room-hotspot.room-hotspot-compact{min-width:130px;padding:9px 11px;transform:none;background:#fbfaf4;border-color:#cbd1bf;box-shadow:0 3px 14px #34413818}

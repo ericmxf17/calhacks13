@@ -112,6 +112,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   const drawn = useMemo(() => ({ ...scene, archetype: layout.archetype }), [scene, layout.archetype])
   const [sceneView, setSceneView] = useState<{ view: BusinessView; settled: boolean }>({ view: 'home', settled: true })
   const [active, setActive] = useState<DepartmentId | null>(null)
+  const [closingRoom, setClosingRoom] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [ready, setReady] = useState(false)
   const lastRoom = useRef<DepartmentId | null>(null)
@@ -121,6 +122,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
   }, [])
   const selectView = (view: BusinessView) => {
     if (sceneView.view === view) return
+    setClosingRoom(false)
     setActive(null)
     setReady(false)
     pointer.current = { x: 0, y: 0 }
@@ -174,11 +176,27 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     update(); query.addEventListener('change', update)
     return () => query.removeEventListener('change', update)
   }, [])
-  const open = (id: DepartmentId) => { lastRoom.current = id; setReady(false); setActive(id) }
-  const close = () => {
-    setActive(null); setReady(false)
+  const open = (id: DepartmentId) => { setClosingRoom(false); lastRoom.current = id; setReady(false); setActive(id) }
+  const finishClose = useCallback(() => {
+    setClosingRoom(false); setActive(null); setReady(false)
     window.setTimeout(() => document.getElementById(`room-${lastRoom.current}`)?.focus(), reducedMotion ? 20 : 850)
+  }, [reducedMotion])
+  const close = () => {
+    if (closingRoom) return
+    if (activeDepartment?.side === 'left' && ready && !reducedMotion && window.matchMedia('(min-width: 761px)').matches) {
+      const panel = document.querySelector<HTMLElement>('.world[data-panel-side=left] .department-view')
+      if (panel) panel.style.setProperty('--room-exit-start', getComputedStyle(panel).transform)
+      setClosingRoom(true)
+      return
+    }
+    finishClose()
   }
+  useEffect(() => {
+    if (!closingRoom) return
+    if (reducedMotion) { finishClose(); return }
+    const timer = window.setTimeout(finishClose, 320)
+    return () => window.clearTimeout(timer)
+  }, [closingRoom, reducedMotion, finishClose])
   useEffect(() => {
     if (!active) return
     const timer = window.setTimeout(() => setReady(true), reducedMotion ? 30 : 650)
@@ -194,10 +212,10 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     }
     window.addEventListener('keydown', escape)
     return () => window.removeEventListener('keydown', escape)
-  }, [active, reducedMotion, sceneView.view])
+  }, [active, reducedMotion, sceneView.view, ready, closingRoom])
   const fallback = homeReady ? <FlatStorefront open={open} company={company} departments={departments} scene={drawn} layout={layout}/> : null
 
-  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-council-open={councilReady} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-department={active || undefined} data-loading={loading || undefined} style={roomColors}
+  return <main className={`world ${active ? 'inside-room' : ''} ${reducedMotion ? 'reduce-motion' : ''}`} data-council-open={councilReady} data-view={sceneView.view} data-view-settled={sceneView.settled} data-panel-side={panelSide} data-room-closing={closingRoom || undefined} data-department={active || undefined} data-loading={loading || undefined} style={roomColors}
     onPointerMove={event => {
       if (event.pointerType === 'touch' || active || reducedMotion || !homeReady) return
       pointer.current = { x: event.clientX / window.innerWidth * 2 - 1, y: event.clientY / window.innerHeight * 2 - 1 }
