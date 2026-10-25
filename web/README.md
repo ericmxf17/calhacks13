@@ -190,11 +190,15 @@ builds the building from it and fills every room number from the setup details.
   file per building type in `archetypes/`.
 - `src/lib/starter-rooms.ts` fills rooms from products and supplier parts.
 - `src/lib/demo-scenes.ts` holds the saved designs for the three demo companies.
+- Every workspace, demo companies included, opens with a three-second loading screen:
+  a construction site, then the building assembling. Nothing else shows until it's done,
+  then the header, menu and room labels fade in together.
 - After setup, `useSceneDesign` asks the CREAO Scene Designer agent for a design
-  (through `/api/agent-runs/scene-designer/jobs`) and shows a construction site while it
-  works. The request ID is saved in the browser first, so a reload resumes the same
-  run. Without `ENABLE_LOCAL_AGENT_PREVIEW=true` and the Scene Designer keys, the quick
-  design shows at once.
+  (through `/api/agent-runs/scene-designer/jobs`). The quick design shows while it works,
+  which takes a minute or two; when it finishes, a "Your designed building is ready"
+  button rebuilds the building from its design. The request ID is saved in the browser
+  first, so a reload resumes the same run. Without `ENABLE_LOCAL_AGENT_PREVIEW=true` and
+  the Scene Designer keys, only the quick design shows.
 
 Preview any building type during development at
 `/demo/scenes?archetype=cafe&rooms=5` (add `&props=chimney;cafe_tables,planters` to

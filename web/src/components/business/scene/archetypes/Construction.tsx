@@ -7,7 +7,8 @@ import { Box, Sign, useTheme } from '../parts'
 const concrete = '#cfcac0', slab = '#e2ddd2', steel = '#f2b134', wood = '#c98a55'
 const floors = [2.5, 4.55, 6.6]
 // The frame goes up one step at a time: each floor's columns, then its slab.
-const stepSeconds = 1.4, popSeconds = .7
+// Quickly, since the site is the first half of a three-second loading screen.
+const stepSeconds = .18, popSeconds = .35
 const easeOutBack = (t: number) => 1 + 2.2 * (t - 1) ** 3 + 1.2 * (t - 1) ** 2
 const smooth = (t: number) => t * t * (3 - 2 * t)
 
@@ -39,11 +40,12 @@ function crane(seconds: number) {
   return a.map((v, n) => v + (b[n] - v) * k)
 }
 
-/** The building site shown while Scene Designer works: the frame goes up, then a tower crane keeps lifting loads onto it. */
-export default function Construction({ company, reducedMotion = false }: { company: string; reducedMotion?: boolean }) {
+/** The building site that opens the loading screen: the frame goes up while a tower crane lifts loads onto it. */
+export default function Construction({ company, reducedMotion = false, onShown }: { company: string; reducedMotion?: boolean; onShown?: () => void }) {
   const { dark, accent } = useTheme()
   const invalidate = useThree(state => state.invalidate)
   const clock = useRef(0)
+  const shown = useRef(false)
   const jib = useRef<Group>(null!), trolley = useRef<Group>(null!), cable = useRef<Group>(null!), load = useRef<Group>(null!)
   // The site keeps moving while it shows, at about 30 frames a second. The building scene stays idle as before.
   useEffect(() => {
@@ -53,6 +55,8 @@ export default function Construction({ company, reducedMotion = false }: { compa
     return () => window.clearInterval(timer)
   }, [reducedMotion, invalidate])
   useFrame(() => {
+    // The loading screen's clock starts with the first frame, since the first canvas can take a moment to start.
+    if (!shown.current) { shown.current = true; clock.current = performance.now(); onShown?.() }
     const [angle, distance, length, size] = reducedMotion ? [0, 4.2, 2.1, 1] : crane((performance.now() - clock.current) / 1000)
     jib.current.rotation.y = angle
     trolley.current.position.x = -distance

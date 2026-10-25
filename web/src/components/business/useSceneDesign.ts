@@ -9,11 +9,11 @@ import { fallbackSceneSpec, validateSceneSpec, type SceneSpec } from '@/lib/scen
 export type DesignState = 'designing' | 'agent' | 'quick' | 'saved'
 export type SceneDesign = {
   spec: SceneSpec
-  /** designing: Scene Designer is working. agent: its design is shown. quick: the keyword design is shown. saved: a demo company's saved design. */
+  /** designing: Scene Designer is working, and the quick design shows meanwhile. agent: its design is shown. quick: the keyword design is shown. saved: a demo company's saved design. */
   state: DesignState
   /** A short note for the owner, such as why the quick design is showing. */
   message: string
-  /** True when Scene Designer finished after the quick design was already showing. */
+  /** True when Scene Designer finished while the quick design was showing. Its design shows when the owner asks. */
   ready: boolean
   chooseQuickDesign: () => void
   showDesign: () => void
@@ -36,7 +36,7 @@ function save(key: string, value: Saved | null) {
 /**
  * Gets a company's building design from Scene Designer, once per company profile.
  * The request ID is saved before the run starts, so a reload resumes the same run instead of paying for another.
- * Whenever the agent can't help, the keyword-picked quick design shows instead.
+ * The keyword-picked quick design shows while the agent works, and whenever it can't help.
  */
 export function useSceneDesign(business: BusinessInput | null, known?: SceneSpec): SceneDesign {
   const key = business ? profileKey(business) : ''
@@ -49,9 +49,9 @@ export function useSceneDesign(business: BusinessInput | null, known?: SceneSpec
     const update = (next: Omit<typeof result, 'key'>) => { if (!cancelled) setResult({ key, ...next }) }
     const design = (wire: unknown) => validateSceneSpec(wire, business).spec
     const fallback = (message: string) => update({ state: 'quick', message })
-    // Swap in the design automatically only while the construction site is still showing.
+    // The building never changes on its own: the finished design waits until the owner chooses to show it.
     const finished = (spec: SceneSpec) => {
-      if (!cancelled) setResult(r => r.key === key && r.state === 'designing' ? { key, state: 'agent', message: '', spec } : { ...r, key, late: spec })
+      if (!cancelled) setResult(r => ({ ...r, key, state: 'quick', message: '', late: spec }))
     }
 
     async function poll(saved: Saved, showing: DesignState) {
