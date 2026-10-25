@@ -251,9 +251,14 @@ and discovering sources never start a Droid session.
 Set `FACTORY_API_KEY` in `web/.env` and install the official Factory CLI. On
 Windows, set `DROID_EXECUTABLE` to the absolute native `droid.exe` path, rather
 than a shell shim. Restart the local server after changing environment values.
-Set `COUNCIL_MODEL_ID` and `COUNCIL_REASONING_EFFORT` explicitly. The runner
-rejects missing settings and checks the actual session settings before sending
-a prompt, so a trial cannot silently use the CLI's default model. Discover
+Set a model ID and reasoning effort explicitly for every seat. Each
+`COUNCIL_<ROLE>_MODEL_ID` and `COUNCIL_<ROLE>_REASONING_EFFORT` overrides the
+corresponding shared `COUNCIL_MODEL_ID` or `COUNCIL_REASONING_EFFORT` fallback;
+roles are `FINANCE`, `OPERATIONS`, `SKEPTIC`, and `CHAIR`. Overrides resolve
+independently, so a seat may override only its model or only its effort.
+The runner rejects missing or invalid settings and checks the actual session
+settings before sending a prompt, so a trial cannot silently use the CLI's
+default model. Discover
 available models and their supported reasoning levels from `web/` with:
 
 ```powershell
@@ -330,7 +335,13 @@ CPU limit. Maps use a local coordinate grid without tiles, routing, or geocoding
 
 The UI displays the configured model for a pending seat and the recorded actual
 model for a saved turn. Legacy turns whose model was not saved say so. The
-existing shared `COUNCIL_MODEL_ID` and `COUNCIL_REASONING_EFFORT` power all seats.
+setup endpoint reports the resolved per-seat configuration. For example, the
+mixed council in `web/.env.example` uses Finance `gpt-6.1-sol`, Operations
+`gemini-3.8-flash`, Skeptic `grok-4.7`, and Chair `claude-opus-5-5`, all at
+`medium` effort. Availability depends on the Factory account catalog; inspect
+it before choosing these IDs. Shared settings still power every seat without
+an override. Saved speakers and turns use actual SDK session settings, never
+the current environment; old archives are not relabeled when configuration changes.
 This API remains a local development preview behind the existing loopback gate.
 
 Inspect SDK tool discovery without generating an answer from `web/` with

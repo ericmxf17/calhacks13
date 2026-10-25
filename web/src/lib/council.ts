@@ -11,6 +11,7 @@ import type { CouncilToolEffect } from './council-tools'
 import { resolveCouncilSources } from './council-sources'
 import { councilDemoId } from './council-demo'
 import { councilStoreConfigured, saveCouncilSnapshot } from './council-store'
+import { councilModelConfiguration, councilRoles } from './council-model-config'
 export { councilSourceOptions } from './council-sources'
 
 type SavedJob = { job: CouncilJob; requestHash: string; sessions: Partial<Record<CouncilRole, string>> }
@@ -159,7 +160,8 @@ function validateRequest(raw: unknown): CouncilRequest {
   return { requestId, business, question: input.question.trim(), sources, assignToCompany: true, ...(previousJobId ? { previousJobId } : {}) }
 }
 export async function councilSetup() {
-  return { ...await councilReadiness(), members: (['finance', 'operations', 'skeptic', 'chair'] as const).map(role => ({ role, modelId: process.env.COUNCIL_MODEL_ID?.trim() || 'unconfigured', reasoningEffort: process.env.COUNCIL_REASONING_EFFORT || 'unconfigured' })), capabilities: ['Inline charts, tables, flowcharts and maps', 'Sandboxed custom HTML and JavaScript', 'Isolated QuickJS calculations', 'Trusted Python policy calculations', 'Public HTTPS URL reading'], roles: configuredAgents().map(agent => ({ role: agent.role, name: agent.name, configured: agent.readiness === 'configured' })) }
+  const models = councilModelConfiguration()
+  return { ...await councilReadiness(), members: councilRoles.map(role => ({ role, modelId: models[role].modelId || 'unconfigured', reasoningEffort: models[role].reasoningEffort || 'unconfigured' })), capabilities: ['Inline charts, tables, flowcharts and maps', 'Sandboxed custom HTML and JavaScript', 'Isolated QuickJS calculations', 'Trusted Python policy calculations', 'Public HTTPS URL reading'], roles: configuredAgents().map(agent => ({ role: agent.role, name: agent.name, configured: agent.readiness === 'configured' })) }
 }
 async function execute(saved: SavedJob, request: CouncilRequest, history: CouncilHistoryRound[]) {
   try {

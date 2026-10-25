@@ -2,11 +2,12 @@ import 'server-only'
 import { access, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
-import { AutonomyLevel, createSession, DroidMessageType, ReasoningEffort, ToolConfirmationOutcome } from '@factory/droid-sdk/node'
+import { AutonomyLevel, createSession, DroidMessageType, ToolConfirmationOutcome } from '@factory/droid-sdk/node'
 import { BackendError } from './backend'
 import type { CouncilClaim, CouncilDecision, CouncilHistoryRound, CouncilJob, CouncilRole, CouncilTurn } from './council-types'
 import { councilTools, councilToolNames, type RecordCouncilToolEffect } from './council-tools'
 import { councilEnvironment } from './council-environment.mjs'
+import { councilModelConfiguration, councilModelConfigured, councilRoles } from './council-model-config'
 
 export async function councilExecutable(): Promise<string | null> {
   const explicit = process.env.DROID_EXECUTABLE?.trim()
@@ -20,7 +21,9 @@ export async function councilExecutable(): Promise<string | null> {
 export async function councilReadiness() {
   if (!process.env.FACTORY_API_KEY?.trim()) return { available: false, message: 'Set FACTORY_API_KEY in web/.env, then restart the local server. Council requires a Factory API key; CREAO keys are used only to read selected evidence.' }
   if (!await councilExecutable()) return { available: false, message: 'Install the official Factory CLI and set DROID_EXECUTABLE in web/.env to its native executable path, then restart the server.' }
-  if (!process.env.COUNCIL_MODEL_ID?.trim() || !Object.values(ReasoningEffort).includes(process.env.COUNCIL_REASONING_EFFORT as ReasoningEffort)) return { available: false, message: 'Set COUNCIL_MODEL_ID and a supported COUNCIL_REASONING_EFFORT in web/.env before running the council. No default model will be charged.' }
+  const models = councilModelConfiguration()
+  const unconfigured = councilRoles.filter(role => !councilModelConfigured(models[role]))
+  if (unconfigured.length) return { available: false, message: `Configure a model ID and supported reasoning effort for ${unconfigured.join(', ')} in web/.env. Use COUNCIL_<ROLE>_MODEL_ID and COUNCIL_<ROLE>_REASONING_EFFORT, or the shared COUNCIL_MODEL_ID and COUNCIL_REASONING_EFFORT fallback. No default model will be charged.` }
   return { available: true, message: null }
 }
 
@@ -144,9 +147,9 @@ The current question is the user's latest message. priorRounds contains saved pu
 Every claim and challenge must cite one or more exact source or tool-evidence IDs. Executed calculations and research supply durable evidence IDs and literal text in their tool result; cite those IDs when using results. A published visual is not independent factual evidence. You may reference its artifactId in sourceIds when discussing generated work qualitatively. Numerical support must come exclusively from original sources or executed calculation/research evidence, never from a visual. Tool results identify the exact allowed citeSources; calculation tools include copyable numericQuoteExamples. Never quote raw JSON field/value syntax as support; quote the scalar value itself in double quotes. Use tools when useful, and when the user requests a chart/table/flowchart/map/HTML/calculation or URL research, execute the relevant tool rather than describing a hypothetical result. Illustrative artifacts and all calculations must name assumptions; calculations establish a program result, not that its inputs are true. Never invent factual inputs. You may create clearly labeled hypothetical scenarios. Custom HTML must be self-contained, without network, and is viewed separately in a sandbox. A citation establishes source membership, not semantic truth. Preserve source attribution and hypothetical/stale status. If any claim contains digits, include the exact supporting source excerpt in double quotes inside that same claim; every numeric token must occur in such a literal excerpt from a cited source. Never paraphrase a numerical detail: quote its source field exactly or omit that detail. Prefer qualitative claims for this short discussion. Do not mentally calculate or introduce unsupported numeric claims. Use dedicated calculators for new figures and quote their exact persisted JSON result excerpts. Research URL reads are supplementary dated evidence, not refreshed original snapshots. Summary, action, uncertainties and missingEvidence must contain no digits; put numerical evidence only in cited claims. Use words for non-factual list references. Keep the summary brief, include one to three claims, and at most two challenges and uncertainties.
 ${previous ? `Respond substantively to a specific point from ${previous.role}'s saved public summary, claims or challenges. Explain whether you accept, qualify or challenge it, and cite the underlying evidence. Earlier positions remain visible alongside your response for inspection.` : 'This is the opening position.'}
 The company profile alone does not establish that any bill applies. If there is no bill evidence, do not assert bill provisions or impacts. Saved samples are fictional and may be stale, never latest legislative status. Chair must use insufficient_evidence when the supplied evidence cannot answer the question. Return only the requested JSON schema.`
-  const modelId = process.env.COUNCIL_MODEL_ID?.trim()
-  const reasoningEffort = process.env.COUNCIL_REASONING_EFFORT as ReasoningEffort
-  if (!modelId || !Object.values(ReasoningEffort).includes(reasoningEffort)) throw new BackendError(503, 'COUNCIL_MODEL_UNCONFIGURED', 'Choose an explicit council model and reasoning effort before submitting.')
+  const model = councilModelConfiguration()[role]
+  if (!councilModelConfigured(model)) throw new BackendError(503, 'COUNCIL_MODEL_UNCONFIGURED', `Choose an explicit model and supported reasoning effort for the ${role} council seat before submitting.`)
+  const { modelId, reasoningEffort } = model
   await trace({ phase: 'starting', modelId, reasoningEffort })
   let session: Awaited<ReturnType<typeof createSession>> | null = null
   const ownedToolIds = new Set<string>()
