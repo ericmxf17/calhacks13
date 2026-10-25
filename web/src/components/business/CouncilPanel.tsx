@@ -20,6 +20,7 @@ import {
 import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message'
 import { Shimmer } from '@/components/ai-elements/shimmer'
 import AgentAvatar from './AgentAvatar'
+import { Button } from '@/components/ui/button'
 
 const seats = [
   {
@@ -157,6 +158,14 @@ async function councilFetch<T>(url: string, options?: RequestInit): Promise<T> {
     )
   return result
 }
+function CloseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </svg>
+  )
+}
+
 function Claims({
   title,
   claims,
@@ -175,14 +184,15 @@ function Claims({
           <li key={index}>
             {claim.text}
             {claim.sourceIds.map((id) => (
-              <button
+              <Button
                 className="council-citation"
+                size="sm"
                 key={id}
                 onClick={() => onSource(id)}
                 aria-label={`Inspect source ${id}`}
               >
                 {id}
-              </button>
+              </Button>
             ))}
           </li>
         ))}
@@ -203,10 +213,15 @@ export default function CouncilPanel({
   const heading = useRef<HTMLHeadingElement>(null)
   const contextRef = useRef<HTMLElement>(null)
   const contextToggle = useRef<HTMLButtonElement>(null)
+  const composer = useRef<HTMLTextAreaElement>(null)
   const alive = useRef(true)
   const sourceController = useRef<AbortController | null>(null)
   const [setup, setSetup] = useState<CouncilSetup | null>(null)
   const [question, setQuestion] = useState('')
+  function prefillQuestion(text: string) {
+    setQuestion(text)
+    composer.current?.focus()
+  }
   const [role, setRole] = useState<AgentRole>('bill-analyst')
   const [options, setOptions] = useState<CouncilSourceOption[]>([])
   const [selected, setSelected] = useState<CouncilSourceOption[]>([])
@@ -533,29 +548,23 @@ export default function CouncilPanel({
   return (
     <section className="council-panel" aria-label="Council conversation">
       <header className="council-toolbar">
-        <div>
-          <span className="council-eyebrow">YOUR COUNCIL</span>
-          <h1 tabIndex={-1} ref={heading}>
-            {business.company}
-            <span> / a little perspective.</span>
-          </h1>
-        </div>
+        <h1 tabIndex={-1} ref={heading}>Council</h1>
         <div className="council-toolbar-actions">
-          <button
+          <Button
             ref={contextToggle}
-            className="council-text-button council-context-toggle"
+            className="council-context-toggle"
             onClick={() => (contextOpen ? closeContext() : setContextOpen(true))}
             aria-expanded={contextOpen}
+            aria-controls="council-context"
           >
-            Context & sources <span>↗</span>
-          </button>
-          <button
-            className="council-text-button"
+            Context & sources
+          </Button>
+          <Button
             disabled={!!previewThread || pending || busy}
             onClick={newConversation}
           >
             New conversation ＋
-          </button>
+          </Button>
         </div>
       </header>
       {previewThread && (
@@ -592,18 +601,16 @@ export default function CouncilPanel({
           </div>
         </aside>
         <div className="council-thread-column">
-          <div className="council-thread-meta">
+          {thread && <div className="council-thread-meta">
             <span>
-              {thread
-                ? `${thread.rounds.length} round${thread.rounds.length === 1 ? '' : 's'} · ${job?.status}`
-                : 'A conversation with your council'}
+              {`${thread.rounds.length} round${thread.rounds.length === 1 ? '' : 's'} · ${job?.status}`}
             </span>
             <span className="council-focus">
               {activeSeat
                 ? `${activeSeat.name} · ${activeSeat.focus}`
                 : 'Four perspectives, one next move'}
             </span>
-          </div>
+          </div>}
           <Conversation>
             <ConversationContent>
               {!thread && (
@@ -611,30 +618,29 @@ export default function CouncilPanel({
                   <span className="council-empty-mark">
                     <CouncilAvatar seat={seats[3]} reducedMotion={reducedMotion} />
                   </span>
-                  <span className="council-eyebrow">MAKE ROOM FOR A BETTER DECISION</span>
                   <h2>What’s on your mind?</h2>
                   <p>
                     Bring a question. Finance, Operations and Skeptic will consider it in turn, then
                     Chair will bring the decision together.
                   </p>
-                  <button
+                  <Button
                     onClick={() =>
-                      setQuestion(
+                      prefillQuestion(
                         `What should ${business.company} prioritize next, and what evidence would change that decision?`,
                       )
                     }
                   >
-                    Find our next priority ↗
-                  </button>
-                  <button
+                    Find our next priority
+                  </Button>
+                  <Button
                     onClick={() =>
-                      setQuestion(
+                      prefillQuestion(
                         'Challenge the assumptions in our current company plan. What should we verify first?',
                       )
                     }
                   >
-                    Challenge an assumption ↗
-                  </button>
+                    Challenge an assumption
+                  </Button>
                   <small>
                     Company setup is included. Add policy evidence in Context & sources.
                   </small>
@@ -741,22 +747,22 @@ export default function CouncilPanel({
                                 )}
                               </details>
                               <div className="council-followups">
-                                <button
+                                <Button
                                   onClick={() =>
-                                    setQuestion('What evidence would change your recommendation?')
+                                    prefillQuestion('What evidence would change your recommendation?')
                                   }
                                 >
-                                  Challenge this decision ↗
-                                </button>
-                                <button
+                                  Challenge this decision
+                                </Button>
+                                <Button
                                   onClick={() =>
-                                    setQuestion(
+                                    prefillQuestion(
                                       'Turn this recommendation into a practical plan with an owner and a first step.',
                                     )
                                   }
                                 >
-                                  Explore the next steps ↗
-                                </button>
+                                  Explore the next steps
+                                </Button>
                               </div>
                             </div>
                           )}
@@ -796,9 +802,9 @@ export default function CouncilPanel({
               <div className="council-error" role="alert">
                 {error}
                 {pending && (
-                  <button onClick={() => setReadVersion((value) => value + 1)} disabled={busy}>
+                  <Button onClick={() => setReadVersion((value) => value + 1)} disabled={busy}>
                     Read saved status
-                  </button>
+                  </Button>
                 )}
               </div>
             )}
@@ -822,6 +828,7 @@ export default function CouncilPanel({
               }}
             >
               <textarea
+                ref={composer}
                 aria-label={job ? 'Ask a follow-up' : 'Message your council'}
                 value={question}
                 maxLength={2000}
@@ -847,13 +854,14 @@ export default function CouncilPanel({
                       : 'Company setup · add evidence in Context'}
                   {!setup && !previewThread ? ' · Checking connection…' : ''}
                 </span>
-                <button
+                <Button
                   type="submit"
+                  variant="primary"
                   disabled={!canSend || !!previewThread}
                   aria-label={pending ? 'Retry the same request' : 'Send to council'}
                 >
-                  {busy ? '…' : pending && error ? 'Retry ↗' : '↑'}
-                </button>
+                  {busy ? '…' : pending && error ? 'Retry' : '↑'}
+                </Button>
               </div>
             </form>
             <p className="council-fineprint">
@@ -864,6 +872,7 @@ export default function CouncilPanel({
           </div>
         </div>
         <aside
+          id="council-context"
           ref={contextRef}
           onKeyDown={(event) => {
             if (event.key === 'Escape' && contextOpen) {
@@ -877,13 +886,14 @@ export default function CouncilPanel({
         >
           <div className="council-context-head">
             <span className="council-eyebrow">IN THE ROOM</span>
-            <button
+            <Button
               className="council-context-close"
+              variant="ghost" size="icon"
               onClick={closeContext}
               aria-label="Close context"
             >
-              ×
-            </button>
+              <CloseIcon />
+            </Button>
           </div>
           <details open>
             <summary>
@@ -957,8 +967,8 @@ export default function CouncilPanel({
                     </option>
                   ))}
                 </select>
-                <button
-                  className="council-secondary"
+                <Button
+                  variant="outline"
                   disabled={
                     sourceBusy ||
                     !setup?.roles.some((item) => item.role === role && item.configured)
@@ -966,7 +976,7 @@ export default function CouncilPanel({
                   onClick={() => void loadSources()}
                 >
                   {sourceBusy ? 'Loading…' : 'Browse CREAO results'}
-                </button>
+                </Button>
                 {sourcesLoaded && !options.length && (
                   <p>No completed text results for this agent.</p>
                 )}
@@ -984,9 +994,9 @@ export default function CouncilPanel({
                   </label>
                 ))}
                 {hasMore && (
-                  <button onClick={() => void loadSources(true)} disabled={sourceBusy}>
+                  <Button onClick={() => void loadSources(true)} disabled={sourceBusy}>
                     Load more
-                  </button>
+                  </Button>
                 )}
                 {business.company.trim().toLowerCase() === 'voltride' &&
                   new URL(business.website).hostname === 'voltride.example' && (
@@ -1008,30 +1018,31 @@ export default function CouncilPanel({
                       {selected.map((item) => (
                         <li key={JSON.stringify(item.ref)}>
                           {item.title}
-                          <button
+                          <Button
+                            variant="ghost" size="icon"
                             aria-label={`Remove ${item.title}`}
                             onClick={() => toggleSource(item)}
                           >
-                            ×
-                          </button>
+                            <CloseIcon />
+                          </Button>
                         </li>
                       ))}
                     </ul>
-                    <button
-                      className="council-secondary"
+                    <Button
+                      variant="outline"
                       disabled={assigned}
                       onClick={() => setAssigned(true)}
                     >
                       {assigned
                         ? 'Assigned ✓'
                         : `Assign ${selected.length} sources to ${business.company}`}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </>
             )}
             {evidence.map((item) => (
-              <button
+              <Button
                 className={`council-evidence-item ${item.id === inspectedSource ? 'selected' : ''}`}
                 key={item.id}
                 onClick={() => inspect(item.id)}
@@ -1041,7 +1052,7 @@ export default function CouncilPanel({
                 <small>
                   {item.kind === 'sample' ? 'Saved illustrative analysis' : item.provenance}
                 </small>
-              </button>
+              </Button>
             ))}
             {source && (
               <div
@@ -1051,9 +1062,9 @@ export default function CouncilPanel({
               >
                 <div>
                   <strong>{source.title}</strong>
-                  <button onClick={() => setInspectedSource(null)} aria-label="Close excerpt">
-                    ×
-                  </button>
+                  <Button variant="ghost" size="icon" onClick={() => setInspectedSource(null)} aria-label="Close excerpt">
+                    <CloseIcon />
+                  </Button>
                 </div>
                 <small>{source.provenance}</small>
                 <blockquote>{source.text}</blockquote>

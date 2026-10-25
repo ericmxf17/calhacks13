@@ -7,6 +7,7 @@ import { demoCompanies, type DemoCompany } from '@/lib/demo-companies'
 import { validateBusiness, type BusinessInput } from '@/lib/business-input'
 import { parsePartsFile } from '@/lib/parse-parts'
 import BusinessSettings from './BusinessSettings'
+import { Button } from '@/components/ui/button'
 import { profileKey } from '@/lib/scene-profile'
 import { starterDepartments } from '@/lib/starter-rooms'
 import { useSceneDesign } from './business/useSceneDesign'
@@ -219,12 +220,12 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
           design={design}
           actions={
             <>
-              <button type="button" data-tour="settings" onClick={() => setSettingsOpen(true)}>
+              <Button type="button" data-tour="settings" onClick={() => setSettingsOpen(true)}>
                 Business settings
-              </button>
-              <button type="button" disabled={busy} onClick={view === 'demo' ? exitDemo : logout}>
+              </Button>
+              <Button type="button" disabled={busy} onClick={view === 'demo' ? exitDemo : logout}>
                 Sign out
-              </button>
+              </Button>
             </>
           }
         />

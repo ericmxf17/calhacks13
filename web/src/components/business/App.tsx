@@ -5,6 +5,7 @@ import BusinessScene, { type BusinessView } from './BusinessScene'
 import AgentsPanel from './AgentsPanel'
 import NavigationIcon from './NavigationIcon'
 import CouncilPanel from './CouncilPanel'
+import { Button } from '@/components/ui/button'
 import './council-transition.css'
 import type { BusinessInput } from '@/lib/business-input'
 import { councilBusinessKey } from '@/lib/council-types'
@@ -21,7 +22,7 @@ const defaultScene = defaultSceneSpec('storefront')
 const siteSeconds = 1.4
 const siteLayout = layoutBuilding('storefront', 6)
 
-export function Button({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function SceneButton({ children, className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return <button type="button" className={className} {...props}>{children}</button>
 }
 
@@ -45,7 +46,7 @@ function FlatStorefront({ open, company, departments, scene, layout }: { open: (
   const theme = sceneTheme(scene.archetype, scene.palette)
   const colors = { '--flat-body': theme.body, '--flat-trim': theme.trim, '--flat-wall': theme.wall, '--flat-sign': scene.sign.background, '--flat-sign-ink': scene.sign.color } as CSSProperties
   return <div className="flat-scene" style={colors}><div className="flat-building" style={{ width: 160 * layout.cols, height: 430 + (layout.rows - 2) * 117 }}><div className="flat-cornice" />
-    <div className="flat-windows" style={{ gridTemplateColumns: `repeat(${layout.cols}, 1fr)` }}>{departments.map(d => <Button id={`room-${d.id}`} key={d.id} className="flat-window" style={{ background: d.ink }} onClick={() => open(d.id)}><span />{d.name}<Arrow /></Button>)}</div>
+    <div className="flat-windows" style={{ gridTemplateColumns: `repeat(${layout.cols}, 1fr)` }}>{departments.map(d => <SceneButton id={`room-${d.id}`} key={d.id} className="flat-window" style={{ background: d.ink }} onClick={() => open(d.id)}><span />{d.name}<Arrow /></SceneButton>)}</div>
     <div className="flat-sign"><svg viewBox="0 0 600 60" role="img" aria-label={company}><text x="300" y="42" textAnchor="middle" fontSize="40" textLength={Math.min(560, company.length * 29)} lengthAdjust="spacingAndGlyphs">{company.toUpperCase()}</text></svg></div><div className="flat-shop"><span/><span/><span/></div>
   </div><p className="fallback-note">Simplified view · 3D isn’t available on this device</p></div>
 }
@@ -60,7 +61,7 @@ function DepartmentView({ department: d, departments, close, select }: { departm
   useEffect(() => { heading.current?.focus() }, [id])
   return <section className="department-view" aria-labelledby="room-title" key={id}>
     <div className="room-topline"><span className="section-kicker">{d.floor} / {d.number}</span><span className="period">{d.period ?? 'This month · May 2025'}</span></div>
-    <nav className="room-switcher" aria-label="Explore another room"><span className="room-switcher-label">Explore rooms</span><div>{departments.map(item => <Button aria-pressed={item.id === id} key={item.id} onClick={() => select(item.id)}>{item.shortName}{item.id !== id && <Arrow />}</Button>)}</div></nav>
+    <nav className="room-switcher" aria-label="Explore another room"><span className="room-switcher-label">Explore rooms</span><div>{departments.map(item => <SceneButton aria-pressed={item.id === id} key={item.id} onClick={() => select(item.id)}>{item.shortName}{item.id !== id && <Arrow />}</SceneButton>)}</div></nav>
     <h1 id="room-title" ref={heading} tabIndex={-1}>{d.name}<span>.</span></h1>
     <p className="room-description">{d.description}</p>
     {d.callout && <aside className="room-callout"><strong>{d.callout.title}</strong><p>{d.callout.body}</p></aside>}
@@ -77,7 +78,7 @@ function DepartmentView({ department: d, departments, close, select }: { departm
       <div className="room-list">{rows.map((row, i) => <div className="room-row" key={i}><span className="row-mark">{row.initial}</span><div><strong>{row.title}</strong><small>{row.subtitle}</small></div><span className="row-value">{row.value}</span></div>)}</div>
     </>}
     {d.source === 'placeholder' && d.tracks && d.tracks.length > 0 && <div className="room-empty"><h2>What this room will track</h2><ul>{d.tracks.map(t => <li key={t}>{t}<small>Not connected yet</small></li>)}</ul></div>}
-    <div className="room-footer"><span><i/> {sourceNote[d.source ?? 'illustrative']}</span><Button className="subtle-link" onClick={close}>Back to the building <Arrow back/></Button></div>
+    <div className="room-footer"><span><i/> {sourceNote[d.source ?? 'illustrative']}</span><SceneButton className="subtle-link" onClick={close}>Back to the building <Arrow back/></SceneButton></div>
 
   </section>
 }
@@ -210,7 +211,7 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
         <div className="workspace-actions" aria-label="Workspace actions"><Button data-tour="tour" disabled={loading || assembling} onClick={() => { if (active) close(); setTouring(true) }}>Take the tour</Button>{actions}</div>
       </div>
     </header>
-    {active && <Button className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></Button>}
+    {active && <SceneButton className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></SceneButton>}
     <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>{design?.state === 'agent' ? `Designed by Scene Designer: ${scene.reasoning}` : design ? scene.reasoning : 'Step closer. Every room tells a story.'}</p></div>
     {design && !active && homeReady && <DesignStatus design={{ ...design, showDesign }}/>}
     {homeReady && activeDepartment && ready && <DepartmentView department={activeDepartment} departments={departments} close={close} select={open}/>}
@@ -218,18 +219,18 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
     {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
-      <Button id="nav-consul" data-tour="council" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
+      <SceneButton id="nav-consul" data-tour="council" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
         <NavigationIcon kind="terminal"/>
         <span>Consul</span>
-      </Button>
-      <Button data-tour="home" className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
+      </SceneButton>
+      <SceneButton data-tour="home" className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
         <NavigationIcon kind="home"/>
         <span>Home</span>
-      </Button>
-      <Button id="nav-agents" data-tour="agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
+      </SceneButton>
+      <SceneButton id="nav-agents" data-tour="agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
         <NavigationIcon kind="robot"/>
         <span>Agents</span>
-      </Button>
+      </SceneButton>
     </nav>
     {touring && <OnboardingTour steps={tourSteps(company)} view={sceneView.view} onView={selectView} onClose={() => setTouring(false)} reducedMotion={reducedMotion}/>}
   </main>
