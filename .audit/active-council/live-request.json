@@ -1,0 +1,27 @@
+{
+  "business": {
+    "parts": [
+      {
+        "supplier": "Clear Coast",
+        "cost": 17,
+        "part": "Glass storage set"
+      }
+    ],
+    "channels": "Online shop and two neighborhood stores",
+    "offering": "Reusable kitchenware and thoughtful home storage",
+    "demo": true,
+    "company": "Harbor Goods",
+    "products": [
+      {
+        "price": 25,
+        "units": 120,
+        "name": "Glass storage set"
+      }
+    ],
+    "website": "https://harborgoods.example/"
+  },
+  "question": "Explore an explicitly hypothetical product trial, not a factual business forecast. Finance must call calculate_javascript with units 120, selling price 25 and unit cost 17 to compute revenue, total cost and gross profit, then call publish_visual for a bar chart of those executed results. Operations must call publish_visual for a decision flowchart about a limited trial. Skeptic should challenge the hypothetical inputs and publish a comparison table. Chair must call publish_visual for a self-contained interactive HTML and JavaScript quantity slider that shows trial revenue using the hypothetical price, with visible assumptions. All visuals and inputs must be labeled illustrative. Use actual tool results as evidence. Keep digit-bearing details in cited claims with literal quoted supporting excerpts. Summaries and decision action should stay qualitative. No web research is required for this hypothetical exercise.",
+  "requestId": "ddaa9965-5ae4-4aab-90c0-c5b5c6ed2d41",
+  "assignToCompany": true,
+  "sources": []
+}

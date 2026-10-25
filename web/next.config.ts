@@ -19,6 +19,12 @@ const makePublicPreviewOrigin = (() => {
 })()
 
 const nextConfig: NextConfig = {
+  async headers() {
+    return ['/', '/demo/:path*'].map(source => ({
+      source,
+      headers: [{ key: 'Content-Security-Policy', value: "frame-src 'none'; object-src 'none'" }],
+    }))
+  },
   // Droid launches its native CLI from the server; keep the SDK out of the bundle.
   serverExternalPackages: ['@factory/droid-sdk'],
   webpack: (webpackConfig) => {

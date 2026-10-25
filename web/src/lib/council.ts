@@ -7,6 +7,7 @@ import { validateBusiness } from './business-input'
 import { agentFor, configuredAgents, creaoID } from './creao'
 import { councilBusinessKey, type CouncilHistoryRound, type CouncilJob, type CouncilRequest, type CouncilRole, type CouncilSourceRef, type CouncilThread } from './council-types'
 import { councilReadiness, runCouncilRole } from './council-droid'
+import type { CouncilToolEffect } from './council-tools'
 import { resolveCouncilSources } from './council-sources'
 export { councilSourceOptions } from './council-sources'
 
@@ -29,11 +30,43 @@ function canonical(value: unknown): string {
   if (value !== null && typeof value === 'object') return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonical((value as Record<string, unknown>)[key])}`).join(',')}}`
   return JSON.stringify(value)
 }
-async function save(saved: SavedJob) {
+async function saveSnapshot(saved: SavedJob) {
   saved.job.updatedAt = new Date().toISOString()
   const temporary = path.join(directory(saved.job.id), `${randomUUID()}.tmp`)
   await writeFile(temporary, JSON.stringify(saved, null, 2), { flag: 'wx', mode: 0o600 })
   await rename(temporary, path.join(directory(saved.job.id), 'job.json'))
+}
+// All state mutations, including session/status callbacks and tool results,
+// share one serialized owner and the existing atomic snapshot replacement.
+const commits = new WeakMap<SavedJob, Promise<void>>()
+function commit(saved: SavedJob, mutate: () => void = () => {}): Promise<void> {
+  const previous = commits.get(saved) || Promise.resolve()
+  const next = previous.catch(() => undefined).then(async () => {
+    const before = structuredClone(saved)
+    try { mutate(); await saveSnapshot(saved) }
+    catch (error) {
+      // Role/tool closures retain this job object. Restore its fields in place
+      // so a failed write cannot leave those closures observing orphan state.
+      const current = saved.job as unknown as Record<string, unknown>
+      for (const key of Object.keys(current)) delete current[key]
+      Object.assign(saved.job, before.job)
+      saved.sessions = before.sessions
+      saved.requestHash = before.requestHash
+      throw error
+    }
+  })
+  commits.set(saved, next)
+  return next
+}
+function recordToolEffect(saved: SavedJob, effect: CouncilToolEffect) {
+  return commit(saved, () => {
+    const calls = saved.job.toolCalls ||= []
+    const index = calls.findIndex(call => call.id === effect.call.id)
+    if (index < 0) { if (calls.length >= 24) throw new BackendError(400, 'COUNCIL_TOOL_BUDGET', 'Council tool call budget reached.'); calls.push(effect.call) } else calls[index] = effect.call
+    if (effect.artifact) (saved.job.artifacts ||= []).push(effect.artifact)
+    // Generated together from one executed result, persisted atomically.
+    if (effect.evidence) (saved.job.toolEvidence ||= []).push(effect.evidence)
+  })
 }
 async function readSaved(id: string): Promise<SavedJob> {
   try {
@@ -65,9 +98,11 @@ export async function readCouncilJob(value: unknown): Promise<CouncilJob> {
   const id = jobId(value)
   const saved = await readSaved(id)
   if (['resolving', 'running'].includes(saved.job.status) && !owners.has(id)) {
-    saved.job.status = 'interrupted'
-    saved.job.message = 'The local runner stopped before this council completed. Saved turns remain available. Execution is not resumed automatically; inspect this job before starting a new council.'
-    await save(saved)
+    await commit(saved, () => {
+      saved.job.status = 'interrupted'
+      saved.job.message = 'The local runner stopped before this council completed. Saved turns remain available. Execution is not resumed automatically; inspect this job before starting a new council.'
+      for (const call of saved.job.toolCalls || []) if (call.status === 'running') { call.status = 'interrupted'; call.completedAt = new Date().toISOString(); call.error = 'Runner stopped before the tool result was durably saved.' }
+    })
   }
   return saved.job
 }
@@ -117,40 +152,48 @@ function validateRequest(raw: unknown): CouncilRequest {
   return { requestId, business, question: input.question.trim(), sources, assignToCompany: true, ...(previousJobId ? { previousJobId } : {}) }
 }
 export async function councilSetup() {
-  return { ...await councilReadiness(), roles: configuredAgents().map(agent => ({ role: agent.role, name: agent.name, configured: agent.readiness === 'configured' })) }
+  return { ...await councilReadiness(), members: (['finance', 'operations', 'skeptic', 'chair'] as const).map(role => ({ role, modelId: process.env.COUNCIL_MODEL_ID?.trim() || 'unconfigured', reasoningEffort: process.env.COUNCIL_REASONING_EFFORT || 'unconfigured' })), capabilities: ['Inline charts, tables, flowcharts and maps', 'Sandboxed custom HTML and JavaScript', 'Isolated QuickJS calculations', 'Trusted Python policy calculations', 'Public HTTPS URL reading'], roles: configuredAgents().map(agent => ({ role: agent.role, name: agent.name, configured: agent.readiness === 'configured' })) }
 }
 async function execute(saved: SavedJob, request: CouncilRequest, history: CouncilHistoryRound[]) {
   try {
-    // Resolve snapshots even when Factory is not configured, so a saved failed
-    // submission can still be inspected and company mismatches are visible.
-    if (!request.previousJobId) saved.job.sources = await resolveCouncilSources(request.business, request.sources)
-    await save(saved)
+    if (!request.previousJobId) {
+      const sources = await resolveCouncilSources(request.business, request.sources)
+      await commit(saved, () => { saved.job.sources = sources })
+    }
     const readiness = await councilReadiness()
     if (!readiness.available) throw new BackendError(503, 'FACTORY_NOT_CONFIGURED', readiness.message!)
-    saved.job.status = 'running'
-    await save(saved)
+    await commit(saved, () => { saved.job.status = 'running' })
     for (const role of ['finance', 'operations', 'skeptic', 'chair'] as const) {
-      saved.job.stage = role
-      await save(saved)
-      const result = await runCouncilRole(saved.job, role, history, async id => { saved.sessions[role] = id; await save(saved) }, async event => {
-        const entry = { at: new Date().toISOString(), role, ...event }
-        console.info('[council]', JSON.stringify({ jobId: saved.job.id, ...entry }))
-        try { await appendFile(path.join(directory(saved.job.id), 'diagnostics.jsonl'), `${JSON.stringify(entry)}\n`, { mode: 0o600 }) }
-        catch { console.warn('[council] Could not persist the diagnostic event; the job ledger is still authoritative.') }
+      await commit(saved, () => { saved.job.stage = role })
+      const result = await runCouncilRole(saved.job, role, history,
+        id => commit(saved, () => { saved.sessions[role] = id }),
+        async event => {
+          if (event.phase === 'session_ready' && event.modelId && event.reasoningEffort) {
+            const model = { modelId: event.modelId, reasoningEffort: event.reasoningEffort }
+            await commit(saved, () => { (saved.job.speakers ||= {})[role] = model })
+          }
+          const entry = { at: new Date().toISOString(), role, ...event }
+          console.info('[council]', JSON.stringify({ jobId: saved.job.id, ...entry }))
+          try { await appendFile(path.join(directory(saved.job.id), 'diagnostics.jsonl'), `${JSON.stringify(entry)}\n`, { mode: 0o600 }) }
+          catch { console.warn('[council] Could not persist the diagnostic event; the job ledger is still authoritative.') }
+        }, effect => recordToolEffect(saved, effect))
+      await commit(saved, () => {
+        saved.job.turns.push(result.turn)
+        if (result.decision) saved.job.decision = result.decision
       })
-      saved.job.turns.push(result.turn)
-      if (result.decision) saved.job.decision = result.decision
-      await save(saved)
     }
-    saved.job.status = 'completed'
-    saved.job.stage = null
-    saved.job.message = 'Complete. Citation checks verify source membership and literal numeric excerpts, not semantic truth. Inspect the source text and stated uncertainties.'
-    await save(saved)
+    await commit(saved, () => {
+      saved.job.status = 'completed'
+      saved.job.stage = null
+      saved.job.message = 'Complete. Citations verify evidence membership and literal numeric excerpts, not truth. Calculated scenarios depend on their supplied inputs and assumptions.'
+    })
   } catch (error) {
-    saved.job.status = 'failed'
-    saved.job.decision = null
-    saved.job.message = error instanceof BackendError ? error.message : 'The council runner failed. Completed turns remain saved; inspect this job before starting another council. No automatic retry was made.'
-    await save(saved)
+    await commit(saved, () => {
+      saved.job.status = 'failed'
+      saved.job.decision = null
+      saved.job.message = error instanceof BackendError ? error.message : 'The council runner failed. Completed turns remain saved; inspect this job before starting another council. No automatic retry was made.'
+      for (const call of saved.job.toolCalls || []) if (call.status === 'running') { call.status = 'interrupted'; call.completedAt = new Date().toISOString(); call.error = 'Council stopped before the tool result was saved.' }
+    })
   }
 }
 export async function submitCouncil(raw: unknown): Promise<CouncilJob> {
@@ -175,7 +218,7 @@ export async function submitCouncil(raw: unknown): Promise<CouncilJob> {
     if (previous.status !== 'completed') throw new BackendError(409, 'PREVIOUS_COUNCIL_NOT_COMPLETE', 'Wait for the previous round to complete. Failed or interrupted rounds require a new thread.')
     if (canonical(request.business) !== canonical(validateBusiness(previous.business))) throw new BackendError(409, 'COUNCIL_COMPANY_CHANGED', 'Follow-ups require the exact saved company profile. Start a new thread for the edited profile.')
     if (thread.rounds.length >= maxRounds) throw new BackendError(409, 'THREAD_LIMIT_REACHED', 'This thread has reached its four-round limit. Start a new thread with the evidence you want to use.')
-    history = thread.rounds.map(({ id, question, turns, decision, createdAt }) => ({ id, question, turns, decision, createdAt }))
+    history = thread.rounds.map(({ id, question, turns, decision, createdAt, artifacts, toolEvidence }) => ({ id, question, turns, decision, createdAt, artifacts: artifacts?.map(artifact => artifact.kind === 'html' ? { ...artifact, html: '[Saved custom HTML omitted from context]' } : artifact), toolEvidence }))
     if (Buffer.byteLength(JSON.stringify(history)) > maxHistoryBytes) throw new BackendError(413, 'CONTEXT_TOO_LARGE', 'Saved council history exceeds 256 KiB. Start a new thread; no history was silently removed.')
   }
   try { await mkdir(directory(request.requestId), { mode: 0o700 }) }
@@ -189,7 +232,7 @@ export async function submitCouncil(raw: unknown): Promise<CouncilJob> {
   // leaves this directory in place, so another POST cannot dispatch it again.
   await writeFile(path.join(directory(request.requestId), 'reservation.json'), JSON.stringify({ requestHash }), { flag: 'wx', mode: 0o600 })
   const now = new Date().toISOString()
-  const saved: SavedJob = { requestHash, sessions: {}, job: { id: request.requestId, previousJobId: previous?.id ?? null, rootJobId: previous?.rootJobId ?? request.requestId, round: previous ? previous.round + 1 : 1, business: request.business, businessKey: councilBusinessKey(request.business), question: request.question, status: 'resolving', stage: null, sources: previous ? structuredClone(previous.sources) : [], turns: [], decision: null, message: null, createdAt: now, updatedAt: now } }
+  const saved: SavedJob = { requestHash, sessions: {}, job: { id: request.requestId, previousJobId: previous?.id ?? null, rootJobId: previous?.rootJobId ?? request.requestId, round: previous ? previous.round + 1 : 1, business: request.business, businessKey: councilBusinessKey(request.business), question: request.question, status: 'resolving', stage: null, artifacts: [], toolCalls: [], toolEvidence: [], speakers: {}, sources: previous ? structuredClone(previous.sources) : [], turns: [], decision: null, message: null, createdAt: now, updatedAt: now } }
   // Publish ownership before the first awaited state write, so GET cannot
   // mistake an active reservation for a runner lost in a process restart.
   let start!: () => void
@@ -199,7 +242,7 @@ export async function submitCouncil(raw: unknown): Promise<CouncilJob> {
     // next reader marks the last durable running state interrupted.
   }).finally(() => owners.delete(request.requestId))
   owners.set(request.requestId, execution)
-  try { await save(saved) } catch (error) { owners.delete(request.requestId); throw error }
+  try { await commit(saved) } catch (error) { owners.delete(request.requestId); throw error }
   start()
   return structuredClone(saved.job)
 }

@@ -1,0 +1,24 @@
+{
+  "rounds": 2,
+  "statuses": [
+    "completed",
+    "completed"
+  ],
+  "models": [
+    "gpt-6-luna",
+    "gpt-6-luna",
+    "gpt-6-luna",
+    "gpt-6-luna"
+  ],
+  "inheritedQuote": [
+    "R2F1",
+    "R1F1"
+  ],
+  "newToolNames": [
+    "publish_visual",
+    "publish_visual",
+    "publish_visual",
+    "publish_visual"
+  ],
+  "newArtifacts": 4
+}

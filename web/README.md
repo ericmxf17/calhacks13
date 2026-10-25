@@ -17,6 +17,17 @@ pnpm dev
 
 Open http://localhost:3000.
 
+Council has a separate violet and teal avatar palette, visible backend model
+names, and inline tool results. Its dedicated tools can calculate with isolated
+generated JavaScript or the existing trusted Python worker, read public HTTPS
+pages, and create charts, tables, flowcharts, schematic maps, and custom
+interactive HTML previews. See [Council setup](../backend/README.md#consul-council)
+for credentials, execution limits, and the local development gate.
+
+Open `/demo/council` to inspect illustrative visual examples without model calls.
+The [editable Council design](https://www.figma.com/design/aXEIyZZIeUK4mSZq4Fb4MJ)
+shows the conversation and custom-preview layout.
+
 The signup/sign-in screen includes **Explore demo**, which opens `/demo` without
 an account. It skips signup and starts with existing company, product, and
 supplier details already filled in. Edit the defaults or select **Continue**

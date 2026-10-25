@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { Button } from '@/components/ui/button'
 import CouncilPanel from '@/components/business/CouncilPanel'
 import type { CouncilJob, CouncilRole, CouncilThread } from '@/lib/council-types'
 
@@ -33,27 +34,24 @@ export default function CouncilDemoPlayer({
       status: 'running',
       stage: speakingOrder[step],
       turns: round.turns.slice(0, step),
+      artifacts: round.artifacts?.filter((artifact) => speakingOrder.indexOf(artifact.role) <= step),
+      toolCalls: round.toolCalls?.filter((call) => speakingOrder.indexOf(call.role) <= step),
       decision: null,
     }
     return { rootJobId: round.id, rounds: [visibleRound] }
   }, [step, round])
-  const controlStyle = {
-    padding: '5px 10px', border: '2px solid #294b70', borderRadius: 5,
-    background: '#fffdf4', color: '#243957', font: '700 11px Trebuchet MS',
-    boxShadow: '2px 2px 0 #294b7040', cursor: 'pointer',
-  }
 
-  return <main style={{ position: 'fixed', inset: 0, background: '#dcf5fc' }}>
+  return <main className="council-demo" style={{ position: 'fixed', inset: 0, background: '#dcf5fc' }}>
     <div style={{ position: 'absolute', top: 25, left: 24, color: '#243957', fontFamily: 'Trebuchet MS', fontSize: 24, fontWeight: 800 }}>
-      consul <small style={{ fontSize: 11, fontWeight: 400 }}> / illustrative council demo</small>
+      consul <small style={{ fontSize: 12, fontWeight: 400 }}> / illustrative council demo</small>
     </div>
-    <nav aria-label="Demo playback" style={{ position: 'absolute', top: 67, left: 24, display: 'flex', gap: 8 }}>
-      <button style={controlStyle} onClick={() => {
+    <nav aria-label="Demo playback" style={{ position: 'absolute', top: 67, left: 12, right: 12, flexWrap: 'wrap', display: 'flex', gap: 8 }}>
+      <Button onClick={() => {
         if (completed) { setStep(0); setPlaying(true) }
         else setPlaying(!playing)
-      }}>{completed ? 'Replay demo' : playing ? 'Pause demo' : 'Play demo'}</button>
-      <button style={controlStyle} disabled={completed} onClick={() => { setPlaying(false); setStep(step + 1) }}>Next turn</button>
-      <button style={controlStyle} onClick={() => { setPlaying(false); setStep(speakingOrder.length) }}>Show conclusion</button>
+      }}>{completed ? 'Replay demo' : playing ? 'Pause demo' : 'Play demo'}</Button>
+      <Button disabled={completed} onClick={() => { setPlaying(false); setStep(step + 1) }}>Next turn</Button>
+      <Button onClick={() => { setPlaying(false); setStep(speakingOrder.length) }}>Show all artifacts</Button>
     </nav>
     <CouncilPanel key={step} business={round.business} previewThread={thread} />
   </main>

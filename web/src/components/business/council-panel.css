@@ -688,3 +688,46 @@
     border: 0;
   }
 }
+/* Council identity and artifact surfaces use the shared cream/navy controls. */
+.council-panel { background: #effaff; font-size: 16px; }
+.council-seat strong, .council-byline strong { color: #6750a4; }
+.council-focus { color: #087f8c; }
+.council-seat.active:before, .council-stage > .council-stage-dot { background: #087f8c; }
+.council-model { overflow-wrap: anywhere; font-size: 12px; }
+.council-artifact { margin: 14px 0; border: 1px solid #bdd7e7; border-radius: 10px; padding: 16px; background: #fffdf4; min-width: 0; }
+.council-artifact h3 { font-size: 18px; margin: 4px 0 12px; line-height: 1.4; }
+.council-artifact h4 { margin-bottom: 4px; }
+.council-artifact-kind { color: #6750a4; font-size: 12px; font-weight: 700; }
+.council-artifact-note, .council-artifact footer { font-size: 12px; color: #526b82; }
+.council-artifact footer { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.council-artifact details { margin-top: 10px; }
+.council-artifact summary { cursor: pointer; font-size: 14px; }
+.council-artifact pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 280px; overflow: auto; font-size: 12px; }
+.council-artifact-assumptions { font-size: 14px; background: #efeaf8; padding: 10px 12px; border-radius: 6px; margin-top: 12px; }
+.council-artifact-assumptions ul { padding-left: 18px; margin: 4px 0; }
+.council-data-scroll { max-width: 100%; overflow: auto; margin-top: 8px; }
+.council-data-scroll table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+.council-data-scroll th, .council-data-scroll td { padding: 8px 10px; border-bottom: 1px solid #bdd7e7; vertical-align: top; }
+.council-data-scroll th { background: #efeaf8; }
+.council-chart, .council-map { width: 100%; height: auto; display: block; }
+.council-chart text, .council-map text { font: 14px sans-serif; fill: #243957; }
+.council-chart-legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; }
+.council-chart-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 5px; border-radius: 3px; }
+.council-flow { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+.council-flow li { flex: 1 1 140px; border: 1px solid #6750a4; border-radius: 8px; padding: 12px; background: #efeaf8; font-size: 14px; }
+.council-flow li span { display: block; margin-top: 8px; }
+.council-preview-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.council-html-preview { display: block; width: 100%; height: 360px; margin-top: 12px; border: 1px solid #bdd7e7; border-radius: 6px; background: white; }
+.council-tool-activity { padding: 0; list-style: none; margin: 12px 0; }
+.council-tool-activity li { border-left: 3px solid #087f8c; padding: 8px 12px; background: #e0f4f1; margin: 8px 0; font-size: 14px; }
+.council-tool-activity strong, .council-tool-activity small { display: block; }
+.council-tool-activity small, .council-tool-status { font-size: 12px; }
+.council-tool-status { text-transform: uppercase; color: #087f8c; }
+.council-tool-activity li[data-status='failed'], .council-tool-activity li[data-status='interrupted'] { border-color: #98563f; background: #fff1e8; }
+@media (max-width: 1190px) { .council-seat .council-model { display: block; max-width: 90px; } }
+@media (max-width: 600px) { .council-artifact { padding: 12px; } .council-roster { gap: 12px; } .council-seat .council-model { max-width: 100px; } }
+.council-demo .council-panel { top: 150px; bottom: 24px; }
+@media (max-width: 600px) { .council-demo .council-panel { top: 160px; bottom: 16px; } }
+.council-flow-scroll { max-width: 100%; max-height: 640px; overflow: auto; margin: 12px 0; }
+.council-flow-scroll svg { display: block; }
+.council-flow-edge-label { font: 12px sans-serif; fill: #075964; stroke: #fffdf4; stroke-width: 4px; paint-order: stroke; }
