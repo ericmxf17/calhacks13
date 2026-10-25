@@ -42,7 +42,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const archive = connections?.evidence?.mode === 'archive'
-  const visibleAgents = archive ? agents.filter(agent => connections?.agents.some(item => item.role === agent.role && item.connection === 'connected')) : agents
+  const visibleAgents = agents.filter(agent => connections?.agents.some(item => item.role === agent.role && item.connection === 'connected'))
 
   useEffect(() => { heading.current?.focus() }, [])
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
       } catch {
         if (controller.signal.aborted) return
         setConnections(null)
-        setConnectionError('Connection status could not be checked. You can still open an agent and retry its history.')
+        setConnectionError('Connection status could not be checked. Refresh connections to retry.')
       } finally {
         if (!controller.signal.aborted) setChecking(false)
       }
@@ -77,11 +77,11 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
         {archive && <p>{connections?.evidence?.label}</p>}
         <div className="agents-connection-toolbar">
           <p role="status">{checking ? 'Checking agent connections…' : connectionError
-            || (archive ? `${visibleAgents.length} agents with saved runs` : `${connections?.agents.filter(agent => agent.connection === 'connected').length ?? 0} of ${agentCatalog.length} agents connected`)}</p>
+            || (archive ? `${visibleAgents.length} agents with saved runs` : `${visibleAgents.length} connected agents`)}</p>
           <Button onClick={() => setRefreshKey(key => key + 1)} disabled={checking}>{archive ? 'Reload saved runs' : 'Refresh connections'}</Button>
         </div>
       </header>
-      {archive && visibleAgents.length === 0 && <p role="status">No saved agent runs are available.</p>}
+      {!checking && !connectionError && visibleAgents.length === 0 && <p role="status">{archive ? 'No saved agent runs are available.' : 'No connected agents are available.'}</p>}
       <div className="agents-grid">
         {visibleAgents.map((agent, index) => {
           const connection = connections?.agents.find(item => item.role === agent.role)?.connection
