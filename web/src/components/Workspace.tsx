@@ -10,6 +10,7 @@ import BusinessSettings from './BusinessSettings'
 import { profileKey } from '@/lib/scene-profile'
 import { starterDepartments } from '@/lib/starter-rooms'
 import { useSceneDesign } from './business/useSceneDesign'
+import { sampleBusiness, sampleFileName } from '@/lib/sample-business'
 
 const Scene = dynamic(() => import('./business/App'), {
   ssr: false,
@@ -82,6 +83,8 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
   const [error, setError] = useState('')
   const [fileName, setFileName] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
+  // True once this visit finishes the setup steps, so the workspace tour starts for new owners only.
+  const [firstVisit, setFirstVisit] = useState(false)
   const [parsing, setParsing] = useState(false)
   const hasWorkspaceAccess = signedIn || view === 'demo'
   // Demo companies use their saved design and prepared rooms until their details are edited.
@@ -137,6 +140,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       try {
         setBusiness(validateBusiness(business))
         setComplete(true)
+        setFirstVisit(true)
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Please check your business details.')
       }
@@ -160,6 +164,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       } else {
         await request({ action: 'setup', business })
         setComplete(true)
+        setFirstVisit(true)
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Please try again.')
@@ -207,13 +212,14 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
       <>
         <Scene
           business={business}
+          firstVisit={firstVisit}
           company={business.company}
           scene={scene}
           departments={rooms}
           design={design}
           actions={
             <>
-              <button type="button" onClick={() => setSettingsOpen(true)}>
+              <button type="button" data-tour="settings" onClick={() => setSettingsOpen(true)}>
                 Business settings
               </button>
               <button type="button" disabled={busy} onClick={view === 'demo' ? exitDemo : logout}>
@@ -369,6 +375,22 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
               </>
             ) : step === 0 ? (
               <>
+                <button
+                  type="button"
+                  aria-pressed={business.company === sampleBusiness.company && fileName === sampleFileName}
+                  className={`rounded-lg border p-4 text-left text-sm ${business.company === sampleBusiness.company && fileName === sampleFileName ? 'border-accent bg-accent/10' : 'border-line'}`}
+                  onClick={() => {
+                    setBusiness(structuredClone(sampleBusiness))
+                    setFileName(sampleFileName)
+                    setError('')
+                  }}
+                >
+                  Use sample data
+                  <span className="mt-1 block text-xs text-muted">
+                    No spreadsheets handy? Fill all three steps with VoltRide, a sample e-bike maker,
+                    then click Continue to see how setup works.
+                  </span>
+                </button>
                 <Field
                   label="Company name"
                   required
