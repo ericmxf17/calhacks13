@@ -219,18 +219,18 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
     {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
-      <SceneButton id="nav-consul" data-tour="council" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
+      <Button variant="ghost" id="nav-consul" data-tour="council" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
         <NavigationIcon kind="terminal"/>
         <span>Consul</span>
-      </SceneButton>
-      <SceneButton data-tour="home" className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
+      </Button>
+      <Button variant="ghost" data-tour="home" className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
         <NavigationIcon kind="home"/>
         <span>Home</span>
-      </SceneButton>
-      <SceneButton id="nav-agents" data-tour="agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
+      </Button>
+      <Button variant="ghost" id="nav-agents" data-tour="agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
         <NavigationIcon kind="robot"/>
         <span>Agents</span>
-      </SceneButton>
+      </Button>
     </nav>
     {touring && <OnboardingTour steps={tourSteps(company)} view={sceneView.view} onView={selectView} onClose={() => setTouring(false)} reducedMotion={reducedMotion}/>}
   </main>

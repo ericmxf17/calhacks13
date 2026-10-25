@@ -6,11 +6,11 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
-  border: 2px solid #294b70;
-  border-radius: 8px;
+  border: var(--ui-stroke);
+  border-radius: var(--ui-radius);
   background: #dcf5fc;
   color: #243957;
-  box-shadow: 4px 4px 0 #294b7040;
+  box-shadow: var(--ui-panel-shadow);
   font: var(--ui-body-text)/1.65 var(--font-body, 'DM Sans', sans-serif);
 }
 .council-panel * {
@@ -47,7 +47,7 @@
   padding: 9px 20px;
   flex-shrink: 0;
   background: #dcf5fc;
-  border-bottom: 2px solid #294b70;
+  border-bottom: var(--ui-stroke);
 }
 .council-toolbar h1 {
   font-size: 20px;
@@ -75,7 +75,7 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-right: 2px solid #294b70;
+  border-right: var(--ui-stroke);
 }
 .council-roster > .council-eyebrow {
   display: block;
@@ -197,9 +197,9 @@
   border-radius: 8px 8px 2px 8px;
   padding: 15px 19px;
   background: #2468d2;
-  border: 2px solid #294b70;
+  border: var(--ui-stroke);
   color: #fffdf4;
-  box-shadow: 3px 3px 0 #294b7040;
+  box-shadow: var(--ui-shadow);
 }
 .council-message.is-user p {
   margin: 3px 0 0;
@@ -252,11 +252,11 @@
 }
 .council-decision {
   background: #fffdf4;
-  border-radius: 8px;
+  border-radius: var(--ui-radius);
   margin-top: 14px;
   padding: 12px 15px;
-  border: 2px solid #294b70;
-  box-shadow: 3px 3px 0 #294b7040;
+  border: var(--ui-stroke);
+  box-shadow: var(--ui-shadow);
 }
 .council-decision-top {
   display: flex;
@@ -332,12 +332,11 @@
   border-top: 1px solid #bdd7e7;
 }
 .council-composer {
-  border: 1px solid #294b70;
-  border-radius: 8px;
+  border: var(--ui-stroke);
+  border-radius: var(--ui-radius);
   padding: 10px 13px;
   background: #fffdf4;
-  box-shadow: 3px 3px 0 #294b7040;
-  border-width: 2px;
+  box-shadow: var(--ui-shadow);
 }
 .council-composer textarea {
   display: block;
@@ -405,7 +404,7 @@
   overscroll-behavior: contain;
   font-size: var(--ui-control-text);
   min-height: 0;
-  border-left: 2px solid #294b70;
+  border-left: var(--ui-stroke);
 }
 .council-context-head {
   display: flex;
@@ -657,7 +656,7 @@
   .council-toolbar { padding: 9px 12px; gap: 8px; flex-wrap: wrap; }
   .council-toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .council-workspace { display: flex; flex-direction: column; }
-  .council-roster { display: flex; flex-shrink: 0; gap: 18px; padding: 10px 12px; border-right: 0; border-bottom: 2px solid #294b70; overflow-x: auto; }
+  .council-roster { display: flex; flex-shrink: 0; gap: 18px; padding: 10px 12px; border-right: 0; border-bottom: var(--ui-stroke); overflow-x: auto; }
   .council-seat { margin: 0; gap: 4px; flex-shrink: 0; }
   .council-seat .council-avatar { width: 28px; height: 28px; }
   .council-seat.active:before { display: none; }
