@@ -8,11 +8,11 @@ import {
 } from "@/lib/make-site-settings"
 import "./styles.css"
 
-const defaultTitle = "Consul · Your business, connected"
+const defaultTitle = "Consul · Policy decisions for your business"
 const title = makeSiteSettings.title ?? defaultTitle
 const description =
   makeSiteSettings.description ??
-  "Built with Next.js, Payload CMS, and Tailwind CSS"
+  "Explore company-specific policy research, compare modeled responses, and read saved council decisions with their source evidence."
 const favicon = makeSiteSettings.icons?.icon
 const socialImage = makeSiteSettings.openGraph?.image
 const googleAnalyticsId = sanitizeHtmlAttribute(

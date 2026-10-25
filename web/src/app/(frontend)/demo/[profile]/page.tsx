@@ -6,5 +6,5 @@ export default async function DemoCompanyPage({ params }: { params: Promise<{ pr
   const { profile: id } = await params
   const profile = findDemoCompany(id)
   if (!profile) notFound()
-  return <Workspace key={profile.id} initialView="demo" preset={profile} />
+  return <Workspace key={profile.id} initialView="demo" preset={profile} judgeDemo={process.env.CONSUL_JUDGE_DEMO === 'true'} />
 }

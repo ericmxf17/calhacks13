@@ -27,7 +27,7 @@ const companies: Omit<DemoCompany, 'scene'>[] = [
   {
     // Matches company.json and the live H.R. 973 analysis (run 2026-10-24) in the Python pipeline.
     id: 'voltride', industry: 'E-bike manufacturing',
-    summary: 'Follow battery certification, supplier risk, and dealer growth.',
+    summary: 'Fictional e-bike company with a saved battery-policy analysis and supplier scenario.',
     business: {
       company: 'VoltRide', website: 'https://voltride.example',
       offering: 'City and cargo e-bikes, plus replacement batteries, assembled in Oakland', channels: 'Direct online (60% of units) and 85 independent bike shops (40%)', demo: true,
@@ -56,7 +56,7 @@ const companies: Omit<DemoCompany, 'scene'>[] = [
           { initial: 'S', title: 'Uncertified battery stock', subtitle: '2,800 Shenzhen PowerCell packs · EN 15194 only', value: '$574,000 at cost' },
           { initial: 'C', title: 'VoltRide Cargo certification', subtitle: 'UL 2849 · 16 weeks · needed under any federal rule', value: '$60,000' },
           { initial: 'P', title: 'PowerCell contract exit penalty', subtitle: 'If volume drops below 5,000 packs a year before Mar 31, 2027', value: '$75,000' },
-          { initial: 'R', title: 'Doing nothing if a battery rule applies', subtitle: 'First-year impact, worst case · live analysis', value: '−$5.69M' },
+          { initial: 'R', title: 'Doing nothing if a battery rule applies', subtitle: 'Illustrative first-year impact, worst case · saved sample', value: '−$5.69M' },
         ],
       },
       hiring: {
@@ -104,7 +104,7 @@ const companies: Omit<DemoCompany, 'scene'>[] = [
     }),
   },
   {
-    id: 'harbor-goods', industry: 'Retail', summary: 'Explore store sales, inventory arrivals, and seasonal campaigns.',
+    id: 'harbor-goods', industry: 'Retail', summary: 'Fictional retailer with sample sales, inventory and campaign figures.',
     business: {
       company: 'Harbor Goods', website: 'https://harborgoods.example', offering: 'Reusable kitchenware and thoughtful home storage', channels: 'Online shop and two neighborhood stores', demo: true,
       products: [{ name: 'Glass storage set', price: 48, units: 12000 }, { name: 'Reusable kitchen wrap', price: 24, units: 18000 }],
@@ -112,61 +112,61 @@ const companies: Omit<DemoCompany, 'scene'>[] = [
     },
     departments: rooms({
       finance: {
-        name: 'Finance', shortName: 'Finance', description: 'See how neighborhood stores and the online shop contribute to a healthy, growing homewares business.',
+        name: 'Finance', shortName: 'Finance', description: 'Fictional sample sales, margin and cash flow for two stores and an online shop.',
         metrics: [{ label: 'Revenue', value: '$84k', change: '+8% vs last month' }, { label: 'Gross margin', value: '54%', change: '+1 pt vs last month' }, { label: 'Net cash flow', value: '$14k', change: 'After stock and store expenses' }],
-        chartTitle: 'A steady retail rhythm', chartNote: 'NET CASH FLOW · $ THOUSANDS', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [19, 6, 8, 10, 12, 14], unit: 'k',
+        chartTitle: 'Sample monthly net cash flow', chartNote: 'NET CASH FLOW · $ THOUSANDS', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [19, 6, 8, 10, 12, 14], unit: 'k',
         listTitle: 'Recent shop transactions', rows: [{ initial: 'O', title: 'Online shop payouts', subtitle: 'May 26 · Weekly sales', value: '+$12,400' }, { initial: 'C', title: 'Clear Coast', subtitle: 'May 24 · 300 storage sets', value: '−$5,700' }, { initial: 'N', title: 'North Pier Store', subtitle: 'May 23 · Daily sales', value: '+$3,280' }],
       },
       hiring: {
-        name: 'People & hiring', shortName: 'Hiring', description: 'Welcome the store and fulfillment teammates who make thoughtful service part of every order.',
+        name: 'People & hiring', shortName: 'Hiring', description: 'Fictional sample staffing, open roles and candidates for store and fulfillment work.',
         metrics: [{ label: 'Team members', value: '16', change: 'Across 2 stores and fulfillment' }, { label: 'Open roles', value: '2', change: 'Store and fulfillment' }, { label: 'Active candidates', value: '24', change: '1 offer in progress' }],
-        chartTitle: 'Welcoming the next teammates', chartNote: 'CANDIDATE PIPELINE', chartLabels: ['Applied', 'Screening', 'Interview', 'Final', 'Offer'], chartValues: [12, 6, 3, 2, 1], unit: '',
-        listTitle: 'The seats we’re filling', rows: [{ initial: 'S', title: 'Store Associate', subtitle: 'North Pier · Part time', value: '14 candidates' }, { initial: 'F', title: 'Fulfillment Lead', subtitle: 'Warehouse · Full time', value: '10 candidates' }],
+        chartTitle: 'Sample candidate pipeline', chartNote: 'CANDIDATE PIPELINE', chartLabels: ['Applied', 'Screening', 'Interview', 'Final', 'Offer'], chartValues: [12, 6, 3, 2, 1], unit: '',
+        listTitle: 'Sample open roles', rows: [{ initial: 'S', title: 'Store Associate', subtitle: 'North Pier · Part time', value: '14 candidates' }, { initial: 'F', title: 'Fulfillment Lead', subtitle: 'Warehouse · Full time', value: '10 candidates' }],
       },
       supply: {
-        name: 'Inventory & supply', shortName: 'Inventory', description: 'Keep popular home essentials on shelves and packaging ready for the next wave of online orders.',
+        name: 'Inventory & supply', shortName: 'Inventory', description: 'Fictional sample stock availability, inventory coverage and incoming supplier orders.',
         metrics: [{ label: 'In-stock rate', value: '97%', change: '+2 pts vs last month' }, { label: 'Inventory coverage', value: '35 days', change: 'Target: 30–40 days' }, { label: 'Incoming orders', value: '8', change: '3 arriving this week' }],
-        chartTitle: 'Keeping shelves ready', chartNote: 'IN-STOCK AVAILABILITY · %', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [89, 91, 90, 94, 95, 97], unit: '%',
-        listTitle: 'On their way to the shelves', rows: [{ initial: 'C', title: 'Clear Coast', subtitle: 'PO-310 · 300 storage sets', value: 'Arrives May 29' }, { initial: 'W', title: 'Wrap Workshop', subtitle: 'PO-312 · 500 kitchen wraps', value: 'In transit' }, { initial: 'P', title: 'Paper Pier', subtitle: 'PO-314 · 1,500 shipping boxes', value: 'Arrives Jun 03' }],
+        chartTitle: 'Sample in-stock availability', chartNote: 'IN-STOCK AVAILABILITY · %', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [89, 91, 90, 94, 95, 97], unit: '%',
+        listTitle: 'Sample incoming orders', rows: [{ initial: 'C', title: 'Clear Coast', subtitle: 'PO-310 · 300 storage sets', value: 'Arrives May 29' }, { initial: 'W', title: 'Wrap Workshop', subtitle: 'PO-312 · 500 kitchen wraps', value: 'In transit' }, { initial: 'P', title: 'Paper Pier', subtitle: 'PO-314 · 1,500 shipping boxes', value: 'Arrives Jun 03' }],
       },
       marketing: {
-        name: 'Marketing', shortName: 'Marketing', description: 'Bring everyday home rituals to life through seasonal collections, neighborhood events, and loyal customers.',
+        name: 'Marketing', shortName: 'Marketing', description: 'Fictional sample advertising results, email campaigns and store events.',
         metrics: [{ label: 'Return on ad spend', value: '3.8×', change: '+12% vs last month' }, { label: 'Campaign spend', value: '$6k', change: 'Within monthly budget' }, { label: 'Attributed revenue', value: '$22.8k', change: '+18% vs last month' }],
-        chartTitle: 'Stories finding their audience', chartNote: 'MONTHLY RETURN ON AD SPEND', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [3.2, 2.5, 2.8, 3.1, 3.4, 3.8], unit: '×',
-        listTitle: 'Around the neighborhood', rows: [{ initial: 'S', title: 'Summer Pantry Reset', subtitle: 'Paid social · Active', value: '4.2× ROAS' }, { initial: 'L', title: 'Harbor Rewards', subtitle: 'Loyalty email · Weekly', value: '46% open rate' }, { initial: 'N', title: 'North Pier Weekend', subtitle: 'In-store event · May 31', value: '84 RSVPs' }],
+        chartTitle: 'Sample monthly return on ad spend', chartNote: 'MONTHLY RETURN ON AD SPEND', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [3.2, 2.5, 2.8, 3.1, 3.4, 3.8], unit: '×',
+        listTitle: 'Sample campaigns and events', rows: [{ initial: 'S', title: 'Summer Pantry Reset', subtitle: 'Paid social · Active', value: '4.2× ROAS' }, { initial: 'L', title: 'Harbor Rewards', subtitle: 'Loyalty email · Weekly', value: '46% open rate' }, { initial: 'N', title: 'North Pier Weekend', subtitle: 'In-store event · May 31', value: '84 RSVPs' }],
       },
     }),
   },
   {
-    id: 'beacon-studio', industry: 'Agency & services', summary: 'See project revenue, team capacity, and the new-business pipeline.',
+    id: 'beacon-studio', industry: 'Agency & services', summary: 'Fictional agency with sample project revenue, capacity and sales pipeline.',
     business: {
       company: 'Beacon Studio', website: 'https://beaconstudio.example', offering: 'Brand identity and website design services', channels: 'Client referrals, partnerships, and inbound inquiries', demo: true,
       products: [{ name: 'Brand identity package', price: 18000, units: 18 }, { name: 'Website project', price: 32000, units: 12 }], parts: [],
     },
     departments: rooms({
       finance: {
-        name: 'Finance', shortName: 'Finance', description: 'Connect project milestones and retainers to the studio’s cash position, with a clear view of billable work.',
+        name: 'Finance', shortName: 'Finance', description: 'Fictional sample project payments, billable utilization and cash flow.',
         metrics: [{ label: 'Revenue', value: '$59k', change: '+9% vs last month' }, { label: 'Billable utilization', value: '76%', change: 'Target: 70–80%' }, { label: 'Net cash flow', value: '$11k', change: 'After team and contractor costs' }],
-        chartTitle: 'Cash behind the creative work', chartNote: 'NET CASH FLOW · $ THOUSANDS', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [5, 7, 4, 8, 9, 11], unit: 'k',
+        chartTitle: 'Sample monthly net cash flow', chartNote: 'NET CASH FLOW · $ THOUSANDS', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [5, 7, 4, 8, 9, 11], unit: 'k',
         listTitle: 'Project cash movements', rows: [{ initial: 'A', title: 'Arbor Health', subtitle: 'May 26 · Website milestone 2', value: '+$16,000' }, { initial: 'L', title: 'Lumen Coffee', subtitle: 'May 24 · Brand project deposit', value: '+$9,000' }, { initial: 'M', title: 'Mira Chen', subtitle: 'May 23 · Motion design contract', value: '−$3,200' }],
       },
       hiring: {
-        name: 'People & hiring', shortName: 'Hiring', description: 'Balance a small senior team with the design and production skills needed for the next client engagements.',
+        name: 'People & hiring', shortName: 'Hiring', description: 'Fictional sample team size, open design and production roles, and candidate stages.',
         metrics: [{ label: 'Team members', value: '9', change: '6 designers, 3 strategy & production' }, { label: 'Open roles', value: '2', change: 'Design and production' }, { label: 'Active candidates', value: '18', change: '1 offer in progress' }],
-        chartTitle: 'Finding the next creative partners', chartNote: 'CANDIDATE PIPELINE', chartLabels: ['Applied', 'Screening', 'Interview', 'Final', 'Offer'], chartValues: [8, 5, 3, 1, 1], unit: '',
-        listTitle: 'New studio seats', rows: [{ initial: 'D', title: 'Senior Brand Designer', subtitle: 'Creative · Full time', value: '11 candidates' }, { initial: 'P', title: 'Project Producer', subtitle: 'Delivery · Full time', value: '7 candidates' }],
+        chartTitle: 'Sample candidate pipeline', chartNote: 'CANDIDATE PIPELINE', chartLabels: ['Applied', 'Screening', 'Interview', 'Final', 'Offer'], chartValues: [8, 5, 3, 1, 1], unit: '',
+        listTitle: 'Sample open roles', rows: [{ initial: 'D', title: 'Senior Brand Designer', subtitle: 'Creative · Full time', value: '11 candidates' }, { initial: 'P', title: 'Project Producer', subtitle: 'Delivery · Full time', value: '7 candidates' }],
       },
       supply: {
-        name: 'Capacity & partners', shortName: 'Capacity', description: 'Plan specialist time, contractor bookings, and software renewals so every project has what it needs to ship.',
+        name: 'Capacity & partners', shortName: 'Capacity', description: 'Fictional sample booked capacity, contractor availability and software renewals.',
         metrics: [{ label: 'Booked capacity', value: '82%', change: 'Next four weeks' }, { label: 'Partner hours available', value: '64h', change: 'Motion and development' }, { label: 'Upcoming renewals', value: '3', change: 'Within the next 30 days' }],
-        chartTitle: 'Room for the next engagement', chartNote: 'MONTHLY BOOKED CAPACITY · %', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [62, 68, 74, 71, 78, 82], unit: '%',
+        chartTitle: 'Sample booked capacity', chartNote: 'MONTHLY BOOKED CAPACITY · %', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [62, 68, 74, 71, 78, 82], unit: '%',
         listTitle: 'Partners and renewals', rows: [{ initial: 'M', title: 'Mira Chen · Motion', subtitle: 'Arbor launch · Reserved Jun 02–06', value: '24h booked' }, { initial: 'W', title: 'Webcraft Partners', subtitle: 'Development · June availability', value: '40h available' }, { initial: 'C', title: 'Creative software seats', subtitle: '9 licenses · Renews Jun 01', value: '$540 / month' }],
       },
       marketing: {
-        name: 'New business', shortName: 'New business', description: 'Turn useful case studies, trusted referrals, and discovery calls into the studio’s next client relationships.',
+        name: 'New business', shortName: 'New business', description: 'Fictional sample qualified leads, proposals, discovery calls and lead sources.',
         metrics: [{ label: 'Qualified leads', value: '14', change: '+4 vs last month' }, { label: 'Proposal pipeline', value: '$126k', change: '6 active proposals' }, { label: 'Discovery calls', value: '9', change: 'This month' }],
-        chartTitle: 'The next client conversations', chartNote: 'MONTHLY QUALIFIED LEADS', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [5, 7, 6, 9, 10, 14], unit: '',
-        listTitle: 'Work opening new doors', rows: [{ initial: 'A', title: 'Arbor Health case study', subtitle: 'Website · Published May 12', value: '5 inquiries' }, { initial: 'F', title: 'Founder referral circle', subtitle: 'Partnerships · Ongoing', value: '6 introductions' }, { initial: 'S', title: 'Studio Notes', subtitle: 'Email · Monthly', value: '51% open rate' }],
+        chartTitle: 'Sample monthly qualified leads', chartNote: 'MONTHLY QUALIFIED LEADS', chartLabels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'], chartValues: [5, 7, 6, 9, 10, 14], unit: '',
+        listTitle: 'Sample lead sources', rows: [{ initial: 'A', title: 'Arbor Health case study', subtitle: 'Website · Published May 12', value: '5 inquiries' }, { initial: 'F', title: 'Founder referral circle', subtitle: 'Partnerships · Ongoing', value: '6 introductions' }, { initial: 'S', title: 'Studio Notes', subtitle: 'Email · Monthly', value: '51% open rate' }],
       },
     }),
   },

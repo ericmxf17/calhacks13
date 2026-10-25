@@ -68,11 +68,12 @@ async function request(body?: unknown) {
   return data
 }
 
-type WorkspaceProps =
+type WorkspaceProps = (
   | { initialView?: 'account'; preset?: never }
   | { initialView: 'demo'; preset?: DemoCompany }
+) & { judgeDemo?: boolean }
 
-export default function Workspace({ initialView = 'account', preset }: WorkspaceProps) {
+export default function Workspace({ initialView = 'account', preset, judgeDemo = false }: WorkspaceProps) {
   const [view, setView] = useState<WorkspaceView>(initialView)
   const [loading, setLoading] = useState(initialView === 'account')
   const [signedIn, setSignedIn] = useState(false)
@@ -121,6 +122,10 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
   const update = (key: keyof BusinessInput, value: unknown) =>
     setBusiness((b) => ({ ...b, [key]: value }))
   function exitDemo() {
+    if (judgeDemo) {
+      window.location.assign('/demo')
+      return
+    }
     setBusiness(empty)
     setStep(0)
     setComplete(false)
@@ -220,11 +225,12 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
           design={design}
           actions={
             <>
+              {view === 'demo' && <span className="self-center text-sm text-muted">Saved demo · Changes stay in this visit</span>}
               <Button type="button" data-tour="settings" onClick={() => setSettingsOpen(true)}>
                 Business settings
               </Button>
               <Button type="button" disabled={busy} onClick={view === 'demo' ? exitDemo : logout}>
-                Sign out
+                {view === 'demo' ? (judgeDemo ? 'Browse demos' : 'Exit demo') : 'Sign out'}
               </Button>
             </>
           }
@@ -233,7 +239,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
           <BusinessSettings
             business={business}
             preview={view === 'demo'}
-            redesignNote="Your rooms update as soon as you save. New names or descriptions also ask Scene Designer to redesign your building."
+            redesignNote="Your rooms update as soon as you save. Names and descriptions update the building design."
             onSave={saveSettings}
             onClose={() => setSettingsOpen(false)}
           />
@@ -260,7 +266,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
           <span className="font-display text-4xl">c.</span>
           <div className="text-lg font-medium tracking-tight">
             consul
-            <span className="block text-[7px] tracking-[0.25em]">THE BUSINESS, CONNECTED</span>
+            <span className="block text-[7px] tracking-[0.25em]">YOUR BUSINESS, CONNECTED</span>
           </div>
         </div>
         <span className="hidden text-xs text-muted sm:block">
@@ -271,7 +277,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
         <aside className="relative flex flex-col justify-between">
           <div>
             <p className="mb-6 text-[9px] font-medium tracking-[0.25em] text-muted">
-              WELCOME TO YOUR BUSINESS, REIMAGINED
+              SEE YOUR BUSINESS IN ONE PLACE
             </p>
             <h1 className="max-w-md font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
               Big picture.
@@ -283,8 +289,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
               </span>
             </h1>
             <p className="mt-6 max-w-xs text-sm leading-7 text-muted">
-              A world built around your business. Tell us a little about it, and we’ll make you feel
-              right at home.
+              See your products, suppliers, finances and policy decisions together. Start with your business details or explore a saved demo.
             </p>
           </div>
           <div className="mt-10 hidden sm:block" aria-hidden="true">
@@ -333,20 +338,20 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
             </ol>
           )}
           <p className="mb-3 text-[9px] tracking-[0.2em] text-muted">
-            {hasWorkspaceAccess ? `STEP 0${step + 1} OF 03 · ABOUT TWO MINUTES` : 'YOUR OWN LITTLE WORLD'}
+            {hasWorkspaceAccess ? `STEP 0${step + 1} OF 03 · ABOUT TWO MINUTES` : 'YOUR BUSINESS WORKSPACE'}
           </p>
           <h2 id="setup-title" className="font-display text-3xl leading-tight">
             {hasWorkspaceAccess
               ? titles[step]
               : mode === 'signup'
-                ? 'Make yourself at home.'
-                : 'Welcome home.'}
+                ? 'Create your workspace.'
+                : 'Welcome back.'}
           </h2>
           <p className="mb-7 mt-3 text-xs leading-6 text-muted">
             {!hasWorkspaceAccess
-              ? 'One account. A whole new way to see your business.'
+              ? 'Create an account to save your business details.'
               : step === 0
-                ? 'Start with the basics. We’ll take it from here.'
+                ? 'Add the details used to prepare your workspace.'
                 : step === 1
                   ? 'Add your products. A rough annual estimate is just fine. Prices are in USD.'
                   : 'Bring your suppliers and parts together, or start exploring with demo data.'}
@@ -650,7 +655,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
           )}
           {!hasWorkspaceAccess && (
             <p className="mt-6 text-center text-xs text-muted">
-              {mode === 'signup' ? 'Already have a home here?' : 'New to Consul?'}{' '}
+              {mode === 'signup' ? 'Already have an account?' : 'New to Consul?'}{' '}
               <button
                 className="font-medium text-ink underline underline-offset-4"
                 onClick={() => {
@@ -665,7 +670,7 @@ export default function Workspace({ initialView = 'account', preset }: Workspace
         </section>
       </div>
       <footer className="px-6 pb-6 text-center text-[9px] tracking-wider text-muted">
-        A LITTLE CLOSER TO EVERYTHING.
+        YOUR BUSINESS IN ONE PLACE.
       </footer>
     </main>
   )

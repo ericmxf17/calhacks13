@@ -9,6 +9,8 @@ import { councilBusinessKey, type CouncilHistoryRound, type CouncilJob, type Cou
 import { councilReadiness, runCouncilRole } from './council-droid'
 import type { CouncilToolEffect } from './council-tools'
 import { resolveCouncilSources } from './council-sources'
+import { councilDemoId } from './council-demo'
+import { councilStoreConfigured, saveCouncilSnapshot } from './council-store'
 export { councilSourceOptions } from './council-sources'
 
 type SavedJob = { job: CouncilJob; requestHash: string; sessions: Partial<Record<CouncilRole, string>> }
@@ -31,10 +33,15 @@ function canonical(value: unknown): string {
   return JSON.stringify(value)
 }
 async function saveSnapshot(saved: SavedJob) {
-  saved.job.updatedAt = new Date().toISOString()
+  saved.job.updatedAt = new Date(Math.max(Date.now(), Date.parse(saved.job.updatedAt) + 1)).toISOString()
   const temporary = path.join(directory(saved.job.id), `${randomUUID()}.tmp`)
   await writeFile(temporary, JSON.stringify(saved, null, 2), { flag: 'wx', mode: 0o600 })
   await rename(temporary, path.join(directory(saved.job.id), 'job.json'))
+  const demoId = councilDemoId(saved.job.business)
+  if (demoId && councilStoreConfigured()) {
+    try { await saveCouncilSnapshot(`demo:${demoId}`, saved) }
+    catch { console.warn('[council-archive]', JSON.stringify({ jobId: saved.job.id, status: 'sync_failed', message: 'The local snapshot is saved. Import it into SpacetimeDB before sharing this run.' })) }
+  }
 }
 // All state mutations, including session/status callbacks and tool results,
 // share one serialized owner and the existing atomic snapshot replacement.

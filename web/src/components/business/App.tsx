@@ -51,7 +51,7 @@ function FlatStorefront({ open, company, departments, scene, layout }: { open: (
   </div><p className="fallback-note">Simplified view · 3D isn’t available on this device</p></div>
 }
 
-const sourceNote = { illustrative: 'Demo data, for exploration', setup: 'Calculated from your setup details', placeholder: 'Not connected yet' }
+const sourceNote = { illustrative: 'Fictional sample data', setup: 'Calculated from your setup details', placeholder: 'Not connected yet' }
 
 function DepartmentView({ department: d, departments, close, select }: { department: Department; departments: Department[]; close: () => void; select: (id: DepartmentId) => void }) {
   const id = d.id
@@ -77,7 +77,7 @@ function DepartmentView({ department: d, departments, close, select }: { departm
       <div className="list-heading"><h2>{d.listTitle}</h2><span>{rows.length} items</span></div>
       <div className="room-list">{rows.map((row, i) => <div className="room-row" key={i}><span className="row-mark">{row.initial}</span><div><strong>{row.title}</strong><small>{row.subtitle}</small></div><span className="row-value">{row.value}</span></div>)}</div>
     </>}
-    {d.source === 'placeholder' && d.tracks && d.tracks.length > 0 && <div className="room-empty"><h2>What this room will track</h2><ul>{d.tracks.map(t => <li key={t}>{t}<small>Not connected yet</small></li>)}</ul></div>}
+    {d.source === 'placeholder' && d.tracks && d.tracks.length > 0 && <div className="room-empty"><h2>Suggested data for this room</h2><ul>{d.tracks.map(t => <li key={t}>{t}<small>Not connected yet</small></li>)}</ul></div>}
     <div className="room-footer"><span><i/> {sourceNote[d.source ?? 'illustrative']}</span><SceneButton className="subtle-link" onClick={close}>Back to the building <Arrow back/></SceneButton></div>
 
   </section>
@@ -205,17 +205,17 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     }} onPointerLeave={() => { pointer.current = { x: 0, y: 0 } }}>
     <div className="scene-layer" inert={!homeReady}>{/* One canvas for every building, so the site and later redesigns swap in without a blank frame. */}<SceneBoundary fallback={<SceneFallback view={sceneView.view} settled={sceneView.settled} onViewSettled={settleView}>{fallback}</SceneFallback>}><BusinessScene company={company} scene={drawn} layout={layout} constructing={constructing} onSiteShown={showSite} assembling={assembling} onAssembled={assembled} onDrawn={sceneDrawn} departments={departments} active={active} open={open} pointer={pointer} reducedMotion={reducedMotion} view={sceneView.view} viewSettled={sceneView.settled} onViewSettled={settleView} fallback={fallback}/></SceneBoundary></div>
     <header className="world-header">
-      <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>THE BUSINESS, CONNECTED</span></div></div>
+      <div className="wordmark brand-glass"><span className="wordmark-symbol">c.</span><div>consul<span>DECISIONS IN CONTEXT</span></div></div>
       <div className="world-header-content">
         <div className="workspace-status"><i/><span className="workspace-company" title={company}>{company}</span><span className="status-divider"/><span className="established">{departments.some(d => d.source === 'illustrative') ? 'Illustrative room data' : 'Rooms built from your setup'}</span></div>
         <div className="workspace-actions" aria-label="Workspace actions"><Button data-tour="tour" disabled={loading || assembling} onClick={() => { if (active) close(); setTouring(true) }}>Take the tour</Button>{actions}</div>
       </div>
     </header>
     {active && <SceneButton className="back-button" onClick={close}><Arrow back/>Back to business<span>ESC</span></SceneButton>}
-    <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">A NEW PERSPECTIVE</span><h1>Your business.<br/><em>A world of its own.</em></h1><p>{design?.state === 'agent' ? `Designed by Scene Designer: ${scene.reasoning}` : design ? scene.reasoning : 'Step closer. Every room tells a story.'}</p></div>
+    <div className={`intro ${active || !homeReady ? 'intro-hidden' : ''}`} aria-hidden={!homeReady || undefined}><span className="section-kicker">YOUR BUSINESS CONTEXT</span><h1>Your business.<br/><em>Start with the facts.</em></h1><p>{design?.state === 'agent' ? `Designed by Scene Designer: ${scene.reasoning}` : design ? scene.reasoning : 'Open a room to review business details. Choose Consul to discuss a decision, or Agents to inspect research runs.'}</p></div>
     {design && !active && homeReady && <DesignStatus design={{ ...design, showDesign }}/>}
     {homeReady && activeDepartment && ready && <DepartmentView department={activeDepartment} departments={departments} close={close} select={open}/>}
-    {!active && homeReady && <footer className="world-footer"><div className="coordinate"><span>01 — THE WHOLE PICTURE</span><small>{company} · Your business, connected</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">A little closer to everything.</span></footer>}
+    {!active && homeReady && <footer className="world-footer"><div className="coordinate"><span>01 · BUSINESS WORKSPACE</span><small>{company} · Business context</small></div><div className="explore-hint"><span className="mouse-icon"/><span>Move to explore <i/> Select a room to step inside</span></div><span className="scene-index">Facts · Council · Agent runs</span></footer>}
     {sceneView.view === 'agents' && sceneView.settled && <AgentsPanel reducedMotion={reducedMotion}/>}
     {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">

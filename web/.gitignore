@@ -24,3 +24,9 @@ logs/
 
 # Local single-process job ledger.
 .backend/
+.vercel/
+
+# Document supported configuration without committing credentials.
+!.env.example
+.tools/
+.vercel

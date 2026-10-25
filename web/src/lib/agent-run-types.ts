@@ -2,7 +2,8 @@ import type { AgentRole } from './agent-catalog'
 
 export type BrowserAgentRole = AgentRole
 export type AgentConnection = 'connected' | 'not_configured' | 'unavailable'
-export type AgentConnectionsResponse = { agents: { role: AgentRole; connection: AgentConnection }[] }
+export type ArchivedAgentEvidence = { label: string; recordedAt: string; mode: 'archive' }
+export type AgentConnectionsResponse = { agents: { role: AgentRole; connection: AgentConnection }[]; evidence?: ArchivedAgentEvidence }
 
 export type AgentArtifact = {
   index: number
@@ -25,6 +26,7 @@ export type AgentRunDetail = {
 }
 
 export type AgentRunsResponse = {
+  evidence?: ArchivedAgentEvidence
   agent: { role: string; name: string; connection: 'connected' | 'not_configured' }
   runs: AgentRunDetail[]
   limit: number

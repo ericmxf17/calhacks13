@@ -26,7 +26,7 @@ export type CouncilJob = { id: string; previousJobId: string | null; rootJobId: 
 export type CouncilHistoryRound = Pick<CouncilJob, 'id' | 'question' | 'turns' | 'decision' | 'createdAt' | 'artifacts' | 'toolEvidence'>
 export type CouncilThread = { rootJobId: string; rounds: CouncilJob[] }
 export type CouncilSourceOption = { ref: CouncilSourceRef; title: string; description: string; createdAt: string | null }
-export type CouncilSetup = { members?: ({ role: CouncilRole } & CouncilModel)[]; capabilities?: string[]; available: boolean; message: string | null; roles: { role: AgentRole; name: string; configured: boolean }[] }
+export type CouncilSetup = { mode?: 'live' | 'archive'; members?: ({ role: CouncilRole } & CouncilModel)[]; capabilities?: string[]; available: boolean; message: string | null; roles: { role: AgentRole; name: string; configured: boolean }[] }
 export type CouncilRequest = { requestId: string; business: BusinessInput; question: string; sources: CouncilSourceRef[]; assignToCompany: true; previousJobId?: string }
 
 /** Browser/server freshness identity over the entire validated profile; never authorization. */

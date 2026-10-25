@@ -107,7 +107,7 @@ export default function BusinessSettings({ business, preview, redesignNote, onSa
         <label>Where do you sell?<textarea required maxLength={500} rows={3} value={draft.channels} onChange={e => set('channels', e.target.value)}/></label>
       </div>}
       {tab === 'products' && <div className="settings-products">
-        <p className="settings-hint">A rough annual estimate is fine. Prices are in USD.</p>
+        <p className="settings-hint">Enter unit prices in USD and estimated annual units. Rooms use these to estimate revenue, not actual sales.</p>
         <div className="settings-product-head" aria-hidden="true"><span>Product</span><span>Price per unit</span><span>Annual units</span><span/></div>
         {draft.products.map((p, i) => <fieldset key={i} className="settings-product">
           <legend className="sr-only">Product {i + 1}</legend>
@@ -136,7 +136,7 @@ export default function BusinessSettings({ business, preview, redesignNote, onSa
       </div>}
     </div>
     <footer className="settings-footer">
-      {error ? <p role="alert" className="settings-error">{error}</p> : <p className="settings-hint">{redesignNote ?? 'Your rooms update as soon as you save.'}</p>}
+      {error ? <p role="alert" className="settings-error">{error}</p> : <p className="settings-hint">{redesignNote ?? 'Save to update the company context and room estimates.'}</p>}
       <div>
         <button type="button" className="settings-secondary" onClick={onClose}>Cancel</button>
         <button type="button" className="settings-primary" disabled={!changed || saving || parsing} onClick={() => void save()}>{saving ? 'Saving…' : 'Save changes'}</button>

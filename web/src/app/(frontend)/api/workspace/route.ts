@@ -1,11 +1,13 @@
 import { getPayload } from 'payload'
-import config from '@payload-config'
 import { appAuth } from '@/lib/app-auth'
 import { validateBusiness } from '@/lib/business-input'
 
 export async function GET() {
+  if (process.env.CONSUL_JUDGE_DEMO === 'true')
+    return Response.json({ user: null, demoOnly: true }, { headers: { 'Cache-Control': 'no-store' } })
   const user = await appAuth.currentUser()
   if (!user) return Response.json({ user: null })
+  const { default: config } = await import('@payload-config')
   const payload = await getPayload({ config })
   const account = await payload.findByID({
     collection: 'users',
@@ -20,6 +22,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (process.env.CONSUL_JUDGE_DEMO === 'true')
+    return Response.json({ error: 'This deployment offers saved demos. Account sign-in and private workspaces are not enabled.' }, { status: 503 })
   if (request.headers.get('sec-fetch-site') === 'cross-site')
     return Response.json({ error: 'Request not allowed.' }, { status: 403 })
   try {
@@ -28,6 +32,7 @@ export async function POST(request: Request) {
       await appAuth.logout()
       return Response.json({ ok: true })
     }
+    const { default: config } = await import('@payload-config')
     const payload = await getPayload({ config })
     if (body.action === 'signup' || body.action === 'login') {
       const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''

@@ -22,6 +22,7 @@ import { Shimmer } from '@/components/ai-elements/shimmer'
 import AgentAvatar from './AgentAvatar'
 import CouncilArtifactView from './CouncilArtifact'
 import { Button } from '@/components/ui/button'
+import { councilDemoId } from '@/lib/council-demo'
 
 const seats = [
   {
@@ -208,6 +209,8 @@ export default function CouncilPanel({
   previewThread?: CouncilThread
 }) {
   const businessKey = councilBusinessKey(business)
+  const demoId = councilDemoId(business)
+  const demoQuery = demoId ? `&demo=${encodeURIComponent(demoId)}` : ''
   const storageKey = `consul-council:${businessKey}`
   const heading = useRef<HTMLHeadingElement>(null)
   const contextRef = useRef<HTMLElement>(null)
@@ -216,6 +219,8 @@ export default function CouncilPanel({
   const alive = useRef(true)
   const sourceController = useRef<AbortController | null>(null)
   const [setup, setSetup] = useState<CouncilSetup | null>(null)
+  const [history, setHistory] = useState<{ id: string; question: string; updatedAt: string; round: number }[]>([])
+  const [historyBusy, setHistoryBusy] = useState(false)
   const [question, setQuestion] = useState('')
   function prefillQuestion(text: string) {
     setQuestion(text)
@@ -310,13 +315,14 @@ export default function CouncilPanel({
         alive.current = false
       }
     const controller = new AbortController()
-    councilFetch<CouncilSetup>('/api/council?view=setup', { signal: controller.signal })
+    councilFetch<CouncilSetup>(`/api/council?view=setup${demoQuery}`, { signal: controller.signal })
       .then((result) => {
         if (!controller.signal.aborted) setSetup(result)
       })
       .catch((e) => {
         if (!controller.signal.aborted) setError(e.message)
       })
+    let recovering = false
     try {
       const raw = localStorage.getItem(storageKey)
       if (raw) {
@@ -324,20 +330,34 @@ export default function CouncilPanel({
         if (
           restored.request.business &&
           councilBusinessKey(restored.request.business) === businessKey
-        )
+        ) {
           setSaved(restored)
+          recovering = true
+        }
       }
     } catch {
       setError(
         'Your saved council could not be read. Browser storage must be available before sending.',
       )
     }
+    if (demoId) {
+      councilFetch<{ conversations: typeof history }>(`/api/council?view=history${demoQuery}`, { signal: controller.signal })
+        .then(async result => {
+          if (controller.signal.aborted) return
+          setHistory(result.conversations)
+          if (!recovering && result.conversations.length) {
+            const next = await councilFetch<CouncilThread>(`/api/council?view=thread&jobId=${encodeURIComponent(result.conversations[0].id)}${demoQuery}`, { signal: controller.signal })
+            if (!controller.signal.aborted) receiveThread(next)
+          }
+        })
+        .catch(e => { if (!controller.signal.aborted) setError(e.message) })
+    }
     return () => {
       alive.current = false
       controller.abort()
       sourceController.current?.abort()
     }
-  }, [businessKey, storageKey, previewThread])
+  }, [businessKey, storageKey, previewThread, demoId, demoQuery])
 
   // Mount and polling are read-only. An uncertain POST retains its exact payload for an explicit retry.
   useEffect(() => {
@@ -347,7 +367,7 @@ export default function CouncilPanel({
     const read = async () => {
       try {
         const result = await councilFetch<CouncilThread>(
-          `/api/council?view=thread&jobId=${encodeURIComponent(saved.leafId ?? saved.request.requestId)}`,
+          `/api/council?view=thread&jobId=${encodeURIComponent(saved.leafId ?? saved.request.requestId)}${demoQuery}`,
           { signal: controller.signal },
         )
         if (controller.signal.aborted) return
@@ -533,6 +553,22 @@ export default function CouncilPanel({
     setError('')
     setInspectedSource(null)
   }
+  async function openConversation(id: string) {
+    if (pending || busy || historyBusy) return
+    setHistoryBusy(true)
+    setError('')
+    try {
+      const next = await councilFetch<CouncilThread>(`/api/council?view=thread&jobId=${encodeURIComponent(id)}${demoQuery}`)
+      if (!alive.current) return
+      localStorage.removeItem(storageKey)
+      setSaved(null)
+      seenTurns.current = null
+      setRevealedTurns(new Set())
+      receiveThread(next)
+      setQuestion('')
+    } catch (e) { if (alive.current) setError(e instanceof Error ? e.message : 'Could not open the saved conversation.') }
+    finally { if (alive.current) setHistoryBusy(false) }
+  }
   const maxRounds = (job?.round ?? 0) >= 4
   const canSend =
     !!setup?.available &&
@@ -563,6 +599,15 @@ export default function CouncilPanel({
       <header className="council-toolbar">
         <h1 tabIndex={-1} ref={heading}>Council</h1>
         <div className="council-toolbar-actions">
+          {history.length > 0 && (
+            <label className="council-history-label">
+              Saved conversations
+              <select aria-label="Saved conversations" value={job?.id ?? ''} disabled={pending || busy || historyBusy} onChange={event => void openConversation(event.target.value)}>
+                <option value="" disabled>Choose a discussion</option>
+                {history.map(item => <option key={item.id} value={item.id}>{item.question.slice(0, 90)}</option>)}
+              </select>
+            </label>
+          )}
           <Button
             ref={contextToggle}
             className="council-context-toggle"
@@ -576,7 +621,7 @@ export default function CouncilPanel({
             disabled={!!previewThread || pending || busy}
             onClick={newConversation}
           >
-            New conversation ＋
+            {setup?.mode === 'archive' ? 'Clear discussion' : 'New conversation ＋'}
           </Button>
         </div>
       </header>
@@ -586,6 +631,7 @@ export default function CouncilPanel({
           changes.
         </div>
       )}
+      {!previewThread && history.length > 0 && <p className="council-saved-note">Completed discussions for {business.company}. Their sources and outputs are saved. Opening a discussion starts no model run.</p>}
       <div className="council-workspace">
         <aside className="council-roster" aria-label="Council members in speaking order">
           <span className="council-eyebrow">AROUND THE TABLE</span>
@@ -831,12 +877,12 @@ export default function CouncilPanel({
             {!previewThread && setup && !setup.available && (
               <details className="council-setup">
                 <summary>
-                  Connect Factory to start your council <span>ⓘ</span>
+                  {setup.mode === 'archive' ? 'Saved demo conversations' : 'Live council is unavailable'} <span>ⓘ</span>
                 </summary>
                 <p>
                   {setup.message ||
                     'Factory is unavailable. Configure the server runtime to start a council.'}{' '}
-                  You can still browse company context and CREAO sources.
+                  You can read saved reasoning, decisions, and source evidence.
                 </p>
               </details>
             )}
@@ -853,9 +899,11 @@ export default function CouncilPanel({
                 value={question}
                 maxLength={2000}
                 rows={2}
-                disabled={pending || busy || maxRounds}
+                disabled={pending || busy || maxRounds || setup?.mode === 'archive'}
                 placeholder={
-                  maxRounds
+                  setup?.mode === 'archive'
+                    ? 'This hosted demo contains completed discussions. Choose one from Saved conversations.'
+                    : maxRounds
                     ? 'Four rounds complete. Start a new conversation to explore another decision.'
                     : pending
                       ? 'Your council is considering the question…'
@@ -887,6 +935,8 @@ export default function CouncilPanel({
             <p className="council-fineprint">
               {previewThread
                 ? 'Preview controls only prefill the composer.'
+                : setup?.mode === 'archive'
+                  ? 'Reading a saved discussion starts no model run. New executions start on the team runner.'
                 : 'Sends your question and shared context to Factory · uses Factory credits. The final call is yours.'}
             </p>
           </div>
@@ -918,7 +968,7 @@ export default function CouncilPanel({
           <details open>
             <summary>
               <strong>{business.company}</strong>
-              <small>Company setup · always included</small>
+              <small>Company setup included with this discussion</small>
             </summary>
             <p>{business.offering}</p>
             <p className="council-help">{business.channels}</p>

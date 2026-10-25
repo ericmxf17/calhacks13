@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import AgentAvatar from './AgentAvatar'
 import BriefWriterRunForm from './BriefWriterRunForm'
-import type { AgentRunDetail, AgentRunsResponse, ArtifactPreview, BrowserAgentRole } from '@/lib/agent-run-types'
+import type { AgentRunDetail, AgentRunsResponse, ArchivedAgentEvidence, ArtifactPreview, BrowserAgentRole } from '@/lib/agent-run-types'
 import './agent-run-dialog.css'
 
 type AgentRunDialogProps = {
@@ -127,6 +127,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
   const submittedRun = useRef<string | null>(null)
   const [runs, setRuns] = useState<AgentRunDetail[] | null>(null)
   const [connection, setConnection] = useState<AgentRunsResponse['agent']['connection'] | null>(null)
+  const [archive, setArchive] = useState<ArchivedAgentEvidence | null>(null)
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null)
   const [detail, setDetail] = useState<AgentRunDetail | null>(null)
   const [offset, setOffset] = useState(0)
@@ -176,6 +177,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
         if (!isRunsResponse(body)) throw new Error('Run history returned an invalid response.')
         setRuns(body.runs)
         setConnection(body.agent.connection)
+        setArchive(body.evidence?.mode === 'archive' ? body.evidence : null)
         const current = selectedRunRef.current
         const next = current && (body.runs.some(run => run.id === current) || (offset === 0 && current === submittedRun.current)) ? current : body.runs[0]?.id ?? null
         selectedRunRef.current = next
@@ -252,9 +254,9 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
     }}>
     <header className="agent-run-header">
       <AgentAvatar stillSrc={agent.avatar.still} animatedSrc={agent.avatar.animated} reducedMotion={reducedMotion} />
-      <div className="agent-run-identity"><h2>{agent.name}</h2><p>Run history, output and artifacts</p></div>
+      <div className="agent-run-identity"><h2>{agent.name}</h2><p>CREAO API run history, output and files</p></div>
       <span className={`agent-run-connection ${connection === 'connected' ? 'is-connected' : ''}`}>
-        {agent.role !== null && <span aria-hidden="true" />}{agent.role === null ? 'Placeholder' : connection === 'connected' ? 'Connected' : connection === 'not_configured' ? 'Not connected' : listError ? 'Connection unavailable' : 'Checking connection'}
+        {agent.role !== null && <span aria-hidden="true" />}{agent.role === null ? 'Placeholder' : archive ? 'Saved runs' : connection === 'connected' ? 'Connected' : connection === 'not_configured' ? 'Not connected' : listError ? 'Connection unavailable' : 'Checking connection'}
       </span>
       <button type="button" className="agent-run-close" aria-label="Close run history" onClick={onClose}>×</button>
     </header>
@@ -279,7 +281,8 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
       </aside>
 
       <div className="agent-run-content">
-        {agent.role === 'brief-writer' && <BriefWriterRunForm enabled={connection === 'connected'} onRunUpdate={showSubmittedRun}/>}
+        {archive && <p className="agent-run-muted">{archive.label}</p>}
+        {agent.role === 'brief-writer' && !archive && <BriefWriterRunForm enabled={connection === 'connected'} onRunUpdate={showSubmittedRun}/>}
         <div className="agent-run-toolbar">
           <label className="agent-run-mobile-select">Select a run
             <select aria-label="Select a recent run" value={selectedRunId ?? ''} onChange={event => selectRun(event.target.value)} disabled={!runs?.length}>
@@ -296,7 +299,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
           <button type="button" onClick={() => setOffset(offset + pageSize)} disabled={!hasNextPage || listLoading}>Next</button>
         </nav>}
 
-        {agent.role === null && <section className="agent-run-message"><h3>Layout placeholder</h3><p>This sample agent has no run history connection.</p></section>}
+        {agent.role === null && <section className="agent-run-message"><h3>Concept agent</h3><p>This concept has no connected agent and cannot run tasks.</p></section>}
         {listError && <p className="agent-run-error" role="alert">{listError} {runs && 'Showing the last loaded history.'}</p>}
         {connection === 'not_configured' && <section className="agent-run-message"><h3>Agent not connected</h3><p>{agent.name} is not configured for run history yet.</p></section>}
         {agent.role && connection === null && !listError && <p className="agent-run-muted">Checking the agent connection…</p>}
@@ -326,7 +329,7 @@ export default function AgentRunDialog({ agent, reducedMotion, onClose }: AgentR
               </div>
             </section>
             <section className="agent-run-artifacts">
-              <h3>Artifacts <span>· {visibleDetail.artifacts.length}</span></h3>
+              <h3>Files <span>· {visibleDetail.artifacts.length}</span></h3>
               {visibleDetail.artifacts.map(artifact => <ArtifactCard key={`${visibleDetail.id}-${artifact.index}`} artifact={artifact} />)}
               {visibleDetail.artifacts.length === 0 && <p className="agent-run-muted">{runInProgress ? 'Files will appear here when the run returns them.' : 'No files were returned by this run.'}</p>}
               <p className="agent-run-footnote">Files belong to the selected run.</p>

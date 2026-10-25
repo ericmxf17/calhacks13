@@ -44,10 +44,6 @@ const nextConfig: NextConfig = {
     loader: 'custom',
     loaderFile: './figma-image-loader.ts',
   },
-  // Don't block publishing or preview deploys on errors if the emitted JS is valid
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   // `next dev` serves the Make preview at a per-sandbox cross-origin host. Next
   // blocks its dev resources (`/_next/*`, HMR WebSocket, internal endpoints)
   // unless the origin is listed here, and a blocked HMR socket stalls Turbopack
@@ -68,7 +64,7 @@ const nextConfig: NextConfig = {
     },
   },
   env: {
-    NEXT_PUBLIC_SITE_URL: process.env.FIGMA_PUBLIC_URL || 'http://localhost:3000',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || process.env.FIGMA_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
     // NOTE: Do not add FIGMA_OAUTH_CLIENT_SECRET, FIGMA_CONTENT_API_ACCESS_KEY,
     // or any other credential here. Values placed in `env` are inlined into
     // the JavaScript bundle by Next.js at build time and become readable by

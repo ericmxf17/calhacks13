@@ -17,3 +17,6 @@ bulk*/
 
 # Pipeline run folders
 runs/
+
+# Local runtimes and their authentication state.
+.tools/

@@ -1,5 +1,6 @@
 import { BackendError } from '@/lib/backend'
 import { createAgentRun, privateHeaders, readAgentRuns } from '@/lib/agent-run-reader'
+import { readDemoAgentRuns } from '@/lib/demo-agent-evidence'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -16,11 +17,18 @@ function failure(error: unknown) {
 type Context = { params: Promise<{ path: string[] }> }
 export async function GET(request: Request, context: Context) {
   try {
-    return await readAgentRuns(request, (await context.params).path)
+    const path = (await context.params).path
+    if (process.env.NODE_ENV === 'production' || process.env.CONSUL_JUDGE_DEMO === 'true') {
+      return readDemoAgentRuns(path, new URL(request.url)) || Response.json({ error: { code: 'NOT_FOUND', message: 'This agent is not in the prepared demo archive.' } }, { status: 404, headers: privateHeaders })
+    }
+    return await readAgentRuns(request, path)
   } catch (error) { return failure(error) }
 }
 
 export async function POST(request: Request, context: Context) {
-  try { return await createAgentRun(request, (await context.params).path) }
+  try {
+    if (process.env.NODE_ENV === 'production' || process.env.CONSUL_JUDGE_DEMO === 'true') throw new BackendError(403, 'ARCHIVE_READ_ONLY', 'The judge demo contains completed runs. New executions start on the team runner.')
+    return await createAgentRun(request, (await context.params).path)
+  }
   catch (error) { return failure(error) }
 }

@@ -51,6 +51,16 @@ function validateShape(value: unknown, schema: Schema): void {
 // Capture all digit-bearing forms, including ordinals and scientific notation.
 // Separators require digits on both sides so punctuation is not part of a value.
 const numericTokens = (text: string) => text.match(/[+\-−]?(?:[\p{L}\p{N}_]*\p{Nd})(?:[.,]\p{Nd}+)*(?:[\p{L}\p{N}_]|[+\-−](?=\p{Nd}))*(?:%)?/gu) || []
+// Bill artifacts declare provision labels in this exact structured field. A
+// label is a reference, not a quantity; prose occurrences alone declare none.
+function declaredProvisionIds(text: string): string[] {
+  let document: unknown
+  try { document = JSON.parse(text) } catch { return [] }
+  if (!document || typeof document !== 'object' || !('provisions' in document) || !Array.isArray(document.provisions)) return []
+  return document.provisions.flatMap(provision =>
+    provision && typeof provision === 'object' && typeof provision.id === 'string' && /^P[1-9]\d*$/.test(provision.id)
+      ? [provision.id] : [])
+}
 export function validateCouncilClaims(claims: CouncilClaim[], job: Pick<CouncilJob, 'sources' | 'toolEvidence' | 'artifacts'>) {
   for (const claim of claims) {
     const factualEvidence = [...job.sources, ...(job.toolEvidence || [])]
@@ -61,13 +71,16 @@ export function validateCouncilClaims(claims: CouncilClaim[], job: Pick<CouncilJ
     const cited = factualEvidence.filter(source => claim.sourceIds.includes(source.id))
     // A citation proves membership, not truth. Numeric statements additionally
     // need a literal excerpt the reader can find in one of those cited sources.
-    const quotes = [...claim.text.matchAll(/"([^"\n]+)"/g)].map(match => match[1])
+    // Public prose can use straight or typographic double quotes. Keep the
+    // excerpt itself literal so either delimiter requires identical evidence.
+    const quotes = [...claim.text.matchAll(/"([^"\n]+)"|“([^“”\n]+)”/g)].map(match => match[1] ?? match[2])
     const supportedNumbers = new Set(quotes.filter(quote => cited.some(source => source.text.includes(quote))).flatMap(numericTokens))
-    // Exact known source IDs identify evidence, even when embedded in prose.
-    // Unknown references and actual numerical values still require support.
-    const numbers = numericTokens(claim.text).filter(token => !claim.sourceIds.includes(token))
+    // Only cited structured declarations establish provision references. This
+    // does not exempt arbitrary alphanumeric amounts or uncited provision IDs.
+    const provisionIds = new Set(cited.flatMap(source => declaredProvisionIds(source.text)))
+    const numbers = numericTokens(claim.text).filter(token => !claim.sourceIds.includes(token) && !provisionIds.has(token))
     for (const number of numbers) {
-      if (!supportedNumbers.has(number)) invalid('A numerical claim did not include an exact supporting source quote')
+      if (!supportedNumbers.has(number)) invalid(`Numerical token ${JSON.stringify(number)} lacks an exact supporting quote from cited evidence (${claim.sourceIds.join(', ')})`)
     }
   }
 }

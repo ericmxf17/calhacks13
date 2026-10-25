@@ -9,14 +9,14 @@ export type TourStep = { view: BusinessView; target?: string; title: string; bod
 
 export function tourSteps(company: string): TourStep[] {
   return [
-    { view: 'home', title: `Welcome to ${company}`, body: 'This building is your business. Take a one-minute tour to see how to get around, run your agents, and keep your company details up to date.' },
-    { view: 'home', target: '.room-hotspot', title: 'Every room is part of your business', body: 'Rooms show numbers worked out from your setup, like revenue, products and suppliers. Click a room’s label to step inside, and press Esc to step back out.' },
+    { view: 'home', title: `Welcome to ${company}`, body: 'Review company facts in the rooms, discuss a decision with Consul, and inspect CREAO research runs in Agents.' },
+    { view: 'home', target: '.room-hotspot', title: 'Every room is part of your business', body: 'Open a room to review its figures and source label. Rooms use setup estimates, fictional samples, or an empty state. Press Esc to return.' },
     { view: 'home', target: '[data-tour="home"]', title: 'Home', body: 'The Home tab brings you back to your building from anywhere.' },
-    { view: 'council', target: '.council-roster', title: 'Consul, your advisory council', body: 'Four AI advisors look at every decision with you. Finance, Operations and Skeptic each weigh in, in turn, then Chair brings it together into one recommendation.' },
-    { view: 'council', target: '.council-composer', title: 'Ask about a decision', body: 'Type a question here, or tap a starter like “Find our next priority”. Your council talks it through in rounds, and you can ask follow-ups or push back.' },
-    { view: 'council', target: '.council-context', title: 'What your council knows', body: 'In the room shows what the council can see: your company setup, plus any results from your CREAO agents that you add under Context & sources.' },
-    { view: 'agents', target: '.agent-card', title: 'Agents, your research team', body: 'These AI agents read new bills, research them, work out what they mean for your company, and write you a short brief.' },
-    { view: 'agents', target: '[data-tour="brief-writer"]', title: 'Running an agent', body: 'Click an agent’s name to open it and see its past runs, outputs and files. To start one, open Brief Writer and press Run Brief Writer. The result shows up in the same window after a few minutes.' },
+    { view: 'council', target: '.council-roster', title: 'Consul, your advisory council', body: 'Ask a business question. Finance, Operations and Skeptic examine costs, feasibility and assumptions; Chair brings their views into a recommendation.' },
+    { view: 'council', target: '.council-composer', title: 'Ask about a decision', body: 'Describe what you need to decide, your options and any deadline. Add policy evidence in Context & sources, then ask follow-ups or challenge an assumption.' },
+    { view: 'council', target: '.council-context', title: 'What your council knows', body: 'Your company setup is included. Use Context & sources to add selected CREAO run results as evidence for the discussion.' },
+    { view: 'agents', target: '.agent-card', title: 'Agents, your research team', body: 'Inspect CREAO runs for bill analysis, research, business impact and briefs. These are runs you start, rather than automatic policy monitoring.' },
+    { view: 'agents', target: '[data-tour="brief-writer"]', title: 'Running an agent', body: 'Open an agent to inspect API run history, output and files. Brief Writer also accepts an analysis pack or the VoltRide example to start a new run.' },
     { view: 'home', target: '[data-tour="settings"]', title: 'Update your company info', body: 'Open Business settings to edit your company and products, or upload a new supplier spreadsheet (CSV or XLSX with the columns supplier, part and cost). Your rooms update to match.' },
     { view: 'home', target: '[data-tour="tour"]', title: 'You’re all set', body: 'You can replay this tour any time from here.' },
   ]

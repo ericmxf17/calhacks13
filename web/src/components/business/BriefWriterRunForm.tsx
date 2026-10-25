@@ -142,7 +142,7 @@ export default function BriefWriterRunForm({ enabled, onRunUpdate }: { enabled: 
   const locked = submitting || job !== null
   return <section className="brief-writer-launcher" aria-label="Run Brief Writer">
     <div className="brief-writer-launcher-heading">
-      <div><h3>Write a brief</h3><p>Run Brief Writer here to see its output and files below.</p></div>
+      <div><h3>Write a brief</h3><p>Submit an analysis pack to CREAO, then review the returned brief and files below.</p></div>
       <button type="button" className="agent-run-primary" aria-expanded={expanded} onClick={() => setExpanded(value => !value)}>
         {expanded ? 'Hide run form' : 'Run Brief Writer'}
       </button>
@@ -154,12 +154,12 @@ export default function BriefWriterRunForm({ enabled, onRunUpdate }: { enabled: 
       </div>}
       {!job && <form onSubmit={event => void submit(event)}>
         <div className="brief-writer-input-heading">
-          <label htmlFor="brief-writer-pack">Analysis pack (JSON)</label>
+          <label htmlFor="brief-writer-pack">Brief inputs (JSON)</label>
           <button type="button" className="agent-run-refresh" onClick={() => void loadExample()} disabled={locked || exampleLoading}>
             {exampleLoading ? 'Loading example…' : 'Use VoltRide example'}
           </button>
         </div>
-        <p id="brief-writer-pack-hint">Include names, bill, forecast, research, plan, and impact_results.</p>
+        <p id="brief-writer-pack-hint">Include names, bill, forecast, research, plan, and impact_results. Load the VoltRide example to see the input structure.</p>
         {exampleLabel && <p className="brief-writer-example-label">{exampleLabel}</p>}
         <textarea id="brief-writer-pack" aria-describedby="brief-writer-pack-hint" value={pack}
           onChange={event => { setPack(event.target.value); setExampleLabel(null) }} disabled={locked || exampleLoading} spellCheck={false} required rows={7}/>
@@ -170,7 +170,7 @@ export default function BriefWriterRunForm({ enabled, onRunUpdate }: { enabled: 
         </div>
       </form>}
       {requestId && <div className="brief-writer-request">
-        <p>Saved request <code>{requestId}</code></p>
+        <p>Request saved in this browser <code>{requestId}</code></p>
         <button type="button" className="agent-run-refresh" onClick={() => setCheckKey(key => key + 1)} disabled={submitting}>Check saved request</button>
         {job && terminal.has(job.status) && <button type="button" className="agent-run-refresh" onClick={newBrief}>Write another brief</button>}
       </div>}

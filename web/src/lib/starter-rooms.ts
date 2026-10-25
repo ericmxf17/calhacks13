@@ -68,13 +68,13 @@ function fromSetup(kind: RoomKind, b: BusinessInput): Content | null {
       listTitle: 'Your products', rows: products.slice(0, 8).map(p => ({ initial: initial(p.name), title: p.name, subtitle: `${count(p.units)} units a year`, value: usd(p.price) })),
     }
     case 'operations': return {
-      period: 'Monthly average · from your setup',
+      period: 'Estimated monthly average · from setup',
       metrics: [
-        { label: 'Monthly output', value: count(units / 12), change: 'Units a month, all products' },
-        { label: 'Busiest line', value: count(byUnits[0].units / 12), change: `${byUnits[0].name} · units a month` },
-        { label: 'Product lines', value: count(products.length), change: 'In production' },
+        { label: 'Monthly unit estimate', value: count(units / 12), change: 'Annual units ÷ 12, all products' },
+        { label: 'Highest monthly units', value: count(byUnits[0].units / 12), change: `${byUnits[0].name} · units a month` },
+        { label: 'Product lines', value: count(products.length), change: 'Listed in your setup' },
       ],
-      chartTitle: 'Monthly output by product', chartNote: 'UNITS PER MONTH', unit: '', ...chart(products.map(p => ({ label: p.label, value: p.units / 12 })), Math.round),
+      chartTitle: 'Estimated monthly units by product', chartNote: 'UNITS PER MONTH', unit: '', ...chart(products.map(p => ({ label: p.label, value: p.units / 12 })), Math.round),
     }
     case 'supply': {
       if (!b.parts.length) return null

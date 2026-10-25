@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.74.0",
     "@factory/droid-sdk": "0.10.0",
     "@payloadcms/figma": "1.0.0-beta.1",
     "@payloadcms/next": "4.0.0-beta.3",
@@ -48,7 +49,7 @@
   "scripts": {
     "backend": "node ./scripts/backend.mjs",
     "dev": "node --no-deprecation ./node_modules/next/dist/bin/next dev --hostname 127.0.0.1",
-    "build": "node --no-deprecation ./node_modules/payload/bin.js build",
+    "build": "node --no-deprecation ./node_modules/next/dist/bin/next build",
     "start": "node --no-deprecation ./node_modules/next/dist/bin/next start",
     "format": "oxfmt",
     "generate:importmap": "node --no-deprecation ./node_modules/payload/bin.js generate:importmap",
