@@ -3,6 +3,7 @@ import { Component, useCallback, useEffect, useMemo, useRef, useState, type CSSP
 import { defaultSceneSpec, type SceneSpec } from '@/lib/scene-spec'
 import BusinessScene, { type BusinessView } from './BusinessScene'
 import AgentsPanel from './AgentsPanel'
+import NavigationIcon from './NavigationIcon'
 import CouncilPanel from './CouncilPanel'
 import './council-transition.css'
 import type { BusinessInput } from '@/lib/business-input'
@@ -218,15 +219,15 @@ export default function App({ company = 'Consul Goods', departments: rooms = def
     {councilReady && business && <CouncilPanel key={councilBusinessKey(business)} business={business}/>}
     <nav className="bottom-navigation" aria-label="Main navigation">
       <Button id="nav-consul" data-tour="council" className="bottom-navigation-item" disabled={!business} aria-current={sceneView.view === 'council' ? 'page' : undefined} onClick={() => selectView('council')}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m7 9 3 3-3 3m6 0h4"/></svg>
+        <NavigationIcon kind="terminal"/>
         <span>Consul</span>
       </Button>
       <Button data-tour="home" className="bottom-navigation-item" aria-current={sceneView.view === 'home' ? 'page' : undefined} onClick={() => { sceneView.view === 'home' ? close() : selectView('home') }}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9"/></svg>
+        <NavigationIcon kind="home"/>
         <span>Home</span>
       </Button>
       <Button id="nav-agents" data-tour="agents" className="bottom-navigation-item" aria-current={sceneView.view === 'agents' ? 'page' : undefined} onClick={() => selectView('agents')}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="13" rx="3"/><path d="M12 3v4M2 12v4m20-4v4M9 16h6"/><circle cx="9" cy="12" r=".8" fill="currentColor"/><circle cx="15" cy="12" r=".8" fill="currentColor"/></svg>
+        <NavigationIcon kind="robot"/>
         <span>Agents</span>
       </Button>
     </nav>

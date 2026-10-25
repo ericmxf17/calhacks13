@@ -9,10 +9,11 @@ import RoomFurniture from './furniture'
 
 export const settleEpsilon = 1e-4
 
+// Side posts meet the horizontal rails without overlapping their outer faces.
 function Frame() {
   const { trim } = useTheme()
   return <>
-    {[-.59, .59].map(side => <Box key={side} at={[side, 0, -.02]} size={[.12, 1.81, .25]} color={trim}/>)}
+    {[-.59, .59].map(side => <Box key={side} at={[side, 0, -.02]} size={[.12, 1.64, .25]} color={trim}/>)}
     {[-.88, .88].map(side => <Box key={side} at={[0, side, .035]} size={[1.3, .12, .35]} color={trim}/>)}
   </>
 }
@@ -45,7 +46,7 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
     <Frame/>
     <group ref={shutters}>
       <mesh position={[0, 0, .018]} onClick={() => open(department.id)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
-        <boxGeometry args={[1.02, 1.61, .035]}/><meshStandardMaterial color={hovered ? '#a5edff' : '#47a8ce'} transparent opacity={selected ? 0 : .28} roughness={.28} metalness={.2}/>
+        <boxGeometry args={[1.02, 1.61, .035]}/><meshStandardMaterial color={hovered ? '#a5edff' : '#47a8ce'} transparent depthWrite={false} opacity={selected ? 0 : .28} roughness={.28} metalness={.2}/>
       </mesh>
       {!selected && <><Box at={[0, 0, .06]} size={[.045, 1.63, .045]} color={theme.dark}/><Box at={[0, .28, .06]} size={[1.05, .045, .045]} color={theme.dark}/></>}
     </group>
@@ -53,7 +54,7 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
   </group>
 }
 
-const blindsGlass = new MeshStandardMaterial({ color: '#47a8ce', transparent: true, opacity: .28, roughness: .28, metalness: .2 })
+const blindsGlass = new MeshStandardMaterial({ color: '#47a8ce', transparent: true, depthWrite: false, opacity: .28, roughness: .28, metalness: .2 })
 
 /** A window in the room grid with no room behind it, shown with its blinds down. */
 export function BlankWindow({ at }: { at: Vec3 }) {

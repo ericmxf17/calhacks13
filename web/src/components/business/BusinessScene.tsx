@@ -10,8 +10,10 @@ import { GroundProps, Lot, RoofProps } from './scene/props'
 import Building from './scene/archetypes'
 import Construction from './scene/archetypes/Construction'
 import Assemble, { type AssembleStage } from './scene/assemble'
+import Birds from './scene/Birds'
+import { viewTurn, type BusinessView } from './scene/view-turn'
 
-export type BusinessView = 'home' | 'agents' | 'council'
+export type { BusinessView } from './scene/view-turn'
 type Props = { company: string; scene: SceneSpec; layout: BuildingLayout; constructing?: boolean; onSiteShown?: () => void; assembling?: boolean; onAssembled?: () => void; onDrawn?: () => void; departments: Department[]; active: DepartmentId | null; open: (id: DepartmentId) => void; reducedMotion: boolean; pointer: MutableRefObject<{ x: number; y: number }>; fallback: ReactNode; view: BusinessView; viewSettled: boolean; onViewSettled: (view: BusinessView) => void }
 
 function CameraRig({ layout, departments, active, pointer, reducedMotion, view: requestedView, viewSettled, onViewSettled, interactive }: Pick<Props, 'layout' | 'departments' | 'active' | 'pointer' | 'reducedMotion' | 'view' | 'viewSettled' | 'onViewSettled'> & { interactive: MutableRefObject<boolean> }) {
@@ -57,8 +59,7 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
       currentView.current = requestedView
       if (!homeQuaternion.current) homeQuaternion.current = camera.quaternion.clone()
       const destination = homeQuaternion.current.clone()
-      if (requestedView === 'agents') destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), -Math.PI / 2))
-      if (requestedView === 'council') destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI / 2))
+      destination.premultiply(new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), viewTurn(requestedView)))
       // Every request starts at the rendered pose, including reversals mid-swing.
       swing.current = { from: camera.quaternion.clone(), to: destination, position: camera.position.clone(), zoom: orthographic.zoom, elapsed: 0, complete: false }
     }
@@ -124,7 +125,7 @@ function CameraRig({ layout, departments, active, pointer, reducedMotion, view: 
       interactive.current = true
       settledCallback.current('home')
     }
-  })
+  }, -2)
   return null
 }
 
@@ -150,13 +151,13 @@ export default function BusinessScene(props: Props) {
   const open = (id: DepartmentId) => { if (props.view === 'home' && interactive.current) props.open(id) }
   const s = layout.scale
   // offsetSize measures the layout size, ignoring the scene layer's fade-in scale, so the canvas renders at full resolution.
-  return <><div ref={portal} className="hotspot-layer" style={props.assembling ? { visibility: 'hidden' } : undefined}/><Canvas resize={{ offsetSize: true }} frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 1.6]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
+  return <><div ref={portal} className="hotspot-layer" style={props.assembling ? { visibility: 'hidden' } : undefined}/><Canvas resize={{ offsetSize: true }} frameloop="demand" orthographic camera={{ position: [7.3, 6.7, 17], zoom: 65, near: .1, far: 100 }} shadows="percentage" dpr={[1, 2]} fallback={props.fallback} gl={{ antialias: true, alpha: true }}>
     <color attach="background" args={['#dcf5fc']}/>
     <fog attach="fog" args={['#dcf5fc', 28, 65]}/>
     <ambientLight intensity={1.1}/>
     <hemisphereLight args={['#ffffff', '#88b7cb', 1.1]}/>
     {/* The shadow area grows with the building; the key remounts the light so its shadow camera updates. */}
-    <directionalLight key={layout.key} position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10 * s} shadow-camera-right={10 * s} shadow-camera-top={12 * s} shadow-camera-bottom={-8 * s} shadow-normalBias={.025}/>
+    <directionalLight key={layout.key} position={[-5, 12, 8]} intensity={2.3} color="#fff9e9" castShadow shadow-mapSize={[2048, 2048]} shadow-camera-left={-10 * s} shadow-camera-right={10 * s} shadow-camera-top={12 * s} shadow-camera-bottom={-8 * s} shadow-camera-near={.5} shadow-camera-far={40 * s} shadow-bias={-.0001} shadow-normalBias={.025} shadow-radius={1.5}/>
     <directionalLight position={[7, 6, -3]} intensity={1.2} color="#d3e0dc"/>
     <ThemeProvider value={theme}>
       {props.constructing ? <Construction company={props.company} reducedMotion={props.reducedMotion} onShown={props.onSiteShown}/> : <>
@@ -167,6 +168,7 @@ export default function BusinessScene(props: Props) {
         </group>
         <group ref={roof}><RoofProps layout={layout} props={scene.roofProps}/></group>
         <group ref={ground}><GroundProps layout={layout} props={scene.groundProps}/></group>
+        {!props.assembling && <Birds layout={layout} view={props.view} settled={props.viewSettled} reducedMotion={props.reducedMotion}/>}
         {props.assembling && <Assemble stages={stages} onDone={props.onAssembled}/>}
       </>}
       <Lot layout={layout} ground={props.constructing ? 'gravel' : scene.ground}/>

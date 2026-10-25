@@ -1,6 +1,6 @@
 import { Box, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
-import { Entrance, GlassPane, Shell, SignBand, frame } from './shared'
+import { Entrance, Facade, GlassPane, Shell, SignBand, frame } from './shared'
 
 function LoadingBay({ x, width }: { x: number; width: number }) {
   const theme = useTheme(), door = width - .3
@@ -37,13 +37,10 @@ export default function Workshop(props: ArchetypeProps) {
   const [first, ...rest] = f.bays, last = rest.pop()
   return <group>
     <Shell layout={layout}/>
-    {/* The facade frame: slim outer piers, wide inner piers with steel ribs, and floor beams. */}
-    {[-(f.half - .245), f.half - .245].map(x => <Box key={x} at={[x, f.pierY, .72]} size={[.5, f.pierHeight, .6]}/>)}
+    <Facade layout={layout}/>
     {f.mids.map(x => <group key={x}>
-      <Box at={[x, f.pierY, .72]} size={[1.75, f.pierHeight, .6]}/>
       {[-.5, 0, .5].map(dx => <Box key={dx} at={[x + dx, f.pierY, 1.04]} size={[.07, f.pierHeight - .2, .05]} color={theme.trim} cast={false}/>)}
     </group>)}
-    {f.beams.map(y => <Box key={y} at={[0, y, .72]} size={[f.width - .05, .42, .6]}/>)}
     {/* Parapet, roof deck and a sawtooth of skylights along the back. */}
     <Box at={[0, f.yTop + 1.29, .12]} size={[f.width + .05, .12, 2.18]} color={theme.trim}/>
     <Box at={[0, f.yTop + 1.46, .02]} size={[f.width + .2, .2, 2.0]} color={theme.trim}/>

@@ -24,7 +24,7 @@ export default function Warehouse(props: ArchetypeProps) {
     {[-(f.half - .2), ...f.mids, f.half - .2].map(x => <Box key={x} at={[x, f.pierY, .72]} size={[x === f.half - .2 || x === -(f.half - .2) ? .4 : 1.75, f.pierHeight, .6]}/>)}
     {f.mids.map(x => <Box key={x} at={[x, f.pierY, 1.03]} size={[.16, f.pierHeight, .06]} color={theme.dark} cast={false}/>)}
     {f.beams.map(y => <group key={y}>
-      <Box at={[0, y, .72]} size={[f.width - .05, .42, .6]}/>
+      <Box at={[0, y, .74]} size={[f.width - .05, .42, .6]}/>
       {[-.1, .1].map(dy => <Box key={dy} at={[0, y + dy, 1.03]} size={[f.width - .05, .025, .02]} color={theme.trim} cast={false}/>)}
     </group>)}
     {/* A low parapet and flat roof. */}

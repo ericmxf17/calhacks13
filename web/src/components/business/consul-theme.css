@@ -8,6 +8,13 @@
   --font-display: 'Trebuchet MS', 'Arial Rounded MT Bold', sans-serif;
 }
 
+.perching-bird { display: block; overflow: visible; pointer-events: none; transform: translate(-50%, -100%); filter: drop-shadow(1px 2px 0 #253b6420); }
+.bird-perch-anchor { position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: 36; pointer-events: none; }
+/* Let rooftop perches extend above the council frame; inner panes retain their scrolling. */
+.council-panel:has(> .bird-perch-anchor) { overflow: clip; overflow-clip-margin: 24px; }
+.council-panel:has(> .bird-perch-anchor) > .council-toolbar { border-radius: 6px 6px 0 0; }
+.council-panel:has(> .bird-perch-anchor) > .council-workspace { border-radius: 0 0 6px 6px; overflow: hidden; }
+
 .consul-onboarding {
   background: linear-gradient(180deg, #d9f4ff 0%, #effaff 65%, #e2f5dc 100%);
   position: relative;
@@ -198,7 +205,7 @@
   border: 0; border-radius: 7px; background: transparent;
   color: #526b82; font-size: 13px; font-weight: 700;
 }
-.bottom-navigation-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.bottom-navigation-item svg { width: 27px; height: 27px; flex-shrink: 0; }
 .bottom-navigation-item[aria-current=page] { background: #2468d2; color: #fff; }
 .bottom-navigation-item[aria-disabled=true] { cursor: default; }
 .world-footer { bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }

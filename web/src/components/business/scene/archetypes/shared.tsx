@@ -1,6 +1,8 @@
+import { useEffect, useMemo } from 'react'
 import { MeshStandardMaterial } from 'three'
+import { createFacadeGeometry } from '../facade-geometry'
 import type { BuildingLayout, Vec3 } from '../layout'
-import { Box, Sign, useTheme } from '../parts'
+import { Box, Sign, material, useTheme } from '../parts'
 import type { ArchetypeProps } from '.'
 
 /** Measurements every building type shares: the room grid's frame and the ground-floor bays. */
@@ -20,7 +22,16 @@ export function frame(layout: BuildingLayout) {
   }
 }
 
-const glass = new MeshStandardMaterial({ color: '#53bdd4', transparent: true, opacity: .34, roughness: .22, metalness: .1 })
+const glass = new MeshStandardMaterial({ color: '#53bdd4', transparent: true, depthWrite: false, opacity: .34, roughness: .22, metalness: .1 })
+
+/** One continuous facade: intersecting column/beam cubes leave competing depth and shadow edges. */
+export function Facade({ layout }: { layout: BuildingLayout }) {
+  const theme = useTheme()
+  const { geometry, centerY } = useMemo(() => createFacadeGeometry({ ...frame(layout), roofBase: layout.rowY[0] + 1.36 }), [layout])
+  useEffect(() => () => geometry.dispose(), [geometry])
+  return <mesh position={[0, centerY, .42]} geometry={geometry} material={material(theme.body)} castShadow receiveShadow/>
+}
+
 export function GlassPane({ at, width, height }: { at: Vec3; width: number; height: number }) {
   return <mesh position={at} scale={[width, height, 1]} material={glass}><planeGeometry/></mesh>
 }

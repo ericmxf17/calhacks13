@@ -27,7 +27,7 @@ export default function Storefront({ layout, company, sign }: ArchetypeProps) {
     <Box at={[0, (.04 + yTop + 1.44) / 2, -.4]} size={[5.25, yTop + 1.4, 1.3]}/>
     <Box at={[0, (yTop + 1.48) / 2, -.97]} size={[5.3, yTop + 1.48, .13]} color={theme.wall}/>
     {[-2.38, 0, 2.38].map((x, i) => <Box key={x} at={[x, (y0 - 1.33 + yTop + 1.32) / 2, .72]} size={[i === 1 ? 1.75 : .5, yTop - y0 + 2.65, .6]}/>)}
-    {beams.map(y => <Box key={y} at={[0, y, .72]} size={[5.2, .42, .6]}/>)}
+    {beams.map(y => <Box key={y} at={[0, y, .74]} size={[5.2, .42, .6]}/>)}
     {[0.16, 2.51, yTop + 1.29, yTop + 1.42, yTop + 1.56].map((y, i) => <Box key={y} at={[0, y, .12]} size={[5.3 + (i > 2 ? .22 : 0), .12, 2.18 + (i > 2 ? .2 : 0)]} color={theme.trim}/>)}
     <Box at={[0, yTop + 1.53, -.15]} size={[5.2, .13, 1.65]} color={theme.roof}/>
     {/* Taller storefronts skip the studs' tiny shadows to keep the extra floor cheap to draw. */}
@@ -39,7 +39,7 @@ export default function Storefront({ layout, company, sign }: ArchetypeProps) {
     {[-1.6, 1.6].map(x => <group key={x}>
       <Box at={[x, 1.1, .39]} size={[1.65, 1.7, .2]} color="#ffd473"/>
       <Box at={[x, .32, .98]} size={[1.7, .17, .18]} color={theme.dark}/>
-      <mesh position={[x, 1.16, 1.025]}><planeGeometry args={[1.64, 1.56]}/><meshStandardMaterial color="#53bdd4" transparent opacity={.34} roughness={.22} metalness={.1}/></mesh>
+      <mesh position={[x, 1.16, 1.025]}><planeGeometry args={[1.64, 1.56]}/><meshStandardMaterial color="#53bdd4" transparent depthWrite={false} opacity={.34} roughness={.22} metalness={.1}/></mesh>
       {[-.43, .1, .5].map((s, i) => <group position={[x + s, .45, .76]} key={s}>
         <mesh position={[0, .62, 0]} castShadow><boxGeometry args={[.15, .15, .15]}/><meshStandardMaterial color="#ffd9ad"/></mesh>
         <mesh position={[0, .34, 0]} castShadow><boxGeometry args={[.28, .48, .22]}/><meshStandardMaterial color={['#ff6488', '#6d8aef', '#ffd447'][i]}/></mesh>

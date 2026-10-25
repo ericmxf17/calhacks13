@@ -26,7 +26,7 @@ export default function Cafe(props: ArchetypeProps) {
     <Shell layout={layout}/>
     {[-(f.half - .245), f.half - .245].map(x => <Box key={x} at={[x, f.pierY, .72]} size={[.5, f.pierHeight, .6]}/>)}
     {f.mids.map(x => <Box key={x} at={[x, f.pierY, .72]} size={[1.75, f.pierHeight, .6]}/>)}
-    {f.beams.map(y => <Box key={y} at={[0, y, .72]} size={[f.width - .05, .42, .6]} color={theme.trim}/>)}
+    {f.beams.map(y => <Box key={y} at={[0, y, .74]} size={[f.width - .05, .42, .6]} color={theme.trim}/>)}
     {/* Flower boxes under every window in the room grid. */}
     {[...layout.cells.map(c => c.position), ...layout.blanks].map(([x, y]) => <group key={`${x},${y}`}>
       <Box at={[x, y - .98, 1.16]} size={[1.1, .14, .26]} color="#a8643e"/>
