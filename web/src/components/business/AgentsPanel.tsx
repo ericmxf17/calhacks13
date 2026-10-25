@@ -42,7 +42,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
   const [connectionError, setConnectionError] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const archive = connections?.evidence?.mode === 'archive'
-  const visibleAgents = agents.filter(agent => connections?.agents.some(item => item.role === agent.role && item.connection === 'connected'))
+  const connectedCount = connections?.agents.filter(agent => agent.connection === 'connected').length ?? 0
 
   useEffect(() => { heading.current?.focus() }, [])
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
       } catch {
         if (controller.signal.aborted) return
         setConnections(null)
-        setConnectionError('Connection status could not be checked. Refresh connections to retry.')
+        setConnectionError('Connection status could not be checked. You can still open an agent and retry its history.')
       } finally {
         if (!controller.signal.aborted) setChecking(false)
       }
@@ -77,18 +77,17 @@ export default function AgentsPanel({ reducedMotion }: { reducedMotion: boolean 
         {archive && <p>{connections?.evidence?.label}</p>}
         <div className="agents-connection-toolbar">
           <p role="status">{checking ? 'Checking agent connections…' : connectionError
-            || (archive ? `${visibleAgents.length} agents with saved runs` : `${visibleAgents.length} connected agents`)}</p>
+            || (archive ? `${connectedCount} agents with saved runs` : `${connectedCount} of ${agentCatalog.length} agents connected`)}</p>
           <Button onClick={() => setRefreshKey(key => key + 1)} disabled={checking}>{archive ? 'Reload saved runs' : 'Refresh connections'}</Button>
         </div>
       </header>
-      {!checking && !connectionError && visibleAgents.length === 0 && <p role="status">{archive ? 'No saved agent runs are available.' : 'No connected agents are available.'}</p>}
       <div className="agents-grid">
-        {visibleAgents.map((agent, index) => {
+        {agents.map((agent, index) => {
           const connection = connections?.agents.find(item => item.role === agent.role)?.connection
           return <article className="agent-card" key={agent.id} data-tour={agent.id === 'brief-writer' ? 'brief-writer' : undefined} style={{ '--card-index': index } as CSSProperties}>
           <div className="agent-card-topline">
             <span className="agent-connection" data-connection={checking ? 'checking' : connection}>
-              {checking ? 'Checking…' : archive && connection === 'connected' ? 'Saved runs' : connection ? connectionLabels[connection] : 'Status unavailable'}
+              {checking ? 'Checking…' : archive ? connection === 'connected' ? 'Saved runs' : 'No saved runs' : connection ? connectionLabels[connection] : 'Status unavailable'}
             </span>
             <span className="agent-kind">CREAO agent</span>
           </div>
