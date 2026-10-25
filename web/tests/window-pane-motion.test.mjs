@@ -11,13 +11,13 @@ test('left glass panes close from right to left; other panes retain their origin
   }
 })
 
-for (const roomY of [3.65, 5.7]) {
-  test(`the left pane at height ${roomY} stays within its frame throughout the slide`, () => {
-    const roomX = -3.14, planes = windowClipPlanes(roomX)
+for (const [side, roomX] of [['left', -3.14], ['center', 0], ['right', 3.14]]) for (const roomY of [3.65, 5.7]) {
+  test(`the ${side} pane at height ${roomY} stays within its frame throughout the slide`, () => {
+    const planes = windowClipPlanes(roomX), direction = Math.sign(paneDestination(true, side))
     const visible = x => planes.every(plane => plane.distanceToPoint(new Vector3(roomX + x, roomY, 1.1)) >= 0)
     for (const offset of [-.51, 0, .51]) assert.equal(visible(offset), true, 'The closed glass must remain visible')
-    for (const offset of [-.51, 0, .51]) assert.equal(visible(paneDestination(true, 'left') + offset), false, 'Open glass must not float beside the frame')
-    assert.equal(visible(.6 - .51), true, 'A closing pane must be revealed inside the frame')
-    assert.equal(visible(.6 + .51), false, 'The portion outside the frame must stay hidden')
+    for (const offset of [-.51, 0, .51]) assert.equal(visible(paneDestination(true, side) + offset), false, 'Open glass must not float beside the frame')
+    assert.equal(visible(direction * (.6 - .51)), true, 'A closing pane must be revealed inside the frame')
+    assert.equal(visible(direction * (.6 + .51)), false, 'The portion outside the frame must stay hidden')
   })
 }

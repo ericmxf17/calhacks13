@@ -27,7 +27,7 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
   const theme = useTheme()
   const [x, y, z] = department.position
   const side = department.side ?? (index % 2 === 0 ? 'left' : 'right')
-  const clippingPlanes = useMemo(() => side === 'left' ? windowClipPlanes(x) : undefined, [side, x])
+  const clippingPlanes = useMemo(() => windowClipPlanes(x), [x])
   const selected = active === department.id
   useFrame((_, dt) => {
     if (!shutters.current) return
@@ -48,12 +48,12 @@ export function DepartmentRoom({ department, active, open, index, portal }: { de
     <Frame/>
     <group ref={shutters}>
       <mesh position={[0, 0, .018]} onClick={() => open(department.id)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
-        <boxGeometry args={[1.02, 1.61, .035]}/><meshStandardMaterial color={hovered ? '#a5edff' : '#47a8ce'} transparent depthWrite={false} opacity={side === 'left' ? .28 : selected ? 0 : .28} roughness={.28} metalness={.2} clippingPlanes={clippingPlanes}/>
+        <boxGeometry args={[1.02, 1.61, .035]}/><meshStandardMaterial color={hovered ? '#a5edff' : '#47a8ce'} transparent depthWrite={false} opacity={.28} roughness={.28} metalness={.2} clippingPlanes={clippingPlanes}/>
       </mesh>
-      {side === 'left' ? <>
+      <>
         <mesh position={[0, 0, .06]} castShadow receiveShadow><boxGeometry args={[.045, 1.63, .045]}/><meshStandardMaterial color={theme.dark} roughness={.84} clippingPlanes={clippingPlanes} clipShadows/></mesh>
         <mesh position={[0, .28, .06]} castShadow receiveShadow><boxGeometry args={[1.05, .045, .045]}/><meshStandardMaterial color={theme.dark} roughness={.84} clippingPlanes={clippingPlanes} clipShadows/></mesh>
-      </> : !selected && <><Box at={[0, 0, .06]} size={[.045, 1.63, .045]} color={theme.dark}/><Box at={[0, .28, .06]} size={[1.05, .045, .045]} color={theme.dark}/></>}
+      </>
     </group>
     {!selected && <Html portal={portal} position={label} center zIndexRange={[20, 10]}><button id={`room-${department.id}`} className={`room-hotspot ${active ? 'room-hotspot-compact' : `label-${side}`}`} onClick={() => open(department.id)} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onFocus={() => setHovered(true)} onBlur={() => setHovered(false)} aria-label={`Enter ${department.name}`}><i/><span><small>{active ? 'OPEN ROOM' : `${department.number} / ${department.floor.replace(' FLOOR', '')}`}</small><strong>{department.name}</strong></span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor"/></svg></button></Html>}
   </group>
