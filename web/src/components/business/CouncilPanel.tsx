@@ -20,6 +20,7 @@ import {
 import { Message, MessageContent, MessageResponse } from '@/components/ai-elements/message'
 import { Shimmer } from '@/components/ai-elements/shimmer'
 import AgentAvatar from './AgentAvatar'
+import CouncilArtifactView from './CouncilArtifact'
 import { Button } from '@/components/ui/button'
 
 const seats = [
@@ -53,9 +54,7 @@ const seats = [
   },
 ] as const
 
-// Shared Consul illustrations decorate council seats; their labels identify
-// Factory council roles, not CREAO agent runs. Character motion is decorative;
-// only the job stage below identifies an active council seat.
+// Dedicated Council palette preserves the animated characters; CREAO assets stay unchanged.
 function CouncilAvatar({
   seat,
   reducedMotion,
@@ -66,8 +65,8 @@ function CouncilAvatar({
   return (
     <span className="council-avatar">
       <AgentAvatar
-        stillSrc={`/agents/${seat.avatar}.svg`}
-        animatedSrc={`/agents/${seat.avatar}-animated.svg`}
+        stillSrc={`/agents/council-${seat.avatar}.svg`}
+        animatedSrc={`/agents/council-${seat.avatar}-animated.svg`}
         reducedMotion={reducedMotion}
       />
     </span>
@@ -259,7 +258,21 @@ export default function CouncilPanel({
   const frozen = !!saved || !!thread
   const activeSeat =
     job?.status === 'running' ? seats.find((seat) => seat.role === job.stage) : null
-  const evidence = thread?.rounds[0]?.sources ?? []
+  function seatModel(role: (typeof seats)[number]['role']) {
+    const turn = job?.turns.find((item) => item.role === role)
+    if (turn) return turn.modelId ?? 'Model not recorded'
+    const recorded = job?.speakers?.[role]?.modelId
+    if (recorded) return recorded
+    if (job && job.status !== 'running' && job.status !== 'resolving') return 'Model unavailable'
+    const configured = setup?.members?.find((member) => member.role === role)?.modelId
+    return configured ? `${configured} · configured` : 'Model unavailable'
+  }
+  const recordedEvidence = [...(thread?.rounds[0]?.sources ?? []), ...(thread?.rounds.flatMap((round) => round.toolEvidence ?? []) ?? [])]
+  const recordedIds = new Set(recordedEvidence.map((item) => item.id))
+  const generatedReferences = thread?.rounds.flatMap((round) => (round.artifacts ?? [])
+    .filter((artifact) => !recordedIds.has(artifact.id) && artifact.kind !== 'calculation' && artifact.kind !== 'research')
+    .map((artifact) => ({ id: artifact.id, title: artifact.title, kind: 'artifact' as const, text: JSON.stringify(artifact, null, 2), provenance: 'Generated output · discussion reference, not independent factual evidence', url: null, companyMatch: 'explicit' as const, warnings: ['This generated output can be discussed; it does not independently establish factual or numerical claims.'] }))) ?? []
+  const evidence = [...recordedEvidence, ...generatedReferences]
   const source = evidence.find((item) => item.id === inspectedSource)
   const sameRef = (a: CouncilSourceOption, b: CouncilSourceOption) =>
     JSON.stringify(a.ref) === JSON.stringify(b.ref)
@@ -586,6 +599,7 @@ export default function CouncilPanel({
               <div>
                 <strong>{seat.name}</strong>
                 <small>{activeSeat?.role === seat.role ? seat.focus : seat.purpose}</small>
+                <small className="council-model">{seatModel(seat.role)}</small>
               </div>
               <span className="council-seat-order">0{index + 1}</span>
             </div>
@@ -657,7 +671,9 @@ export default function CouncilPanel({
                   </Message>
                   {seats.map((seat) => {
                     const turn = round.turns.find((item) => item.role === seat.role)
-                    if (!turn && !(seat.role === 'chair' && round.decision)) return null
+                    const artifacts = round.artifacts?.filter((artifact) => artifact.role === seat.role) ?? []
+                    const toolCalls = round.toolCalls?.filter((call) => call.role === seat.role) ?? []
+                    if (!turn && !artifacts.length && !toolCalls.length && !(seat.role === 'chair' && round.decision)) return null
                     return (
                       <Message from="assistant" key={seat.role}>
                         <CouncilAvatar seat={seat} reducedMotion={reducedMotion} />
@@ -665,9 +681,13 @@ export default function CouncilPanel({
                           <div className="council-byline">
                             <strong>{seat.name}</strong>
                             <span>
-                              {seat.role === 'chair' ? 'Council synthesis' : seat.purpose}
+                              {turn ? turn.modelId ?? 'Model not recorded' : round.speakers?.[seat.role]?.modelId ?? 'Model unavailable'}{turn?.reasoningEffort ? ` · ${turn.reasoningEffort}` : ''}
                             </span>
                           </div>
+                          {toolCalls.length > 0 && <ul className="council-tool-activity" aria-label={`${seat.name} tool activity`}>
+                            {toolCalls.map((call) => <li key={call.id} data-status={call.status}><span className="council-tool-status">{call.status}</span><strong>{call.title}</strong><small>{call.name}{call.completedAt ? ` · ${Math.max(0, Math.round((Date.parse(call.completedAt) - Date.parse(call.startedAt)) / 1000))}s` : ''}</small>{call.error && <p>{call.error}</p>}</li>)}
+                          </ul>}
+                          {artifacts.map((artifact) => <CouncilArtifactView key={artifact.id} artifact={artifact} onSource={inspect} />)}
                           {turn && (
                             <>
                               <CouncilSummary
@@ -938,7 +958,7 @@ export default function CouncilPanel({
             </summary>
             {frozen ? (
               <p className="council-help">
-                Evidence is fixed for this conversation. Start a new conversation to change sources.
+                Initial sources stay fixed. Council tool evidence is saved alongside each round.
               </p>
             ) : (
               <>

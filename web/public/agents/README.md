@@ -43,3 +43,9 @@ The generator rejects changed source and runs the pinned geometry module in a
 bounded VM context without Node or browser APIs. Review new source before
 changing its pinned hash. It reads the static SVGs as artwork templates and
 writes only the four animated SVGs.
+
+Council's `council-*.svg` files derive from this same reviewed artwork with a
+separate violet/teal palette. Shape, expression and animation remain unchanged.
+After regenerating the originals, run `node web/scripts/generate-council-avatars.mjs`
+from the repository root. The generator validates the expected source colors
+before writing the eight dedicated Council files and never changes the originals.
